@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Last updated: 2026-05-27 (Phase 8 added)
+Last updated: 2026-05-27 (Phase 8 shipped)
 
 ## Phase 1: Core Trade Journal (MVP) ✅ COMPLETE
 - [x] Supabase schema (strategies, legs, import_batches tables) — migration 0001
@@ -80,14 +80,17 @@ Last updated: 2026-05-27 (Phase 8 added)
 - [x] Closing a strategy writes `close_net_delta/gamma/theta/vega` + `close_net_at` in the same UPDATE that sets `closed_at`
 - ⚠️ **Apply `supabase/migrations/0004_greeks_snapshots.sql` to the remote DB** (Supabase dashboard SQL editor or `supabase db push`) — without this, the new write paths will silently fail until the columns exist.
 
-## Phase 8: Deployment 🚧 IN PROGRESS
+## Phase 8: Deployment ✅ COMPLETE (except migration 0004 pending user action)
 - [x] Sweep stale docs (Polygon → Tradier in `README.md` and `.env.example`)
-- [x] Push `main` to https://github.com/kronatus/tradejournal (private)
-- [ ] Apply `supabase/migrations/0004_greeks_snapshots.sql` to remote Supabase
-- [ ] Vercel: import project from GitHub via dashboard
-- [ ] Vercel: add env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `TRADIER_API_TOKEN`)
-- [ ] Supabase Auth → URL Configuration: set Site URL + add Vercel production & preview URLs to Redirect URLs
-- [ ] Smoke-test production: log in, refresh live data on a strategy, run a sandbox scenario, import a CSV
+- [x] Push `main` to https://github.com/kronatus/tradejournal (private) — 83 files, full history
+- [x] Fix `@testing-library/react` peer dependency for React 19
+- [x] Add `.npmrc` with `legacy-peer-deps=true` for Vercel builds
+- [x] Fix dashboard null-safety with bulk-imported strategies (884 closed strategies)
+- [ ] Apply `supabase/migrations/0004_greeks_snapshots.sql` to remote Supabase ← user action pending
+- [x] Vercel: import project from GitHub via dashboard
+- [x] Vercel: add env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `TRADIER_API_TOKEN`)
+- [x] Supabase Auth → URL Configuration: set Site URL + add Vercel production & preview URLs to Redirect URLs
+- [x] Production smoke-test: login, live data refresh, sandbox scenario, CSV import all working with 884 strategies
 
 ---
 
