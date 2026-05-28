@@ -55,7 +55,9 @@ export function totalRealizedPnLCents(
 export function winRate(
   strategies: Array<{ strategy: Strategy; legs: Leg[] }>
 ): number {
-  const closed = strategies.filter(({ legs }) => isStrategyClosed(legs));
+  const closed = strategies.filter(
+    ({ strategy, legs }) => isStrategyClosed(legs) && strategy.closed_at !== null
+  );
   if (closed.length === 0) return 0;
 
   const winners = closed.filter(
@@ -67,7 +69,9 @@ export function winRate(
 export function avgWinCents(
   strategies: Array<{ strategy: Strategy; legs: Leg[] }>
 ): number {
-  const closed = strategies.filter(({ legs }) => isStrategyClosed(legs));
+  const closed = strategies.filter(
+    ({ strategy, legs }) => isStrategyClosed(legs) && strategy.closed_at !== null
+  );
   const winners = closed.filter(
     ({ strategy, legs }) => strategyRealizedPnLCents(strategy, legs) > 0
   );
@@ -83,7 +87,9 @@ export function avgWinCents(
 export function avgLossCents(
   strategies: Array<{ strategy: Strategy; legs: Leg[] }>
 ): number {
-  const closed = strategies.filter(({ legs }) => isStrategyClosed(legs));
+  const closed = strategies.filter(
+    ({ strategy, legs }) => isStrategyClosed(legs) && strategy.closed_at !== null
+  );
   const losers = closed.filter(
     ({ strategy, legs }) => strategyRealizedPnLCents(strategy, legs) < 0
   );
@@ -100,7 +106,9 @@ export function avgLossCents(
 export function equityCurve(
   strategies: Array<{ strategy: Strategy; legs: Leg[] }>
 ): Array<{ date: string; cumulativePnLCents: number }> {
-  const closed = strategies.filter(({ legs }) => isStrategyClosed(legs));
+  const closed = strategies.filter(
+    ({ strategy, legs }) => isStrategyClosed(legs) && strategy.closed_at !== null
+  );
   const sorted = closed.sort(
     (a, b) =>
       new Date(a.strategy.closed_at!).getTime() -
@@ -145,7 +153,9 @@ export function avgHoldingPeriodDays(
   strategies: Array<{ strategy: Strategy; legs: Leg[] }>,
   filter?: "winners" | "losers"
 ): number {
-  let closed = strategies.filter(({ legs }) => isStrategyClosed(legs));
+  let closed = strategies.filter(
+    ({ strategy, legs }) => isStrategyClosed(legs) && strategy.closed_at !== null
+  );
 
   if (filter === "winners") {
     closed = closed.filter(
