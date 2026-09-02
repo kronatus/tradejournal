@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { formatCents } from "@/lib/utils";
 import { Strategy } from "@/lib/types";
+import { strategyCollateralCents } from "@/lib/calculations";
 
 type EditingField = "conviction" | "thesis" | "post_mortem" | "planned_target_cents" | "collateral_cents" | "planned_stop_cents" | null;
 
@@ -217,65 +218,77 @@ export function StrategyEditor({ strategy }: { strategy: Strategy }) {
         </div>
 
         {/* Collateral */}
-        <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
-          <div className="text-xs font-medium uppercase tracking-wide text-text-subtle">
-            Collateral
-          </div>
-          {editing === "collateral_cents" ? (
-            <div className="mt-2 space-y-2">
-              <input
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
-                value={
-                  drafts.collateral_cents !== undefined && drafts.collateral_cents !== null
-                    ? String(drafts.collateral_cents)
-                    : strategy.collateral_cents
-                    ? strategy.collateral_cents / 100
-                    : ""
-                }
-                onChange={(e) =>
-                  setDrafts({ ...drafts, collateral_cents: e.target.value })
-                }
-                disabled={saving}
-              />
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleSave("collateral_cents")}
-                  disabled={saving}
-                  className="flex-1 rounded-md border border-border bg-surface px-2 py-1 text-xs font-medium hover:bg-muted disabled:opacity-50"
-                >
-                  {saving ? "…" : "Save"}
-                </button>
-                <button
-                  onClick={handleCancel}
-                  disabled={saving}
-                  className="flex-1 rounded-md border border-border bg-surface px-2 py-1 text-xs font-medium hover:bg-muted disabled:opacity-50"
-                >
-                  Cancel
-                </button>
+        {(() => {
+          const legs = strategy.legs ?? [];
+          const autoCalc = strategyCollateralCents(legs);
+          const displayValue = strategy.collateral_cents ?? autoCalc;
+          const isAuto = strategy.collateral_cents == null && autoCalc != null;
+
+          return (
+            <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
+              <div className="flex items-center gap-1 text-xs font-medium uppercase tracking-wide text-text-subtle">
+                Collateral
+                {isAuto && (
+                  <span className="ml-1 rounded bg-muted px-1 py-0.5 text-[10px] font-normal normal-case text-text-subtle">
+                    auto
+                  </span>
+                )}
               </div>
-              {error && <div className="text-xs text-loss">{error}</div>}
+              {editing === "collateral_cents" ? (
+                <div className="mt-2 space-y-2">
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder={autoCalc != null ? String(autoCalc / 100) : "0.00"}
+                    className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+                    value={
+                      drafts.collateral_cents !== undefined && drafts.collateral_cents !== null
+                        ? String(drafts.collateral_cents)
+                        : strategy.collateral_cents
+                        ? strategy.collateral_cents / 100
+                        : ""
+                    }
+                    onChange={(e) =>
+                      setDrafts({ ...drafts, collateral_cents: e.target.value })
+                    }
+                    disabled={saving}
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleSave("collateral_cents")}
+                      disabled={saving}
+                      className="flex-1 rounded-md border border-border bg-surface px-2 py-1 text-xs font-medium hover:bg-muted disabled:opacity-50"
+                    >
+                      {saving ? "…" : "Save"}
+                    </button>
+                    <button
+                      onClick={handleCancel}
+                      disabled={saving}
+                      className="flex-1 rounded-md border border-border bg-surface px-2 py-1 text-xs font-medium hover:bg-muted disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                  {error && <div className="text-xs text-loss">{error}</div>}
+                </div>
+              ) : (
+                <div
+                  className="mt-2 cursor-pointer text-2xl font-semibold tabular tracking-tight text-text-muted hover:text-text"
+                  onClick={() => {
+                    setEditing("collateral_cents");
+                    setDrafts({
+                      collateral_cents: strategy.collateral_cents
+                        ? strategy.collateral_cents / 100
+                        : "",
+                    });
+                  }}
+                >
+                  {displayValue != null ? formatCents(displayValue) : "—"}
+                </div>
+              )}
             </div>
-          ) : (
-            <div
-              className="mt-2 cursor-pointer text-2xl font-semibold tabular tracking-tight text-text-muted hover:text-text"
-              onClick={() => {
-                setEditing("collateral_cents");
-                setDrafts({
-                  collateral_cents: strategy.collateral_cents
-                    ? strategy.collateral_cents / 100
-                    : "",
-                });
-              }}
-            >
-              {strategy.collateral_cents != null
-                ? formatCents(strategy.collateral_cents)
-                : "—"}
-            </div>
-          )}
-        </div>
+          );
+        })()}
 
         {/* Stop */}
         <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">

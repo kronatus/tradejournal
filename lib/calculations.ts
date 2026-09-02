@@ -22,6 +22,66 @@ export function strategyRealizedPnLCents(
   return legs.reduce((sum, leg) => sum + legPnLCents(leg), 0);
 }
 
+/**
+ * Estimate collateral required for a strategy, in cents.
+ *
+ * Rules (approximations for a personal journal — not brokerage-exact):
+ *  - Long-only legs:           0  (premium already paid, no margin)
+ *  - Short single call/put:    strike × qty × 100  (cash-secured / naked approx)
+ *  - Vertical (2 legs, same expiry, same type, opposite sides):
+ *                              |strike_diff| × qty × 100  (spread width)
+ *  - Iron condor (4 legs, 2 calls + 2 puts):
+ *                              max(put spread width, call spread width) × qty × 100
+ *  - Everything else:          null  (user must enter manually)
+ *
+ * Returns null when the shape cannot be auto-determined.
+ */
+export function strategyCollateralCents(legs: Leg[]): number | null {
+  if (legs.length === 0) return null;
+
+  const shortLegs = legs.filter((l) => l.side === "short");
+  const longLegs = legs.filter((l) => l.side === "long");
+
+  // All long — no collateral needed
+  if (shortLegs.length === 0) return 0;
+
+  // Single short leg (naked / cash-secured)
+  if (legs.length === 1 && shortLegs.length === 1) {
+    const leg = shortLegs[0];
+    return leg.strike_cents * leg.qty * 100;
+  }
+
+  // Two-leg vertical: same expiry, same option type, one long + one short
+  if (legs.length === 2 && shortLegs.length === 1 && longLegs.length === 1) {
+    const s = shortLegs[0];
+    const l = longLegs[0];
+    if (s.option_type === l.option_type && s.expiry === l.expiry) {
+      const width = Math.abs(s.strike_cents - l.strike_cents);
+      return width * s.qty * 100;
+    }
+  }
+
+  // Iron condor: 4 legs, 2 calls + 2 puts, one long + one short per type
+  if (legs.length === 4) {
+    const calls = legs.filter((l) => l.option_type === "call");
+    const puts = legs.filter((l) => l.option_type === "put");
+    if (calls.length === 2 && puts.length === 2) {
+      const shortCall = calls.find((l) => l.side === "short");
+      const longCall = calls.find((l) => l.side === "long");
+      const shortPut = puts.find((l) => l.side === "short");
+      const longPut = puts.find((l) => l.side === "long");
+      if (shortCall && longCall && shortPut && longPut) {
+        const callWidth = Math.abs(shortCall.strike_cents - longCall.strike_cents);
+        const putWidth = Math.abs(shortPut.strike_cents - longPut.strike_cents);
+        const qty = shortCall.qty; // assume same qty across all legs
+        return Math.max(callWidth, putWidth) * qty * 100;
+      }
+    }
+  }
+
+  return null;
+}
+
 // Per strategy: net premium paid/received (positive = debit, negative = credit)
 export function strategyNetPremiumCents(legs: Leg[]): number {
   return legs.reduce((sum, leg) => {
