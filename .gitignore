@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# deep-research working notes (reports/ is tracked, raw notes are not)
+/research_notes
