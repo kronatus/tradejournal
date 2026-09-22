@@ -37,13 +37,18 @@ export const StrategyInputSchema = z.object({
 });
 
 export const QuoteSchema = z.object({
-  price: z.number().positive(),
+  // A deep-OTM contract can legitimately mark at zero. Treat that as data,
+  // not as a missing quote -- dropping it silently understates the position.
+  price: z.number().nonnegative(),
   delta: z.number(),
   gamma: z.number(),
   theta: z.number(),
   vega: z.number(),
   iv: z.number().nonnegative(),
   asOf: z.string().datetime(),
+  // True when the provider returned a price but no Greeks. Callers must not
+  // fold these into net Greeks -- zero is a claim, absence is not.
+  greeksMissing: z.boolean().default(false),
 });
 
 export const CanonicalFillSchema = z.object({
@@ -122,3 +127,72 @@ export type ColumnMapping = z.infer<typeof ColumnMappingSchema>;
 export type StrategyPatch = z.infer<typeof StrategyPatchSchema>;
 export type LegClosePatch = z.infer<typeof LegClosePatchSchema>;
 export type LegCreate = z.infer<typeof LegCreateSchema>;
+
+// --- Marketdata.app -------------------------------------------------------
+//
+// Marketdata returns COLUMN-oriented JSON: every field is an array, and index i
+// across all arrays describes one contract. A single-contract request therefore
+// still returns arrays of length 1.
+//
+// The `s` status field discriminates the three outcomes. `no_data` is the one
+// that matters most here: an unknown or malformed option symbol comes back as
+// no_data rather than an error, so a bad symbol is only ever visible as an
+// absent quote. That is why lib/occ.ts throws on malformed input instead of
+// passing it through, and why the client below reports an explicit per-leg
+// error rather than dropping the contract.
+
+const NullableNumbers = z.array(z.number().nullable());
+
+export const MarketdataOkSchema = z.object({
+  s: z.literal("ok"),
+  optionSymbol: z.array(z.string()).min(1),
+  /** Unix seconds. Preserved rather than replaced: the free feed is delayed
+   *  ~24h, so the real timestamp is what tells the UI how stale a mark is. */
+  updated: z.array(z.number()).optional(),
+  bid: NullableNumbers.optional(),
+  ask: NullableNumbers.optional(),
+  mid: NullableNumbers.optional(),
+  last: NullableNumbers.optional(),
+  iv: NullableNumbers.optional(),
+  delta: NullableNumbers.optional(),
+  gamma: NullableNumbers.optional(),
+  theta: NullableNumbers.optional(),
+  vega: NullableNumbers.optional(),
+  rho: NullableNumbers.optional(),
+  underlyingPrice: NullableNumbers.optional(),
+});
+
+export const MarketdataNoDataSchema = z.object({
+  s: z.literal("no_data"),
+});
+
+export const MarketdataErrorSchema = z.object({
+  s: z.literal("error"),
+  errmsg: z.string().optional(),
+});
+
+export const MarketdataResponseSchema = z.discriminatedUnion("s", [
+  MarketdataOkSchema,
+  MarketdataNoDataSchema,
+  MarketdataErrorSchema,
+]);
+
+export type MarketdataOk = z.infer<typeof MarketdataOkSchema>;
+export type MarketdataResponse = z.infer<typeof MarketdataResponseSchema>;
+
+/** Stock quote (used for the sandbox spot price). Also column-oriented. */
+export const MarketdataStockOkSchema = z.object({
+  s: z.literal("ok"),
+  symbol: z.array(z.string()).min(1),
+  last: NullableNumbers.optional(),
+  mid: NullableNumbers.optional(),
+  bid: NullableNumbers.optional(),
+  ask: NullableNumbers.optional(),
+  updated: z.array(z.number()).optional(),
+});
+
+export const MarketdataStockResponseSchema = z.discriminatedUnion("s", [
+  MarketdataStockOkSchema,
+  MarketdataNoDataSchema,
+  MarketdataErrorSchema,
+]);

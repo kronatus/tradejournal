@@ -1,3 +1,9 @@
+> **Where the code lives:** all parsing and conversion is in `lib/occ.ts`
+> (`parseOccSymbol`, `toStandardOcc`, `toStorageOcc`, `buildStorageOcc`),
+> covered by `lib/occ.test.ts`. Both Tradier and Marketdata.app consume the
+> same standard form, so the conversion is provider-neutral. Import these
+> rather than re-deriving the encoding.
+
 # OCC Symbology Guide
 
 How option contracts are encoded throughout this codebase. **Read this before touching anything that handles option symbols.**

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { computeNetGreeksFromTradier } from "@/lib/snapshots";
+import { computeNetGreeks } from "@/lib/snapshots";
+import { isQuoteProviderConfigured } from "@/lib/quotes";
 import { Leg, Strategy } from "@/lib/types";
 
 export async function GET(request: NextRequest) {
@@ -56,14 +57,24 @@ export async function GET(request: NextRequest) {
         perLeg: [],
         minValueCents: typedStrategy.min_value_cents,
         maxValueCents: typedStrategy.max_value_cents,
+        asOf: null,
+        stale: false,
+        creditsRemaining: null,
         fetchedAt: new Date().toISOString(),
       });
     }
 
-    const snapshot = await computeNetGreeksFromTradier(
-      openLegs,
-      process.env.TRADIER_API_TOKEN!
-    );
+    if (!isQuoteProviderConfigured()) {
+      return NextResponse.json(
+        {
+          error:
+            "No market data provider configured. Set MARKETDATA_API_TOKEN in the environment.",
+        },
+        { status: 503 }
+      );
+    }
+
+    const snapshot = await computeNetGreeks(openLegs);
 
     let minValueCents = typedStrategy.min_value_cents;
     let maxValueCents = typedStrategy.max_value_cents;
@@ -80,6 +91,7 @@ export async function GET(request: NextRequest) {
       const { error: updateError } = await supabase
         .from("strategies")
         .update({
+          current_value_cents: snapshot.currentValueCents,
           min_value_cents: minValueCents,
           max_value_cents: maxValueCents,
           current_net_delta: snapshot.netGreeks.delta,
@@ -100,6 +112,13 @@ export async function GET(request: NextRequest) {
       perLeg: snapshot.perLeg,
       minValueCents,
       maxValueCents,
+      asOf: snapshot.asOf,
+      // Computed here so the client can render it without calling Date.now()
+      // during render. The free Marketdata feed is delayed ~24h.
+      stale:
+        snapshot.asOf != null &&
+        Date.now() - Date.parse(snapshot.asOf) > 60 * 60 * 1000,
+      creditsRemaining: snapshot.creditsRemaining,
       fetchedAt: new Date().toISOString(),
     });
   } catch (error) {

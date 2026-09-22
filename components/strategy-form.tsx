@@ -5,6 +5,7 @@ import { StrategyInput, LegInput } from "@/lib/schemas";
 import { STRATEGY_KINDS } from "@/lib/types";
 import { formatKind } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
+import { buildStorageOcc } from "@/lib/occ";
 
 type LegRow = LegInput & {
   side: "buy" | "sell";
@@ -51,6 +52,8 @@ export default function StrategyForm() {
 
   const handleAddLeg = () => setLegs([...legs, emptyLeg()]);
 
+  // Delegates to the single shared implementation in lib/occ.ts rather than
+  // re-deriving the encoding here — see OCC_SYMBOLOGY.md.
   const buildOccSymbol = (
     ticker: string,
     optionType: "C" | "P",
@@ -58,11 +61,12 @@ export default function StrategyForm() {
     expiry: string
   ): string => {
     if (!ticker || !strike || !expiry) return "";
-    const strikeCents = Math.round(parseFloat(strike) * 100);
-    const strikeStr = strikeCents.toString().padStart(8, "0");
-    const [year, month, day] = expiry.split("-");
-    const yy = year.slice(-2);
-    return `O:${ticker.toUpperCase()}${yy}${month}${day}${optionType}${strikeStr}`;
+    return buildStorageOcc(
+      ticker,
+      expiry,
+      Math.round(parseFloat(strike) * 100),
+      optionType === "C" ? "call" : "put"
+    );
   };
 
   const handleRemoveLeg = (index: number) => {

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { fetchSpot, isQuoteProviderConfigured } from "@/lib/quotes";
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,61 +12,21 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const token = process.env.TRADIER_API_TOKEN;
-    if (!token) {
+    if (!isQuoteProviderConfigured()) {
       return NextResponse.json(
-        { error: "Tradier API token not configured" },
-        { status: 500 }
+        { error: "No market data provider configured" },
+        { status: 503 }
       );
     }
 
-    const response = await fetch(
-      `https://api.tradier.com/v1/markets/quotes?symbols=${symbol}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }
-    );
+    const price = await fetchSpot(symbol);
 
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: "Failed to fetch from Tradier" },
-        { status: response.status }
-      );
-    }
-
-    const data = (await response.json()) as {
-      quotes?: { quote?: { symbol: string; last?: number; bid?: number; ask?: number }[] };
-    };
-
-    const quote = data.quotes?.quote?.[0];
-    if (!quote) {
-      return NextResponse.json(
-        { error: "Quote not found" },
-        { status: 404 }
-      );
-    }
-
-    const lastPrice = quote.last ?? (quote.bid && quote.ask ? (quote.bid + quote.ask) / 2 : null);
-
-    if (lastPrice === null || lastPrice === undefined) {
-      return NextResponse.json(
-        { error: "Unable to determine price" },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json({
-      symbol: quote.symbol,
-      price: lastPrice,
-    });
+    return NextResponse.json({ symbol: symbol.toUpperCase(), price });
   } catch (error) {
     console.error("Spot price fetch error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+      { error: (error as Error).message },
+      { status: 502 }
     );
   }
 }

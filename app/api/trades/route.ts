@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { StrategyInputSchema, LegInputSchema } from "@/lib/schemas";
 import { parseOccSymbol } from "@/lib/quotes";
-import { computeNetGreeksFromTradier } from "@/lib/snapshots";
+import { computeNetGreeks } from "@/lib/snapshots";
+import { isQuoteProviderConfigured } from "@/lib/quotes";
 import type { Leg } from "@/lib/types";
 import { z } from "zod";
 
@@ -84,16 +85,13 @@ export async function POST(request: NextRequest) {
 
     if (legsError) throw legsError;
 
-    // Snapshot entry Greeks (best-effort — never fail the trade on Tradier issues).
+    // Snapshot entry Greeks (best-effort — never fail the trade on provider issues).
     const openLegs = ((insertedLegs as Leg[]) || []).filter(
       (l) => l.exit_price_cents === null
     );
-    if (openLegs.length > 0 && process.env.TRADIER_API_TOKEN) {
+    if (openLegs.length > 0 && isQuoteProviderConfigured()) {
       try {
-        const snapshot = await computeNetGreeksFromTradier(
-          openLegs,
-          process.env.TRADIER_API_TOKEN
-        );
+        const snapshot = await computeNetGreeks(openLegs);
         if (snapshot.hasData) {
           await supabase
             .from("strategies")

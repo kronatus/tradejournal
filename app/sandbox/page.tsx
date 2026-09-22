@@ -7,6 +7,7 @@ import { bsmPrice, bsmGreeks, type Greeks as BsmGreeks } from "@/lib/pricing";
 import { PayoffChart, type PayoffChartData } from "@/components/sandbox/payoff-chart";
 import { DecayChart, type DecayChartData } from "@/components/sandbox/decay-chart";
 import { GreeksPanel, type GreekLegData } from "@/components/sandbox/greeks-panel";
+import { buildStorageOcc } from "@/lib/occ";
 
 interface SandboxLeg {
   id: string;
@@ -129,14 +130,16 @@ export default function SandboxPage() {
     setError(null);
 
     try {
-      const occSymbols = legs.map((leg) => {
-        const yy = leg.expiry.slice(2, 4);
-        const mm = leg.expiry.slice(5, 7);
-        const dd = leg.expiry.slice(8, 10);
-        const type = leg.optionType === "call" ? "C" : "P";
-        const strikeStr = String(Math.round(leg.strike * 100)).padStart(8, "0");
-        return `${leg.optionType === "call" ? underlying : underlying.toUpperCase()}${yy}${mm}${dd}${type}${strikeStr}`;
-      });
+      // Storage format (O: prefix, strike in cents) — the API converts to the
+      // provider's standard form. See OCC_SYMBOLOGY.md.
+      const occSymbols = legs.map((leg) =>
+        buildStorageOcc(
+          underlying,
+          leg.expiry,
+          Math.round(leg.strike * 100),
+          leg.optionType
+        )
+      );
 
       const res = await fetch("/api/sandbox/quotes", {
         method: "POST",
@@ -152,16 +155,31 @@ export default function SandboxPage() {
       const data = (await res.json()) as {
         perSymbol: Array<{
           occ_symbol: string;
-          price_cents: number;
-          iv: number;
+          price_cents?: number;
+          iv?: number;
+          error?: string;
         }>;
       };
 
-      const updated = legs.map((leg, idx) => ({
-        ...leg,
-        entryPrice: data.perSymbol[idx].price_cents / 100,
-        iv: data.perSymbol[idx].iv,
-      }));
+      // Match on symbol rather than position, and leave a leg untouched when
+      // its quote did not come back.
+      const bySymbol = new Map(data.perSymbol.map((r) => [r.occ_symbol, r]));
+      const updated = legs.map((leg, idx) => {
+        const row = bySymbol.get(occSymbols[idx]);
+        if (!row || row.price_cents == null) return leg;
+        return {
+          ...leg,
+          entryPrice: row.price_cents / 100,
+          iv: row.iv ?? leg.iv,
+        };
+      });
+
+      const failed = data.perSymbol.filter((r) => r.error);
+      if (failed.length > 0) {
+        setError(
+          `${failed.length} of ${data.perSymbol.length} contracts had no quote: ${failed[0].error}`
+        );
+      }
 
       setLegs(updated);
     } catch (err) {

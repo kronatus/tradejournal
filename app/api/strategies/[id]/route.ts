@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { StrategyPatchSchema } from "@/lib/schemas";
-import { computeNetGreeksFromTradier } from "@/lib/snapshots";
+import { computeNetGreeks } from "@/lib/snapshots";
+import { isQuoteProviderConfigured } from "@/lib/quotes";
 import type { Leg } from "@/lib/types";
 
 export async function PATCH(
@@ -76,12 +77,9 @@ export async function PATCH(
       patch.close_net_at = parsed.data.closed_at;
       const allLegs = (strategy.legs as Leg[] | null) ?? [];
       const openLegs = allLegs.filter((l) => l.exit_price_cents === null);
-      if (openLegs.length > 0 && process.env.TRADIER_API_TOKEN) {
+      if (openLegs.length > 0 && isQuoteProviderConfigured()) {
         try {
-          const snapshot = await computeNetGreeksFromTradier(
-            openLegs,
-            process.env.TRADIER_API_TOKEN
-          );
+          const snapshot = await computeNetGreeks(openLegs);
           if (snapshot.hasData) {
             patch.close_net_delta = snapshot.netGreeks.delta;
             patch.close_net_gamma = snapshot.netGreeks.gamma;

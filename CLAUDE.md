@@ -28,8 +28,12 @@ performance metrics, and fetching market quotes for open positions.
 - Use the Supabase server client in Server Components, browser client only in Client Components
 
 ## Gotchas
-- **Option symbols (OCC):** read [OCC_SYMBOLOGY.md](OCC_SYMBOLOGY.md) before touching any code that handles them. Two formats coexist (cents in storage vs dollars×1000 for Tradier), and the conversion is the #1 source of bugs.
-- Tradier `updated_at` may fail strict Zod `.datetime()` validation — use a fresh ISO timestamp instead.
+- **Option symbols (OCC):** read [OCC_SYMBOLOGY.md](OCC_SYMBOLOGY.md) before touching any code that handles them. Two formats coexist (cents in storage vs dollars×1000 for providers), and the conversion is the #1 source of bugs. All conversion lives in `lib/occ.ts` and is covered by `lib/occ.test.ts` — do not re-derive it elsewhere.
+- **Market data provider:** Marketdata.app is primary (`MARKETDATA_API_TOKEN`); Tradier is a fallback kept only for deployments that still have a funded brokerage account. `lib/quotes.ts` selects between them; call `fetchQuotes()`/`fetchSpot()`, never a provider client directly.
+- **Marketdata billing:** an undated option request costs **one credit per contract returned** against 100/day on the free plan. Quote the legs you hold; never pull a whole chain.
+- **Marketdata failure modes:** an unknown or malformed symbol returns `{"s":"no_data"}`, not an error — which is why `toStandardOcc()` throws on bad input. An unrecognised payload shape throws rather than being coerced, so fabricated Greeks can never reach the database.
+- Absent Greeks are flagged via `Quote.greeksMissing` and excluded from net Greeks. Zero is a claim; absence is not.
+- Tradier `updated_at` may fail strict Zod `.datetime()` validation — use a fresh ISO timestamp instead. Marketdata's `updated` (unix seconds) is trustworthy and IS preserved, because the free feed is delayed and the real mark time matters.
 
 ## Workflow
 - Run `npm run lint` and `npm test` after any change to `lib/` or `app/api/`

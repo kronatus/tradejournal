@@ -10,6 +10,9 @@ type LiveQuoteResult = {
   minValueCents: number | null;
   maxValueCents: number | null;
   fetchedAt: string;
+  asOf: string | null;
+  stale: boolean;
+  creditsRemaining: number | null;
   perLeg: Array<{
     occ_symbol: string;
     price_cents: number;
@@ -30,6 +33,7 @@ interface LiveDataPanelProps {
   closeTheta: number | null;
   storedMin: number | null;
   storedMax: number | null;
+  storedCurrentValue: number | null;
 }
 
 function formatGreek(value: number | null): string {
@@ -48,6 +52,7 @@ export function LiveDataPanel({
   closeTheta,
   storedMin,
   storedMax,
+  storedCurrentValue,
 }: LiveDataPanelProps) {
   const { session } = useAuth();
   const [live, setLive] = useState<LiveQuoteResult | null>(null);
@@ -86,14 +91,12 @@ export function LiveDataPanel({
   // Live overrides persisted current_net_* when present
   const displayCurrentDelta = live ? live.netGreeks.delta : currentDelta;
   const displayCurrentTheta = live ? live.netGreeks.theta : currentTheta;
-  const displayCurrentValue = live ? live.currentValueCents : null;
+  const displayCurrentValue = live ? live.currentValueCents : storedCurrentValue;
   const displayMin = live ? live.minValueCents : storedMin;
   const displayMax = live ? live.maxValueCents : storedMax;
-  const displayAt = live
-    ? new Date(live.fetchedAt).toLocaleTimeString()
-    : currentAt
-    ? new Date(currentAt).toLocaleTimeString()
-    : null;
+  const markedAt = live ? live.asOf ?? live.fetchedAt : currentAt;
+  const displayAt = markedAt ? new Date(markedAt).toLocaleString() : null;
+  const isDelayed = live?.stale ?? false;
 
   // Secondary value: for closed strategies show "Close", otherwise "Current"
   const secondaryLabel = closed ? "Close" : "Current";
@@ -138,7 +141,15 @@ export function LiveDataPanel({
           </div>
         )}
         {displayAt && !closed && (
-          <div className="mt-1 text-xs text-text-muted">Updated: {displayAt}</div>
+          <div className="mt-1 text-xs text-text-muted">
+            Marked: {displayAt}
+            {isDelayed && " (delayed)"}
+          </div>
+        )}
+        {live?.creditsRemaining != null && !closed && (
+          <div className="mt-1 text-xs text-text-subtle">
+            {live.creditsRemaining} API credits left today
+          </div>
         )}
       </div>
 

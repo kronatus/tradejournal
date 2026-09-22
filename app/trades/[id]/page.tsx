@@ -105,6 +105,7 @@ export default async function StrategyDetailPage({
             closeTheta={strategy.close_net_theta}
             storedMin={strategy.min_value_cents}
             storedMax={strategy.max_value_cents}
+            storedCurrentValue={strategy.current_value_cents}
           />
         </div>
       </section>

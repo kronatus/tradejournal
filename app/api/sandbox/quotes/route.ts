@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchTradierQuotes } from "@/lib/quotes";
+import { fetchQuotes, isQuoteProviderConfigured } from "@/lib/quotes";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,31 +13,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const token = process.env.TRADIER_API_TOKEN;
-    if (!token) {
+    if (!isQuoteProviderConfigured()) {
       return NextResponse.json(
-        { error: "Tradier API token not configured" },
-        { status: 500 }
+        { error: "No market data provider configured" },
+        { status: 503 }
       );
     }
 
-    const perSymbol = await fetchTradierQuotes(symbols, token);
+    const { quotes, misses, creditsRemaining } = await fetchQuotes(symbols);
 
-    const result = Array.from(perSymbol.entries()).map(([occ, quote]) => ({
-      occ_symbol: occ,
-      price_cents: Math.round(quote.price * 100),
-      greeks: {
-        delta: quote.delta,
-        gamma: quote.gamma,
-        theta: quote.theta,
-        vega: quote.vega,
-      },
-      iv: quote.iv,
-    }));
-
-    return NextResponse.json({
-      perSymbol: result,
+    // Keyed by the symbol the caller asked for, including the ones that came
+    // back empty — reading this positionally would misalign legs.
+    const perSymbol = symbols.map((occ) => {
+      const quote = quotes.get(occ);
+      if (!quote) {
+        return { occ_symbol: occ, error: misses.get(occ) ?? "No quote returned" };
+      }
+      return {
+        occ_symbol: occ,
+        price_cents: Math.round(quote.price * 100),
+        greeks: {
+          delta: quote.delta,
+          gamma: quote.gamma,
+          theta: quote.theta,
+          vega: quote.vega,
+        },
+        iv: quote.iv,
+        as_of: quote.asOf,
+        ...(quote.greeksMissing ? { greeks_missing: true } : {}),
+      };
     });
+
+    return NextResponse.json({ perSymbol, creditsRemaining });
   } catch (error) {
     console.error("Sandbox quotes fetch error:", error);
     return NextResponse.json(
