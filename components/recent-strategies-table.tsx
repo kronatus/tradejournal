@@ -1,0 +1,125 @@
+import Link from "next/link";
+import { formatCents, formatKind } from "@/lib/utils";
+import { StatusBadge } from "@/components/status-badge";
+
+export type RecentStrategyRow = {
+  id: string;
+  underlying: string;
+  strategyKind: string;
+  openValueCents: number;
+  currentValueCents: number | null;
+  unrealizedCents: number | null;
+  realizedCents: number;
+  openedAt: string;
+  updatedAt: string | null;
+  closed: boolean;
+};
+
+function toneClass(value: number | null): string {
+  if (value === null || value === 0) return "text-text-muted";
+  return value > 0 ? "text-gain" : "text-loss";
+}
+
+/** Signed money, with an explicit + so a gain is never mistaken for a level. */
+function formatSigned(cents: number | null): string {
+  if (cents === null) return "—";
+  return (cents > 0 ? "+" : "") + formatCents(cents);
+}
+
+function formatValue(cents: number | null): string {
+  return cents === null ? "—" : formatCents(cents);
+}
+
+/**
+ * Today's marks show the time, older ones the date. The feed is delayed and
+ * refreshed by hand, so "when" matters most within the current session.
+ */
+function formatUpdated(iso: string | null): string {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  const now = new Date();
+  const sameDay =
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate();
+  return sameDay
+    ? d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    : d.toLocaleDateString([], { month: "short", day: "numeric" });
+}
+
+export function RecentStrategiesTable({ rows }: { rows: RecentStrategyRow[] }) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted/50 text-left text-xs font-medium uppercase tracking-wide text-text-muted">
+            <th className="px-4 py-3">Underlying</th>
+            <th className="px-4 py-3">Strategy</th>
+            <th className="whitespace-nowrap px-4 py-3 text-right">Open value</th>
+            <th className="whitespace-nowrap px-4 py-3 text-right">Current value</th>
+            <th className="whitespace-nowrap px-4 py-3 text-right">Unrealized P&L</th>
+            <th className="whitespace-nowrap px-4 py-3 text-right">Realized P&L</th>
+            <th className="whitespace-nowrap px-4 py-3 text-right">Opened</th>
+            <th className="whitespace-nowrap px-4 py-3 text-right">Updated</th>
+            <th className="px-4 py-3 text-right">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr
+              key={row.id}
+              className="border-b border-border transition-colors last:border-0 hover:bg-muted/40"
+            >
+              <td className="px-4 py-3">
+                <Link
+                  href={`/trades/${row.id}`}
+                  className="font-mono font-semibold tracking-tight text-text hover:text-accent"
+                >
+                  {row.underlying}
+                </Link>
+              </td>
+              <td className="whitespace-nowrap px-4 py-3 text-text-muted">
+                {formatKind(row.strategyKind)}
+              </td>
+              <td className="whitespace-nowrap px-4 py-3 text-right tabular text-text-muted">
+                {formatValue(row.openValueCents)}
+              </td>
+              <td className="whitespace-nowrap px-4 py-3 text-right tabular text-text-muted">
+                {formatValue(row.currentValueCents)}
+              </td>
+              <td
+                className={
+                  "whitespace-nowrap px-4 py-3 text-right tabular " +
+                  toneClass(row.unrealizedCents)
+                }
+              >
+                {formatSigned(row.unrealizedCents)}
+              </td>
+              <td
+                className={
+                  "whitespace-nowrap px-4 py-3 text-right tabular " +
+                  toneClass(row.realizedCents)
+                }
+              >
+                {formatSigned(row.realizedCents)}
+              </td>
+              <td className="whitespace-nowrap px-4 py-3 text-right tabular text-text-muted">
+                {new Date(row.openedAt).toLocaleDateString([], {
+                  month: "short",
+                  day: "numeric",
+                })}
+              </td>
+              <td className="whitespace-nowrap px-4 py-3 text-right tabular text-text-muted">
+                {formatUpdated(row.updatedAt)}
+              </td>
+              <td className="px-4 py-3 text-right">
+                <StatusBadge closed={row.closed} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

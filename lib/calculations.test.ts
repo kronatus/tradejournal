@@ -7,6 +7,8 @@ import {
   avgLossCents,
   equityCurve,
   maxDrawdownCents,
+  strategyOpenValueCents,
+  strategyUnrealizedPnLCents,
 } from "./calculations";
 import { Leg, Strategy } from "./types";
 
@@ -215,5 +217,78 @@ describe("calculations", () => {
     it("returns 0 for empty curve", () => {
       expect(maxDrawdownCents([])).toBe(0);
     });
+  });
+});
+
+describe("strategyOpenValueCents", () => {
+  it("is negative for a credit spread — money was received", () => {
+    const legs = [
+      mockLeg({ side: "short", entry_price_cents: 1241, qty: 20, exit_price_cents: null }),
+      mockLeg({ side: "long", entry_price_cents: 923, qty: 20, exit_price_cents: null }),
+    ];
+    // (-1241 + 923) * 20 * 100
+    expect(strategyOpenValueCents(legs)).toBe(-636000);
+  });
+
+  it("is positive for a debit spread — money was paid", () => {
+    const legs = [
+      mockLeg({ side: "long", entry_price_cents: 1241, qty: 20, exit_price_cents: null }),
+      mockLeg({ side: "short", entry_price_cents: 923, qty: 20, exit_price_cents: null }),
+    ];
+    expect(strategyOpenValueCents(legs)).toBe(636000);
+  });
+
+  it("ignores legs that are already closed", () => {
+    const legs = [
+      mockLeg({ side: "long", entry_price_cents: 500, qty: 1, exit_price_cents: null }),
+      mockLeg({ side: "long", entry_price_cents: 900, qty: 1, exit_price_cents: 1200 }),
+    ];
+    expect(strategyOpenValueCents(legs)).toBe(50000);
+  });
+
+  it("is zero when every leg is closed", () => {
+    const legs = [mockLeg({ entry_price_cents: 500, exit_price_cents: 700 })];
+    expect(strategyOpenValueCents(legs)).toBe(0);
+  });
+});
+
+describe("strategyUnrealizedPnLCents", () => {
+  const openCreditSpread = [
+    mockLeg({ side: "short", entry_price_cents: 1241, qty: 20, exit_price_cents: null }),
+    mockLeg({ side: "long", entry_price_cents: 923, qty: 20, exit_price_cents: null }),
+  ];
+
+  it("shows a gain when a credit spread gets cheaper to close", () => {
+    // Opened for -636000; now costs -500000 to close.
+    const strategy = mockStrategy({ current_value_cents: -500000 });
+    expect(strategyUnrealizedPnLCents(strategy, openCreditSpread)).toBe(136000);
+  });
+
+  it("shows a loss when it gets more expensive to close", () => {
+    const strategy = mockStrategy({ current_value_cents: -800000 });
+    expect(strategyUnrealizedPnLCents(strategy, openCreditSpread)).toBe(-164000);
+  });
+
+  it("is null when no quote has been fetched — unknown, not zero", () => {
+    const strategy = mockStrategy({ current_value_cents: null });
+    expect(strategyUnrealizedPnLCents(strategy, openCreditSpread)).toBeNull();
+  });
+
+  it("is null once every leg is closed", () => {
+    const closed = [
+      mockLeg({ side: "short", entry_price_cents: 1241, exit_price_cents: 0 }),
+    ];
+    const strategy = mockStrategy({ current_value_cents: -500000 });
+    expect(strategyUnrealizedPnLCents(strategy, closed)).toBeNull();
+  });
+
+  it("marks only the open legs of a partially closed strategy", () => {
+    const legs = [
+      mockLeg({ side: "short", entry_price_cents: 1241, qty: 20, exit_price_cents: null }),
+      mockLeg({ side: "long", entry_price_cents: 923, qty: 20, exit_price_cents: 1000 }),
+    ];
+    // Open leg cost -1241*20*100 = -2482000; marked at -2000000.
+    const strategy = mockStrategy({ current_value_cents: -2000000 });
+    expect(strategyUnrealizedPnLCents(strategy, legs)).toBe(482000);
   });
 });

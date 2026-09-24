@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase/server";
-import { formatCents, formatKind } from "@/lib/utils";
+import { formatCents } from "@/lib/utils";
 import {
   totalRealizedPnLCents,
   winRate,
@@ -10,9 +10,11 @@ import {
   maxDrawdownCents,
   avgHoldingPeriodDays,
   strategyRealizedPnLCents,
+  strategyOpenValueCents,
+  strategyUnrealizedPnLCents,
 } from "@/lib/calculations";
 import { EquityChart } from "@/components/equity-chart";
-import { StatusBadge } from "@/components/status-badge";
+import { RecentStrategiesTable } from "@/components/recent-strategies-table";
 import { ProtectedRoute } from "@/components/protected-route";
 import { Strategy, Leg } from "@/lib/types";
 
@@ -78,12 +80,24 @@ async function DashboardContent() {
     },
   ];
 
-  const recentStrategies = rows
+  // Copy before reversing: rows was already consumed by the metrics above and
+  // should not be mutated out from under them.
+  const recentStrategies = [...rows]
     .reverse()
     .slice(0, 5)
-    .map((row) => ({
-      ...row,
-      pnl: strategyRealizedPnLCents(row.strategy, row.legs),
+    .map(({ strategy, legs }) => ({
+      id: strategy.id,
+      underlying: strategy.underlying,
+      strategyKind: strategy.strategy_kind,
+      openValueCents: strategyOpenValueCents(legs),
+      currentValueCents: strategy.current_value_cents,
+      unrealizedCents: strategyUnrealizedPnLCents(strategy, legs),
+      realizedCents: strategyRealizedPnLCents(strategy, legs),
+      openedAt: strategy.opened_at,
+      // The market-data timestamp: Current value and Unrealized P&L are both
+      // as of this moment, so they belong to the same refresh.
+      updatedAt: strategy.current_net_at,
+      closed: !!strategy.closed_at,
     }));
 
   return (
@@ -162,62 +176,7 @@ async function DashboardContent() {
             </p>
           </div>
         ) : (
-          <div className="overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border bg-muted/50 text-left text-xs font-medium uppercase tracking-wide text-text-muted">
-                  <th className="px-5 py-3">Underlying</th>
-                  <th className="px-5 py-3">Strategy</th>
-                  <th className="px-5 py-3 text-right">Opened</th>
-                  <th className="px-5 py-3 text-right">P&L</th>
-                  <th className="px-5 py-3 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentStrategies.map((row) => {
-                  const pnlTone =
-                    row.pnl > 0 ? "gain" : row.pnl < 0 ? "loss" : "neutral";
-                  const closed = !!row.strategy.closed_at;
-                  return (
-                    <tr
-                      key={row.strategy.id}
-                      className="border-b border-border last:border-0 transition-colors hover:bg-muted/40"
-                    >
-                      <td className="px-5 py-3">
-                        <Link
-                          href={`/trades/${row.strategy.id}`}
-                          className="font-mono font-semibold tracking-tight text-text hover:text-accent"
-                        >
-                          {row.strategy.underlying}
-                        </Link>
-                      </td>
-                      <td className="px-5 py-3 text-text-muted">
-                        {formatKind(row.strategy.strategy_kind)}
-                      </td>
-                      <td className="px-5 py-3 text-right tabular text-text-muted">
-                        {new Date(row.strategy.opened_at).toLocaleDateString()}
-                      </td>
-                      <td
-                        className={
-                          "px-5 py-3 text-right tabular " +
-                          (pnlTone === "gain"
-                            ? "text-gain"
-                            : pnlTone === "loss"
-                              ? "text-loss"
-                              : "text-text")
-                        }
-                      >
-                        {formatCents(row.pnl)}
-                      </td>
-                      <td className="px-5 py-3 text-right">
-                        <StatusBadge closed={closed} />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <RecentStrategiesTable rows={recentStrategies} />
         )}
       </section>
     </div>

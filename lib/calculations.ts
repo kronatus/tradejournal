@@ -90,6 +90,44 @@ export function strategyNetPremiumCents(legs: Leg[]): number {
   }, 0);
 }
 
+/**
+ * Net entry value of the legs still open, in cents, signed as a net
+ * liquidation: long legs add, short legs subtract. A credit spread is
+ * therefore negative — money was received to put it on.
+ *
+ * Only open legs count, because current_value_cents is likewise computed from
+ * open legs only. Comparing the two on different leg sets would misreport any
+ * partially closed strategy.
+ */
+export function strategyOpenValueCents(legs: Leg[]): number {
+  return legs.reduce((sum, leg) => {
+    if (leg.exit_price_cents !== null) return sum;
+    const sign = leg.side === "long" ? 1 : -1;
+    return sum + leg.entry_price_cents * leg.qty * 100 * sign;
+  }, 0);
+}
+
+/**
+ * Mark-to-market P&L on the legs still open: what the position is worth now
+ * against what it cost to open.
+ *
+ * Returns null when there is nothing to mark — no open legs, or no quote has
+ * been fetched for this strategy yet. Null means unknown and must render as
+ * such; it is not zero.
+ *
+ * Fees are excluded: they are charged on the way in and out and are accounted
+ * for in realized P&L when a leg closes.
+ */
+export function strategyUnrealizedPnLCents(
+  strategy: Strategy,
+  legs: Leg[]
+): number | null {
+  if (strategy.current_value_cents === null) return null;
+  const hasOpenLegs = legs.some((l) => l.exit_price_cents === null);
+  if (!hasOpenLegs) return null;
+  return strategy.current_value_cents - strategyOpenValueCents(legs);
+}
+
 // Check if all legs are closed
 export function isStrategyClosed(legs: Leg[]): boolean {
   return legs.every((leg) => leg.exit_price_cents !== null);
