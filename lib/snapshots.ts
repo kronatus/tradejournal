@@ -18,6 +18,8 @@ export type LegQuoteResult = {
   /** This leg's signed share-equivalent delta: delta * qty * 100 * side.
    *  Exposed so a surprising net can be traced to the leg producing it. */
   delta_contribution: number;
+  /** Same for theta: dollars of decay per day contributed by this leg. */
+  theta_contribution: number;
   /** Provider timestamp for this mark. The free feed is delayed, so this is
    *  what the UI should show rather than the time of the request. */
   as_of?: string;
@@ -37,6 +39,9 @@ export type SnapshotComputation = {
    *  qty*100 and therefore reads as dollars per 1-point move; this is that
    *  figure divided back down by the position size. Null when nothing resolved. */
   rawDelta: number | null;
+  /** Net theta per one unit of the strategy, per share per day — the figure a
+   *  chain quotes, as opposed to netGreeks.theta which reads as dollars/day. */
+  rawTheta: number | null;
   /** Legs in the strategy, so the UI can say "per spread" vs "per contract". */
   legCount: number;
   /** Oldest provider timestamp across legs — the staleness of the whole set. */
@@ -76,6 +81,7 @@ export async function computeNetGreeks(
     perLeg: [],
     hasData: false,
     rawDelta: null,
+    rawTheta: null,
     legCount: openLegs.length,
     asOf: null,
     creditsRemaining: null,
@@ -106,6 +112,7 @@ export async function computeNetGreeks(
         price_cents: 0,
         greeks: { ...EMPTY_GREEKS },
         delta_contribution: 0,
+        theta_contribution: 0,
         error: reason,
       })),
     };
@@ -130,6 +137,7 @@ export async function computeNetGreeks(
         price_cents: 0,
         greeks: { ...EMPTY_GREEKS },
         delta_contribution: 0,
+        theta_contribution: 0,
         error: misses.get(leg.occ_symbol) ?? "No quote returned",
       });
       continue;
@@ -156,6 +164,9 @@ export async function computeNetGreeks(
       delta_contribution: quote.greeksMissing
         ? 0
         : quote.delta * contractMultiplier * sideMultiplier,
+      theta_contribution: quote.greeksMissing
+        ? 0
+        : quote.theta * contractMultiplier * sideMultiplier,
       greeks: {
         delta: quote.delta,
         gamma: quote.gamma,
@@ -174,6 +185,9 @@ export async function computeNetGreeks(
     hasData: anyResolved,
     rawDelta: anyResolved
       ? netGreeks.delta / (100 * positionUnit(openLegs))
+      : null,
+    rawTheta: anyResolved
+      ? netGreeks.theta / (100 * positionUnit(openLegs))
       : null,
     legCount: openLegs.length,
     asOf: oldestAsOf,

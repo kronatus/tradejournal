@@ -11,6 +11,7 @@ type LiveQuoteResult = {
   maxValueCents: number | null;
   fetchedAt: string;
   rawDelta: number | null;
+  rawTheta: number | null;
   legCount: number;
   asOf: string | null;
   stale: boolean;
@@ -21,6 +22,7 @@ type LiveQuoteResult = {
     qty: number;
     price_cents: number;
     delta_contribution: number;
+    theta_contribution: number;
     greeks: { delta: number; gamma: number; theta: number; vega: number };
     as_of?: string;
     greeks_missing?: boolean;
@@ -202,6 +204,18 @@ export function LiveDataPanel({
             </span>
           </div>
         </div>
+        {live?.rawTheta != null && !closed && (
+          <div className="mt-2 border-t border-border pt-2">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-xs text-text-subtle">
+                Θ per {live.legCount > 1 ? "spread" : "contract"}
+              </span>
+              <span className="text-sm font-medium tabular tracking-tight">
+                {live.rawTheta.toFixed(4)}
+              </span>
+            </div>
+          </div>
+        )}
         <div className="mt-2 text-xs text-text-muted">$ per day</div>
       </div>
 
@@ -220,7 +234,9 @@ export function LiveDataPanel({
                   <th className="pb-2 pr-3 text-right font-medium">Qty</th>
                   <th className="pb-2 pr-3 text-right font-medium">Mark</th>
                   <th className="pb-2 pr-3 text-right font-medium">Delta</th>
-                  <th className="pb-2 text-right font-medium">$ / point</th>
+                  <th className="pb-2 pr-3 text-right font-medium">$ / point</th>
+                  <th className="pb-2 pr-3 text-right font-medium">Theta</th>
+                  <th className="pb-2 text-right font-medium">$ / day</th>
                 </tr>
               </thead>
               <tbody>
@@ -235,10 +251,18 @@ export function LiveDataPanel({
                     <td className="py-2 pr-3 text-right tabular">
                       {l.error || l.greeks_missing ? "—" : l.greeks.delta.toFixed(4)}
                     </td>
-                    <td className="py-2 text-right tabular">
+                    <td className="py-2 pr-3 text-right tabular">
                       {l.error || l.greeks_missing
                         ? "—"
                         : formatDollars(l.delta_contribution)}
+                    </td>
+                    <td className="py-2 pr-3 text-right tabular">
+                      {l.error || l.greeks_missing ? "—" : l.greeks.theta.toFixed(4)}
+                    </td>
+                    <td className="py-2 text-right tabular">
+                      {l.error || l.greeks_missing
+                        ? "—"
+                        : formatDollars(l.theta_contribution)}
                     </td>
                   </tr>
                 ))}
@@ -246,8 +270,12 @@ export function LiveDataPanel({
                   <td className="py-2 pr-3" colSpan={5}>
                     Net
                   </td>
-                  <td className="py-2 text-right tabular">
+                  <td className="py-2 pr-3 text-right tabular">
                     {formatDollars(live.netGreeks.delta)}
+                  </td>
+                  <td className="py-2 pr-3" />
+                  <td className="py-2 text-right tabular">
+                    {formatDollars(live.netGreeks.theta)}
                   </td>
                 </tr>
               </tbody>

@@ -21,9 +21,9 @@ function leg(over: Partial<Leg>): Leg {
   } as Leg;
 }
 
-function quote(delta: number, price = 25) {
+function quote(delta: number, price = 25, theta = -0.05) {
   return {
-    price, delta, gamma: 0.002, theta: -0.05, vega: 0.1, iv: 0.15,
+    price, delta, gamma: 0.002, theta, vega: 0.1, iv: 0.15,
     asOf: "2026-09-23T20:00:00.000Z", greeksMissing: false,
   };
 }
@@ -162,6 +162,32 @@ describe("computeNetGreeks — bear call spread", () => {
     });
     const snap = await computeNetGreeks([leg({ side: "long", qty: 1 })]);
     expect(snap.rawDelta).toBeCloseTo(0.6231, 6);
+  });
+
+  it("nets theta across legs and reports it per unit", async () => {
+    // A short call decays in your favour, the long one against you.
+    mockedFetch.mockResolvedValue({
+      quotes: new Map([
+        [SHORT_735, quote(0.6231, 12.41, -0.2434)],
+        [LONG_740, quote(0.535, 9.23, -0.2231)],
+      ]),
+      misses: new Map(),
+      creditsRemaining: 96,
+    });
+
+    const twentyLots = bearCallSpread.map((l) => ({ ...l, qty: 20 }));
+    const snap = await computeNetGreeks(twentyLots);
+
+    // short: -(-0.2434) * 2000 = +486.8 ; long: -0.2231 * 2000 = -446.2
+    expect(snap.netGreeks.theta).toBeCloseTo(40.6, 4);
+    expect(snap.rawTheta).toBeCloseTo(0.0203, 6);
+
+    const shortLeg = snap.perLeg.find((l) => l.occ_symbol === SHORT_735)!;
+    const longLeg = snap.perLeg.find((l) => l.occ_symbol === LONG_740)!;
+    expect(shortLeg.theta_contribution).toBeCloseTo(486.8, 4);
+    expect(longLeg.theta_contribution).toBeCloseTo(-446.2, 4);
+    // Net theta positive: a credit spread collects decay.
+    expect(snap.netGreeks.theta).toBeGreaterThan(0);
   });
 
   it("signs a short leg negative and a long leg positive", async () => {

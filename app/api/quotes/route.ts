@@ -58,6 +58,7 @@ export async function GET(request: NextRequest) {
         minValueCents: typedStrategy.min_value_cents,
         maxValueCents: typedStrategy.max_value_cents,
         rawDelta: null,
+        rawTheta: null,
         legCount: 0,
         asOf: null,
         stale: false,
@@ -115,6 +116,7 @@ export async function GET(request: NextRequest) {
       minValueCents,
       maxValueCents,
       rawDelta: snapshot.rawDelta,
+      rawTheta: snapshot.rawTheta,
       legCount: snapshot.legCount,
       asOf: snapshot.asOf,
       // Computed here so the client can render it without calling Date.now()
