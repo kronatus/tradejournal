@@ -20,6 +20,8 @@ export type LegQuoteResult = {
   delta_contribution: number;
   /** Same for theta: dollars of decay per day contributed by this leg. */
   theta_contribution: number;
+  /** Implied volatility as a decimal, e.g. 0.21. Needed to model the curve. */
+  iv: number;
   /** Provider timestamp for this mark. The free feed is delayed, so this is
    *  what the UI should show rather than the time of the request. */
   as_of?: string;
@@ -44,6 +46,8 @@ export type SnapshotComputation = {
   rawTheta: number | null;
   /** Legs in the strategy, so the UI can say "per spread" vs "per contract". */
   legCount: number;
+  /** Underlying spot, taken from whichever leg quote carried it. */
+  underlyingPrice: number | null;
   /** Oldest provider timestamp across legs — the staleness of the whole set. */
   asOf: string | null;
   /** Remaining daily credits, when the provider reports them. */
@@ -83,6 +87,7 @@ export async function computeNetGreeks(
     rawDelta: null,
     rawTheta: null,
     legCount: openLegs.length,
+    underlyingPrice: null,
     asOf: null,
     creditsRemaining: null,
   };
@@ -113,6 +118,7 @@ export async function computeNetGreeks(
         greeks: { ...EMPTY_GREEKS },
         delta_contribution: 0,
         theta_contribution: 0,
+        iv: 0,
         error: reason,
       })),
     };
@@ -123,6 +129,7 @@ export async function computeNetGreeks(
   const perLeg: LegQuoteResult[] = [];
   let anyResolved = false;
   let oldestAsOf: string | null = null;
+  let underlyingPrice: number | null = null;
 
   for (const leg of openLegs) {
     const quote = quotes.get(leg.occ_symbol);
@@ -138,6 +145,7 @@ export async function computeNetGreeks(
         greeks: { ...EMPTY_GREEKS },
         delta_contribution: 0,
         theta_contribution: 0,
+        iv: 0,
         error: misses.get(leg.occ_symbol) ?? "No quote returned",
       });
       continue;
@@ -155,6 +163,9 @@ export async function computeNetGreeks(
     }
 
     if (oldestAsOf === null || quote.asOf < oldestAsOf) oldestAsOf = quote.asOf;
+    if (underlyingPrice === null && quote.underlyingPrice != null) {
+      underlyingPrice = quote.underlyingPrice;
+    }
 
     perLeg.push({
       occ_symbol: leg.occ_symbol,
@@ -167,6 +178,7 @@ export async function computeNetGreeks(
       theta_contribution: quote.greeksMissing
         ? 0
         : quote.theta * contractMultiplier * sideMultiplier,
+      iv: quote.iv,
       greeks: {
         delta: quote.delta,
         gamma: quote.gamma,
@@ -190,6 +202,7 @@ export async function computeNetGreeks(
       ? netGreeks.theta / (100 * positionUnit(openLegs))
       : null,
     legCount: openLegs.length,
+    underlyingPrice,
     asOf: oldestAsOf,
     creditsRemaining,
   };

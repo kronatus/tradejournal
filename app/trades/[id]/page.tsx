@@ -9,6 +9,8 @@ import { StrategyEditor } from "@/components/strategy-detail/strategy-editor";
 import { LegsTable } from "@/components/strategy-detail/legs-table";
 import { CloseStrategyButton } from "@/components/strategy-detail/close-strategy-button";
 import { DeleteStrategyButton } from "@/components/strategy-detail/delete-strategy-button";
+import { LiveQuotesProvider } from "@/components/strategy-detail/live-quotes-context";
+import { StrategyPayoffChart } from "@/components/strategy-detail/strategy-payoff-chart";
 
 export const revalidate = 0;
 
@@ -39,7 +41,8 @@ export default async function StrategyDetailPage({
   const pnlTone = pnlCents > 0 ? "gain" : pnlCents < 0 ? "loss" : "neutral";
 
   return (
-    <div className="space-y-8">
+    <LiveQuotesProvider strategyId={strategy.id}>
+      <div className="space-y-8">
       <div>
         <Link
           href="/trades"
@@ -94,7 +97,6 @@ export default async function StrategyDetailPage({
           </div>
 
           <LiveDataPanel
-            strategyId={strategy.id}
             closed={closed}
             entryDelta={strategy.entry_net_delta}
             entryTheta={strategy.entry_net_theta}
@@ -119,9 +121,12 @@ export default async function StrategyDetailPage({
         livePerLeg={null}
       />
 
+      {!closed && <StrategyPayoffChart underlying={strategy.underlying} />}
+
       <div className="text-xs text-text-subtle">
         Created {new Date(strategy.created_at).toLocaleString()}
       </div>
-    </div>
+      </div>
+    </LiveQuotesProvider>
   );
 }

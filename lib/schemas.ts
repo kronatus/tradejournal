@@ -49,6 +49,9 @@ export const QuoteSchema = z.object({
   // True when the provider returned a price but no Greeks. Callers must not
   // fold these into net Greeks -- zero is a claim, absence is not.
   greeksMissing: z.boolean().default(false),
+  // Spot price of the underlying, when the provider supplies it alongside the
+  // option quote. Free here -- it rides along in the same response.
+  underlyingPrice: z.number().positive().nullable().default(null),
 });
 
 export const CanonicalFillSchema = z.object({

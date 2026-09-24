@@ -132,6 +132,7 @@ async function fetchOne(
     iv: Math.max(0, firstOf(body.iv) ?? 0),
     asOf: toIso(body.updated?.[0]),
     greeksMissing,
+    underlyingPrice: firstOf(body.underlyingPrice),
   });
 
   return { quote, creditsRemaining };

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Leg } from "./types";
+import type { Quote } from "./schemas";
 
 vi.mock("@/lib/quotes", () => ({ fetchQuotes: vi.fn() }));
 import { fetchQuotes } from "@/lib/quotes";
@@ -21,10 +22,11 @@ function leg(over: Partial<Leg>): Leg {
   } as Leg;
 }
 
-function quote(delta: number, price = 25, theta = -0.05) {
+function quote(delta: number, price = 25, theta = -0.05): Quote {
   return {
     price, delta, gamma: 0.002, theta, vega: 0.1, iv: 0.15,
     asOf: "2026-09-23T20:00:00.000Z", greeksMissing: false,
+    underlyingPrice: 739,
   };
 }
 
@@ -188,6 +190,19 @@ describe("computeNetGreeks — bear call spread", () => {
     expect(longLeg.theta_contribution).toBeCloseTo(-446.2, 4);
     // Net theta positive: a credit spread collects decay.
     expect(snap.netGreeks.theta).toBeGreaterThan(0);
+  });
+
+  it("carries the underlying spot through from whichever leg supplied it", async () => {
+    mockedFetch.mockResolvedValue({
+      quotes: new Map([
+        [SHORT_735, { ...quote(0.6231), underlyingPrice: null }],
+        [LONG_740, quote(0.535)],
+      ]),
+      misses: new Map(),
+      creditsRemaining: 96,
+    });
+    const snap = await computeNetGreeks(bearCallSpread);
+    expect(snap.underlyingPrice).toBe(739);
   });
 
   it("signs a short leg negative and a long leg positive", async () => {

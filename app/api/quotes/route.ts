@@ -60,6 +60,7 @@ export async function GET(request: NextRequest) {
         rawDelta: null,
         rawTheta: null,
         legCount: 0,
+        underlyingPrice: null,
         asOf: null,
         stale: false,
         creditsRemaining: null,
@@ -117,6 +118,7 @@ export async function GET(request: NextRequest) {
       maxValueCents,
       rawDelta: snapshot.rawDelta,
       rawTheta: snapshot.rawTheta,
+      underlyingPrice: snapshot.underlyingPrice,
       legCount: snapshot.legCount,
       asOf: snapshot.asOf,
       // Computed here so the client can render it without calling Date.now()

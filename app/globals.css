@@ -19,6 +19,14 @@
   --color-warn: #d97706;
   --color-warn-soft: #fffbeb;
 
+  /* Sequential ramp for time-to-expiry curves: light = furthest out,
+     strongest = at expiry. Stepped for a white chart surface. */
+  --chart-seq-1: #a5b4fc;
+  --chart-seq-2: #818cf8;
+  --chart-seq-3: #6366f1;
+  --chart-seq-4: #4f46e5;
+  --chart-seq-5: #312e81;
+
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
@@ -42,6 +50,13 @@
     --color-loss-soft: rgba(248, 113, 113, 0.12);
     --color-warn: #fbbf24;
     --color-warn-soft: rgba(251, 191, 36, 0.12);
+
+    /* Re-stepped for the dark surface rather than flipped: dim -> bright. */
+    --chart-seq-1: #4f46e5;
+    --chart-seq-2: #6366f1;
+    --chart-seq-3: #818cf8;
+    --chart-seq-4: #a5b4fc;
+    --chart-seq-5: #e0e7ff;
   }
 }
 

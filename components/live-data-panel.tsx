@@ -1,37 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useAuth } from "@/lib/auth-context";
 import { formatCents, formatOccSymbol } from "@/lib/utils";
-
-type LiveQuoteResult = {
-  currentValueCents: number;
-  netGreeks: { delta: number; gamma: number; theta: number; vega: number };
-  minValueCents: number | null;
-  maxValueCents: number | null;
-  fetchedAt: string;
-  rawDelta: number | null;
-  rawTheta: number | null;
-  legCount: number;
-  asOf: string | null;
-  stale: boolean;
-  creditsRemaining: number | null;
-  perLeg: Array<{
-    occ_symbol: string;
-    side: "long" | "short";
-    qty: number;
-    price_cents: number;
-    delta_contribution: number;
-    theta_contribution: number;
-    greeks: { delta: number; gamma: number; theta: number; vega: number };
-    as_of?: string;
-    greeks_missing?: boolean;
-    error?: string;
-  }>;
-};
+import { useLiveQuotes } from "./strategy-detail/live-quotes-context";
 
 interface LiveDataPanelProps {
-  strategyId: string;
   closed: boolean;
   entryDelta: number | null;
   entryTheta: number | null;
@@ -58,7 +30,6 @@ function formatRawDelta(value: number | null): string {
 }
 
 export function LiveDataPanel({
-  strategyId,
   closed,
   entryDelta,
   entryTheta,
@@ -71,39 +42,7 @@ export function LiveDataPanel({
   storedMax,
   storedCurrentValue,
 }: LiveDataPanelProps) {
-  const { session } = useAuth();
-  const [live, setLive] = useState<LiveQuoteResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleRefresh = async () => {
-    if (!session?.access_token) {
-      setError("Not authenticated — please refresh the page");
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/quotes?strategyId=${strategyId}`, {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || `API error: ${res.status}`);
-      }
-      const result = (await res.json()) as LiveQuoteResult;
-      const hasErrors = result.perLeg.some((leg) => leg.error);
-      if (hasErrors) {
-        const errorLeg = result.perLeg.find((leg) => leg.error);
-        setError(errorLeg?.error || "Unable to fetch market data");
-      }
-      setLive(result);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { live, loading, error, refresh } = useLiveQuotes();
 
   // Live overrides persisted current_net_* when present
   const displayCurrentDelta = live ? live.netGreeks.delta : currentDelta;
@@ -130,7 +69,7 @@ export function LiveDataPanel({
           </div>
           {!closed && (
             <button
-              onClick={handleRefresh}
+              onClick={refresh}
               disabled={loading}
               className="text-xs font-medium text-accent hover:text-accent-hover disabled:opacity-50"
             >
