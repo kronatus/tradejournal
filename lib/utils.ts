@@ -1,4 +1,10 @@
-export function formatCents(cents: number): string {
+/**
+ * Money for display. Accepts null/undefined and non-finite values and renders
+ * an em dash: a column whose database value is missing should read as unknown,
+ * never as "$NaN". Callers wanting a hard failure should check before calling.
+ */
+export function formatCents(cents: number | null | undefined): string {
+  if (cents == null || !Number.isFinite(cents)) return "—";
   const dollars = cents / 100;
   return dollars.toLocaleString("en-US", {
     style: "currency",

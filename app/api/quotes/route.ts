@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
         asOf: null,
         stale: false,
         creditsRemaining: null,
+        persistError: null,
         fetchedAt: new Date().toISOString(),
       });
     }
@@ -80,6 +81,7 @@ export async function GET(request: NextRequest) {
 
     const snapshot = await computeNetGreeks(openLegs);
 
+    let persistError: string | null = null;
     let minValueCents = typedStrategy.min_value_cents;
     let maxValueCents = typedStrategy.max_value_cents;
 
@@ -106,7 +108,11 @@ export async function GET(request: NextRequest) {
         })
         .eq("id", strategyId);
       if (updateError) {
+        // Surfaced rather than only logged: the usual cause is a column the
+        // remote database does not have yet, which otherwise looks like the
+        // refresh working while the dashboard keeps showing nothing.
         console.error("[Quotes] Failed to persist snapshot:", updateError.message);
+        persistError = `Quotes fetched, but saving them failed: ${updateError.message}`;
       }
     }
 
@@ -127,6 +133,7 @@ export async function GET(request: NextRequest) {
         snapshot.asOf != null &&
         Date.now() - Date.parse(snapshot.asOf) > 60 * 60 * 1000,
       creditsRemaining: snapshot.creditsRemaining,
+      persistError,
       fetchedAt: new Date().toISOString(),
     });
   } catch (error) {

@@ -15,19 +15,16 @@ export type RecentStrategyRow = {
   closed: boolean;
 };
 
-function toneClass(value: number | null): string {
-  if (value === null || value === 0) return "text-text-muted";
+function toneClass(value: number | null | undefined): string {
+  if (value == null || !Number.isFinite(value) || value === 0)
+    return "text-text-muted";
   return value > 0 ? "text-gain" : "text-loss";
 }
 
 /** Signed money, with an explicit + so a gain is never mistaken for a level. */
-function formatSigned(cents: number | null): string {
-  if (cents === null) return "—";
+function formatSigned(cents: number | null | undefined): string {
+  if (cents == null || !Number.isFinite(cents)) return "—";
   return (cents > 0 ? "+" : "") + formatCents(cents);
-}
-
-function formatValue(cents: number | null): string {
-  return cents === null ? "—" : formatCents(cents);
 }
 
 /**
@@ -83,10 +80,10 @@ export function RecentStrategiesTable({ rows }: { rows: RecentStrategyRow[] }) {
                 {formatKind(row.strategyKind)}
               </td>
               <td className="whitespace-nowrap px-4 py-3 text-right tabular text-text-muted">
-                {formatValue(row.openValueCents)}
+                {formatCents(row.openValueCents)}
               </td>
               <td className="whitespace-nowrap px-4 py-3 text-right tabular text-text-muted">
-                {formatValue(row.currentValueCents)}
+                {formatCents(row.currentValueCents)}
               </td>
               <td
                 className={

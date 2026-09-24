@@ -37,6 +37,8 @@ export type LiveQuoteResult = {
   asOf: string | null;
   stale: boolean;
   creditsRemaining: number | null;
+  /** Set when the quotes came back but writing them to the database failed. */
+  persistError: string | null;
   perLeg: LiveLegQuote[];
 };
 
@@ -86,7 +88,8 @@ export function LiveQuotesProvider({
       }
       const result = (await res.json()) as LiveQuoteResult;
       const failed = result.perLeg.find((l) => l.error);
-      if (failed) setError(failed.error ?? "Unable to fetch market data");
+      if (result.persistError) setError(result.persistError);
+      else if (failed) setError(failed.error ?? "Unable to fetch market data");
       setLive(result);
     } catch (err) {
       setError((err as Error).message);

@@ -122,10 +122,13 @@ export function strategyUnrealizedPnLCents(
   strategy: Strategy,
   legs: Leg[]
 ): number | null {
-  if (strategy.current_value_cents === null) return null;
+  const current = strategy.current_value_cents;
+  // == null catches undefined too: a column missing from the row reads as
+  // undefined rather than null, and must not propagate into arithmetic.
+  if (current == null || !Number.isFinite(current)) return null;
   const hasOpenLegs = legs.some((l) => l.exit_price_cents === null);
   if (!hasOpenLegs) return null;
-  return strategy.current_value_cents - strategyOpenValueCents(legs);
+  return current - strategyOpenValueCents(legs);
 }
 
 // Check if all legs are closed

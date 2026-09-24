@@ -11,6 +11,7 @@ import {
   strategyUnrealizedPnLCents,
 } from "./calculations";
 import { Leg, Strategy } from "./types";
+import { formatCents } from "./utils";
 
 const mockLeg = (overrides?: Partial<Leg>): Leg => ({
   id: "leg-1",
@@ -290,5 +291,37 @@ describe("strategyUnrealizedPnLCents", () => {
     // Open leg cost -1241*20*100 = -2482000; marked at -2000000.
     const strategy = mockStrategy({ current_value_cents: -2000000 });
     expect(strategyUnrealizedPnLCents(strategy, legs)).toBe(482000);
+  });
+});
+
+describe("missing database columns render as unknown, never NaN", () => {
+  const openLegs = [
+    mockLeg({ side: "short", entry_price_cents: 1241, qty: 20, exit_price_cents: null }),
+  ];
+
+  it("treats an absent current_value_cents as unknown", () => {
+    // A column the remote database lacks arrives as undefined, not null.
+    const strategy = { ...mockStrategy(), current_value_cents: undefined } as unknown as Strategy;
+    expect(strategyUnrealizedPnLCents(strategy, openLegs)).toBeNull();
+  });
+
+  it("does not propagate NaN into unrealized P&L", () => {
+    const strategy = { ...mockStrategy(), current_value_cents: NaN } as unknown as Strategy;
+    expect(strategyUnrealizedPnLCents(strategy, openLegs)).toBeNull();
+  });
+});
+
+describe("formatCents", () => {
+  it("formats cents as dollars", () => {
+    expect(formatCents(123456)).toBe("$1,234.56");
+    expect(formatCents(-4900)).toBe("-$49.00");
+    expect(formatCents(0)).toBe("$0.00");
+  });
+
+  it("renders unknown values as an em dash rather than $NaN", () => {
+    expect(formatCents(null)).toBe("—");
+    expect(formatCents(undefined)).toBe("—");
+    expect(formatCents(NaN)).toBe("—");
+    expect(formatCents(Infinity)).toBe("—");
   });
 });
