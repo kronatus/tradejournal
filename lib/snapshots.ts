@@ -32,6 +32,13 @@ export type SnapshotComputation = {
   perLeg: LegQuoteResult[];
   /** True when at least one open leg returned a usable quote. */
   hasData: boolean;
+  /** Net delta per one unit of the strategy, i.e. the plain option delta that
+   *  sits in [-1, +1] for an ordinary spread. netGreeks.delta is scaled by
+   *  qty*100 and therefore reads as dollars per 1-point move; this is that
+   *  figure divided back down by the position size. Null when nothing resolved. */
+  rawDelta: number | null;
+  /** Legs in the strategy, so the UI can say "per spread" vs "per contract". */
+  legCount: number;
   /** Oldest provider timestamp across legs — the staleness of the whole set. */
   asOf: string | null;
   /** Remaining daily credits, when the provider reports them. */
@@ -39,6 +46,19 @@ export type SnapshotComputation = {
 };
 
 const EMPTY_GREEKS: GreekSnapshot = { delta: 0, gamma: 0, theta: 0, vega: 0 };
+
+function gcd(a: number, b: number): number {
+  return b === 0 ? a : gcd(b, a % b);
+}
+
+/**
+ * Size of one unit of the strategy. A 20x20 vertical is 20 of a 1x1 spread, so
+ * dividing by the GCD of the leg quantities recovers the per-spread figure.
+ * A 1x2 ratio spread keeps its 1:2 shape rather than being flattened.
+ */
+function positionUnit(legs: Leg[]): number {
+  return legs.reduce((acc, l) => gcd(acc, l.qty), 0) || 1;
+}
 
 /**
  * Fetch live quotes for the given open legs and aggregate net Greeks, weighted
@@ -55,6 +75,8 @@ export async function computeNetGreeks(
     currentValueCents: 0,
     perLeg: [],
     hasData: false,
+    rawDelta: null,
+    legCount: openLegs.length,
     asOf: null,
     creditsRemaining: null,
   };
@@ -150,6 +172,10 @@ export async function computeNetGreeks(
     currentValueCents,
     perLeg,
     hasData: anyResolved,
+    rawDelta: anyResolved
+      ? netGreeks.delta / (100 * positionUnit(openLegs))
+      : null,
+    legCount: openLegs.length,
     asOf: oldestAsOf,
     creditsRemaining,
   };

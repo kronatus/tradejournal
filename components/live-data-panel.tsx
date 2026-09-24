@@ -10,6 +10,8 @@ type LiveQuoteResult = {
   minValueCents: number | null;
   maxValueCents: number | null;
   fetchedAt: string;
+  rawDelta: number | null;
+  legCount: number;
   asOf: string | null;
   stale: boolean;
   creditsRemaining: number | null;
@@ -41,8 +43,16 @@ interface LiveDataPanelProps {
   storedCurrentValue: number | null;
 }
 
-function formatGreek(value: number | null): string {
-  return value === null ? "—" : value.toFixed(2);
+// Net Greeks are scaled by qty*100, so they read directly as dollars: delta is
+// P/L per 1-point move in the underlying, theta is P/L per day.
+function formatDollars(value: number | null): string {
+  if (value === null) return "—";
+  return `${value < 0 ? "-" : ""}$${Math.abs(value).toFixed(2)}`;
+}
+
+/** The plain option delta, which sits in [-1, +1] for an ordinary spread. */
+function formatRawDelta(value: number | null): string {
+  return value === null ? "—" : value.toFixed(4);
 }
 
 export function LiveDataPanel({
@@ -130,15 +140,30 @@ export function LiveDataPanel({
           <div className="flex items-baseline justify-between gap-3">
             <span className="text-xs text-text-subtle">Entry</span>
             <span className="text-lg font-semibold tabular tracking-tight">
-              {formatGreek(entryDelta)}
+              {formatDollars(entryDelta)}
             </span>
           </div>
           <div className="flex items-baseline justify-between gap-3">
             <span className="text-xs text-text-subtle">{secondaryLabel}</span>
             <span className="text-lg font-semibold tabular tracking-tight">
-              {formatGreek(secondaryDelta)}
+              {formatDollars(secondaryDelta)}
             </span>
           </div>
+        </div>
+        {live?.rawDelta != null && !closed && (
+          <div className="mt-2 border-t border-border pt-2">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-xs text-text-subtle">
+                Δ per {live.legCount > 1 ? "spread" : "contract"}
+              </span>
+              <span className="text-sm font-medium tabular tracking-tight">
+                {formatRawDelta(live.rawDelta)}
+              </span>
+            </div>
+          </div>
+        )}
+        <div className="mt-2 text-xs text-text-muted">
+          $ per 1-point move in the underlying
         </div>
         {error && (
           <div className="mt-2 text-xs text-loss">
@@ -167,16 +192,17 @@ export function LiveDataPanel({
           <div className="flex items-baseline justify-between gap-3">
             <span className="text-xs text-text-subtle">Entry</span>
             <span className="text-lg font-semibold tabular tracking-tight">
-              {formatGreek(entryTheta)}
+              {formatDollars(entryTheta)}
             </span>
           </div>
           <div className="flex items-baseline justify-between gap-3">
             <span className="text-xs text-text-subtle">{secondaryLabel}</span>
             <span className="text-lg font-semibold tabular tracking-tight">
-              {formatGreek(secondaryTheta)}
+              {formatDollars(secondaryTheta)}
             </span>
           </div>
         </div>
+        <div className="mt-2 text-xs text-text-muted">$ per day</div>
       </div>
 
       {/* Per-leg breakdown — spans the metrics grid */}
@@ -194,7 +220,7 @@ export function LiveDataPanel({
                   <th className="pb-2 pr-3 text-right font-medium">Qty</th>
                   <th className="pb-2 pr-3 text-right font-medium">Mark</th>
                   <th className="pb-2 pr-3 text-right font-medium">Delta</th>
-                  <th className="pb-2 text-right font-medium">Δ contribution</th>
+                  <th className="pb-2 text-right font-medium">$ / point</th>
                 </tr>
               </thead>
               <tbody>
@@ -212,7 +238,7 @@ export function LiveDataPanel({
                     <td className="py-2 text-right tabular">
                       {l.error || l.greeks_missing
                         ? "—"
-                        : l.delta_contribution.toFixed(1)}
+                        : formatDollars(l.delta_contribution)}
                     </td>
                   </tr>
                 ))}
@@ -221,7 +247,7 @@ export function LiveDataPanel({
                     Net
                   </td>
                   <td className="py-2 text-right tabular">
-                    {live.netGreeks.delta.toFixed(1)}
+                    {formatDollars(live.netGreeks.delta)}
                   </td>
                 </tr>
               </tbody>

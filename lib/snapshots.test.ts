@@ -110,6 +110,60 @@ describe("computeNetGreeks — bear call spread", () => {
     expect(snap.perLeg.find((l) => l.occ_symbol === LONG_740)?.greeks_missing).toBe(true);
   });
 
+  // The real position that prompted this: QQQ ~739, strikes straddling spot.
+  it("reports a per-unit delta inside [-1, 1] for a 20-lot vertical", async () => {
+    mockedFetch.mockResolvedValue({
+      quotes: new Map([
+        [SHORT_735, quote(0.6231, 12.41)],
+        [LONG_740, quote(0.535, 9.23)],
+      ]),
+      misses: new Map(),
+      creditsRemaining: 96,
+    });
+
+    const twentyLots = bearCallSpread.map((l) => ({ ...l, qty: 20 }));
+    const snap = await computeNetGreeks(twentyLots);
+
+    // Dollars per 1-point move across the whole position.
+    expect(snap.netGreeks.delta).toBeCloseTo(-176.2, 4);
+    // The same thing divided back down by the 20-lot size: a plain option delta.
+    expect(snap.rawDelta).toBeCloseTo(-0.0881, 6);
+    expect(snap.rawDelta!).toBeGreaterThan(-1);
+    expect(snap.rawDelta!).toBeLessThan(1);
+    expect(snap.legCount).toBe(2);
+  });
+
+  it("keeps the shape of a ratio spread rather than flattening it", async () => {
+    mockedFetch.mockResolvedValue({
+      quotes: new Map([
+        [SHORT_735, quote(0.60)],
+        [LONG_740, quote(0.40)],
+      ]),
+      misses: new Map(),
+      creditsRemaining: 96,
+    });
+
+    // 2 short x 4 long reduces to 1x2, not 1x1.
+    const ratio = [
+      { ...bearCallSpread[0], qty: 2 },
+      { ...bearCallSpread[1], qty: 4 },
+    ];
+    const snap = await computeNetGreeks(ratio);
+
+    // (-0.60 * 1) + (0.40 * 2) = 0.20
+    expect(snap.rawDelta).toBeCloseTo(0.2, 6);
+  });
+
+  it("gives a single contract its own delta back unchanged", async () => {
+    mockedFetch.mockResolvedValue({
+      quotes: new Map([[SHORT_735, quote(0.6231)]]),
+      misses: new Map(),
+      creditsRemaining: 99,
+    });
+    const snap = await computeNetGreeks([leg({ side: "long", qty: 1 })]);
+    expect(snap.rawDelta).toBeCloseTo(0.6231, 6);
+  });
+
   it("signs a short leg negative and a long leg positive", async () => {
     mockedFetch.mockResolvedValue({
       quotes: new Map([[SHORT_735, quote(0.5)]]),

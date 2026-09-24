@@ -57,6 +57,8 @@ export async function GET(request: NextRequest) {
         perLeg: [],
         minValueCents: typedStrategy.min_value_cents,
         maxValueCents: typedStrategy.max_value_cents,
+        rawDelta: null,
+        legCount: 0,
         asOf: null,
         stale: false,
         creditsRemaining: null,
@@ -112,6 +114,8 @@ export async function GET(request: NextRequest) {
       perLeg: snapshot.perLeg,
       minValueCents,
       maxValueCents,
+      rawDelta: snapshot.rawDelta,
+      legCount: snapshot.legCount,
       asOf: snapshot.asOf,
       // Computed here so the client can render it without calling Date.now()
       // during render. The free Marketdata feed is delayed ~24h.
