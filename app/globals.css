@@ -22,13 +22,19 @@
   --color-warn: light-dark(#d97706, #fbbf24);
   --color-warn-soft: light-dark(#fffbeb, rgba(251, 191, 36, 0.12));
 
-  /* Sequential ramp for time-to-expiry curves. Not a flip: each mode gets its
-     own steps, faintest furthest from expiry and strongest at expiry. */
-  --chart-seq-1: light-dark(#a5b4fc, #4f46e5);
-  --chart-seq-2: light-dark(#818cf8, #6366f1);
-  --chart-seq-3: light-dark(#6366f1, #818cf8);
-  --chart-seq-4: light-dark(#4f46e5, #a5b4fc);
-  --chart-seq-5: light-dark(#312e81, #e0e7ff);
+  /* Categorical series slots, assigned in this fixed order and never cycled.
+     Telling one day's curve from another is an identity task, so distinct hues
+     beat a single-hue ramp, whose adjacent steps were nearly indistinguishable.
+     Each mode has its own steps chosen for its surface, not a flip of the other.
+     Validated with the data-viz palette checker: lightness band, chroma floor,
+     CVD separation and normal-vision floor all pass in both modes. Three light
+     slots fall below 3:1 on white, so the chart must keep its legend and table
+     view as relief. */
+  --chart-cat-1: light-dark(#2a78d6, #3987e5); /* blue */
+  --chart-cat-2: light-dark(#eb6834, #d95926); /* orange */
+  --chart-cat-3: light-dark(#1baf7a, #199e70); /* aqua */
+  --chart-cat-4: light-dark(#eda100, #c98500); /* yellow */
+  --chart-cat-5: light-dark(#e87ba4, #d55181); /* magenta */
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;

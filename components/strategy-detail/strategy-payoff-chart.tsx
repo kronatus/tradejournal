@@ -16,19 +16,19 @@ import { buildSpreadCurves, type PayoffLeg } from "@/lib/payoff";
 import { parseOccSymbol } from "@/lib/occ";
 import { useLiveQuotes } from "./live-quotes-context";
 
-// Sequential ramp: furthest from expiry is faintest, expiry is strongest.
-const RAMP = [
-  "var(--chart-seq-1)",
-  "var(--chart-seq-2)",
-  "var(--chart-seq-3)",
-  "var(--chart-seq-4)",
-  "var(--chart-seq-5)",
+// Categorical slots in fixed order. Curve count is capped at the slot count,
+// so these are never cycled. Expiry additionally carries a heavier stroke,
+// since it is the line most often read.
+const SERIES_COLORS = [
+  "var(--chart-cat-1)",
+  "var(--chart-cat-2)",
+  "var(--chart-cat-3)",
+  "var(--chart-cat-4)",
+  "var(--chart-cat-5)",
 ];
 
-function rampColor(index: number, count: number): string {
-  if (count <= 1) return RAMP[RAMP.length - 1];
-  const pos = Math.round((index / (count - 1)) * (RAMP.length - 1));
-  return RAMP[pos];
+function seriesColor(index: number): string {
+  return SERIES_COLORS[index % SERIES_COLORS.length];
 }
 
 function money(value: number): string {
@@ -233,7 +233,7 @@ export function PayoffChartView({
                   type="monotone"
                   dataKey={s.key}
                   name={s.isExpiry ? `${s.label} (expiry)` : s.label}
-                  stroke={rampColor(i, curves.series.length)}
+                  stroke={seriesColor(i)}
                   strokeWidth={s.isExpiry ? 2.5 : 2}
                   dot={false}
                   activeDot={{ r: 4 }}
