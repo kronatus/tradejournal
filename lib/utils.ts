@@ -50,6 +50,10 @@ export function formatSide(side: string): string {
 //
 // "America/Chicago" rather than a fixed offset, so CST and CDT are handled by
 // the zone database instead of by hand.
+//
+// Clocks are 24-hour. hourCycle "h23" rather than hour12:false, because the
+// latter renders midnight as 24:00 on some engines; h23 pins the range to
+// 00-23.
 
 export const APP_TIME_ZONE = "America/Chicago";
 
@@ -96,19 +100,20 @@ export function formatShortDate(value: DateInput): string {
   });
 }
 
-/** "3:22 PM CDT" */
+/** "15:22 CDT" */
 export function formatTime(value: DateInput): string {
   const d = toDate(value);
   if (!d) return "—";
   return d.toLocaleTimeString("en-US", {
     timeZone: APP_TIME_ZONE,
-    hour: "numeric",
+    hour: "2-digit",
     minute: "2-digit",
+    hourCycle: "h23",
     timeZoneName: "short",
   });
 }
 
-/** "Sep 24, 2026, 3:22 PM CDT" */
+/** "Sep 24, 2026, 15:22 CDT" */
 export function formatDateTime(value: DateInput): string {
   const d = toDate(value);
   if (!d) return "—";
@@ -117,8 +122,9 @@ export function formatDateTime(value: DateInput): string {
     year: "numeric",
     month: "short",
     day: "numeric",
-    hour: "numeric",
+    hour: "2-digit",
     minute: "2-digit",
+    hourCycle: "h23",
     timeZoneName: "short",
   });
 }
@@ -137,8 +143,9 @@ export function formatDayOrTime(value: DateInput): string {
   return sameDay
     ? d.toLocaleTimeString("en-US", {
         timeZone: APP_TIME_ZONE,
-        hour: "numeric",
+        hour: "2-digit",
         minute: "2-digit",
+        hourCycle: "h23",
       })
     : formatShortDate(d);
 }

@@ -43,21 +43,37 @@ describe("formatShortDate", () => {
 });
 
 describe("formatTime", () => {
+  it("uses a 24-hour clock", () => {
+    // Midnight must read 00, not 12 AM and not 24.
+    expect(formatTime("2026-09-24T05:00:00Z")).toBe("00:00 CDT");
+    expect(formatTime("2026-09-24T05:30:00Z")).toBe("00:30 CDT");
+    // Afternoon carries past 12 rather than restarting.
+    expect(formatTime("2026-09-24T23:45:00Z")).toBe("18:45 CDT");
+  });
+
+  it("never emits AM or PM", () => {
+    for (const h of [0, 6, 12, 18, 23]) {
+      const iso = `2026-06-15T${String(h).padStart(2, "0")}:00:00Z`;
+      expect(formatTime(iso)).not.toMatch(/[AP]M/);
+      expect(formatDateTime(iso)).not.toMatch(/[AP]M/);
+    }
+  });
+
   it("converts the clock time and names the zone", () => {
     // 18:00 UTC is 1pm Central in September (CDT).
-    expect(formatTime("2026-09-24T18:00:00Z")).toBe("1:00 PM CDT");
+    expect(formatTime("2026-09-24T18:00:00Z")).toBe("13:00 CDT");
   });
 
   it("follows the zone into standard time", () => {
     // January is CST, six hours behind UTC.
-    expect(formatTime("2026-01-15T18:00:00Z")).toBe("12:00 PM CST");
+    expect(formatTime("2026-01-15T18:00:00Z")).toBe("12:00 CST");
   });
 });
 
 describe("formatDateTime", () => {
   it("renders date and time together in Central", () => {
     expect(formatDateTime("2026-09-25T02:30:00Z")).toBe(
-      "Sep 24, 2026, 9:30 PM CDT"
+      "Sep 24, 2026, 21:30 CDT"
     );
   });
 });
@@ -66,7 +82,7 @@ describe("formatDayOrTime", () => {
   it("shows the time for an instant earlier today", () => {
     const earlierToday = new Date();
     earlierToday.setUTCHours(earlierToday.getUTCHours() - 1);
-    expect(formatDayOrTime(earlierToday)).toMatch(/^\d{1,2}:\d{2}\s?(AM|PM)$/);
+    expect(formatDayOrTime(earlierToday)).toMatch(/^\d{2}:\d{2}$/);
   });
 
   it("shows the date for an instant on another day", () => {
