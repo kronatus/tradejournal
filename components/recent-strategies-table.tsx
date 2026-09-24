@@ -13,6 +13,7 @@ export type RecentStrategyRow = {
   openedAt: string;
   updatedAt: string | null;
   closed: boolean;
+  openLegCount: number;
 };
 
 function toneClass(value: number | null | undefined): string {

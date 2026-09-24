@@ -15,6 +15,7 @@ import {
 } from "@/lib/calculations";
 import { EquityChart } from "@/components/equity-chart";
 import { RecentStrategiesTable } from "@/components/recent-strategies-table";
+import { RefreshAllButton } from "@/components/refresh-all-button";
 import { ProtectedRoute } from "@/components/protected-route";
 import { Strategy, Leg } from "@/lib/types";
 
@@ -98,6 +99,17 @@ async function DashboardContent() {
       // as of this moment, so they belong to the same refresh.
       updatedAt: strategy.current_net_at,
       closed: !!strategy.closed_at,
+      openLegCount: legs.filter((l) => l.exit_price_cents === null).length,
+    }));
+
+  // Only positions with open legs can be marked; a closed strategy would spend
+  // a request to learn nothing.
+  const refreshTargets = recentStrategies
+    .filter((r) => r.openLegCount > 0)
+    .map((r) => ({
+      id: r.id,
+      underlying: r.underlying,
+      openLegCount: r.openLegCount,
     }));
 
   return (
@@ -156,9 +168,12 @@ async function DashboardContent() {
       <section className="rounded-lg border border-border bg-surface shadow-sm">
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <h2 className="text-sm font-semibold">Recent strategies</h2>
-          <Link href="/trades" className="text-xs text-accent hover:underline">
-            View all →
-          </Link>
+          <div className="flex items-center gap-3">
+            <RefreshAllButton targets={refreshTargets} />
+            <Link href="/trades" className="text-xs text-accent hover:underline">
+              View all →
+            </Link>
+          </div>
         </div>
         {recentStrategies.length === 0 ? (
           <div className="px-5 py-12 text-center">
