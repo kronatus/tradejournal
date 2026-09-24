@@ -39,3 +39,129 @@ export function formatOccSymbol(occSymbol: string): string {
 export function formatSide(side: string): string {
   return side === "long" ? "Buy" : "Sell";
 }
+
+// --- Dates and times ------------------------------------------------------
+//
+// Everything on screen is rendered in US Central. It is pinned explicitly
+// rather than left to the viewer's locale for two reasons: the journal records
+// US market activity, which is what the trader thinks in; and server components
+// render in the container's zone (UTC) while the browser would render in its
+// own, so an unpinned timestamp produces a hydration mismatch.
+//
+// "America/Chicago" rather than a fixed offset, so CST and CDT are handled by
+// the zone database instead of by hand.
+
+export const APP_TIME_ZONE = "America/Chicago";
+
+type DateInput = string | number | Date | null | undefined;
+
+function toDate(value: DateInput): Date | null {
+  if (value == null) return null;
+  const d = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** Calendar parts of an instant as they read in the app's zone. */
+function zonedParts(d: Date): { year: number; month: number; day: number } {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: APP_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(d);
+  const get = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? "0");
+  return { year: get("year"), month: get("month"), day: get("day") };
+}
+
+/** "Sep 24, 2026" */
+export function formatDate(value: DateInput): string {
+  const d = toDate(value);
+  if (!d) return "—";
+  return d.toLocaleDateString("en-US", {
+    timeZone: APP_TIME_ZONE,
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+/** "Sep 24" — for columns where the year is implied. */
+export function formatShortDate(value: DateInput): string {
+  const d = toDate(value);
+  if (!d) return "—";
+  return d.toLocaleDateString("en-US", {
+    timeZone: APP_TIME_ZONE,
+    month: "short",
+    day: "numeric",
+  });
+}
+
+/** "3:22 PM CDT" */
+export function formatTime(value: DateInput): string {
+  const d = toDate(value);
+  if (!d) return "—";
+  return d.toLocaleTimeString("en-US", {
+    timeZone: APP_TIME_ZONE,
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+}
+
+/** "Sep 24, 2026, 3:22 PM CDT" */
+export function formatDateTime(value: DateInput): string {
+  const d = toDate(value);
+  if (!d) return "—";
+  return d.toLocaleString("en-US", {
+    timeZone: APP_TIME_ZONE,
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+}
+
+/**
+ * Time for today's timestamps, date for older ones — "today" meaning the
+ * current date in the app's zone, not the viewer's.
+ */
+export function formatDayOrTime(value: DateInput): string {
+  const d = toDate(value);
+  if (!d) return "—";
+  const then = zonedParts(d);
+  const now = zonedParts(new Date());
+  const sameDay =
+    then.year === now.year && then.month === now.month && then.day === now.day;
+  return sameDay
+    ? d.toLocaleTimeString("en-US", {
+        timeZone: APP_TIME_ZONE,
+        hour: "numeric",
+        minute: "2-digit",
+      })
+    : formatShortDate(d);
+}
+
+/** Today's calendar date in the app's zone, as a UTC-midnight timestamp. */
+export function appZoneTodayUtcMs(now: Date = new Date()): number {
+  const { year, month, day } = zonedParts(now);
+  return Date.UTC(year, month - 1, day);
+}
+
+/**
+ * "YYYY-MM-DDTHH:MM" for a datetime-local input, in the BROWSER's zone.
+ *
+ * Deliberately not the app zone: the control carries no zone, and the browser
+ * reads whatever is typed as its own local time. Prefilling anything else
+ * would be silently reinterpreted on submit.
+ */
+export function toDatetimeLocalValue(value: DateInput = new Date()): string {
+  const d = toDate(value);
+  if (!d) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return (
+    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
+    `T${pad(d.getHours())}:${pad(d.getMinutes())}`
+  );
+}

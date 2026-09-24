@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase/server";
-import { formatCents, formatKind } from "@/lib/utils";
+import { formatCents, formatKind, formatDate, formatDateTime } from "@/lib/utils";
 import { strategyRealizedPnLCents } from "@/lib/calculations";
 import { Leg, Strategy } from "@/lib/types";
 import { StatusBadge } from "@/components/status-badge";
@@ -62,7 +62,7 @@ export default async function StrategyDetailPage({
           </div>
           <div className="text-sm text-text-muted">
             {formatKind(strategy.strategy_kind)} · Opened{" "}
-            {new Date(strategy.opened_at || strategy.created_at).toLocaleDateString()}
+            {formatDate(strategy.opened_at || strategy.created_at)}
           </div>
         </div>
         <div className="flex flex-wrap items-start gap-2">
@@ -124,7 +124,7 @@ export default async function StrategyDetailPage({
       {!closed && <StrategyPayoffChart underlying={strategy.underlying} />}
 
       <div className="text-xs text-text-subtle">
-        Created {new Date(strategy.created_at).toLocaleString()}
+        Created {formatDateTime(strategy.created_at)}
       </div>
       </div>
     </LiveQuotesProvider>

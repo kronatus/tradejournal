@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { formatCents, formatKind } from "@/lib/utils";
+import {
+  formatCents,
+  formatKind,
+  formatShortDate,
+  formatDayOrTime,
+} from "@/lib/utils";
 import { StatusBadge } from "@/components/status-badge";
 
 export type RecentStrategyRow = {
@@ -26,24 +31,6 @@ function toneClass(value: number | null | undefined): string {
 function formatSigned(cents: number | null | undefined): string {
   if (cents == null || !Number.isFinite(cents)) return "—";
   return (cents > 0 ? "+" : "") + formatCents(cents);
-}
-
-/**
- * Today's marks show the time, older ones the date. The feed is delayed and
- * refreshed by hand, so "when" matters most within the current session.
- */
-function formatUpdated(iso: string | null): string {
-  if (!iso) return "—";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "—";
-  const now = new Date();
-  const sameDay =
-    d.getFullYear() === now.getFullYear() &&
-    d.getMonth() === now.getMonth() &&
-    d.getDate() === now.getDate();
-  return sameDay
-    ? d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    : d.toLocaleDateString([], { month: "short", day: "numeric" });
 }
 
 export function RecentStrategiesTable({ rows }: { rows: RecentStrategyRow[] }) {
@@ -103,13 +90,10 @@ export function RecentStrategiesTable({ rows }: { rows: RecentStrategyRow[] }) {
                 {formatSigned(row.realizedCents)}
               </td>
               <td className="whitespace-nowrap px-4 py-3 text-right tabular text-text-muted">
-                {new Date(row.openedAt).toLocaleDateString([], {
-                  month: "short",
-                  day: "numeric",
-                })}
+                {formatShortDate(row.openedAt)}
               </td>
               <td className="whitespace-nowrap px-4 py-3 text-right tabular text-text-muted">
-                {formatUpdated(row.updatedAt)}
+                {formatDayOrTime(row.updatedAt)}
               </td>
               <td className="px-4 py-3 text-right">
                 <StatusBadge closed={row.closed} />

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { StrategyInput, LegInput } from "@/lib/schemas";
 import { STRATEGY_KINDS } from "@/lib/types";
-import { formatKind } from "@/lib/utils";
+import { formatKind, toDatetimeLocalValue } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { buildStorageOcc } from "@/lib/occ";
 
@@ -44,7 +44,7 @@ export default function StrategyForm() {
   const [openedAt, setOpenedAt] = useState(() => {
     const now = new Date();
     now.setSeconds(0, 0);
-    return now.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM"
+    return toDatetimeLocalValue(now);
   });
   const [legs, setLegs] = useState<LegRow[]>([emptyLeg()]);
   const [loading, setLoading] = useState(false);

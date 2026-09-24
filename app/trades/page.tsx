@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase/server";
-import { formatKind, formatCents } from "@/lib/utils";
+import { formatKind, formatCents, formatDate } from "@/lib/utils";
 import { strategyNetPremiumCents } from "@/lib/calculations";
 import { StatusBadge } from "@/components/status-badge";
 import { Leg } from "@/lib/types";
@@ -115,7 +115,7 @@ export default async function TradesPage() {
                       {s.current_value_cents != null ? formatCents(s.current_value_cents) : "—"}
                     </td>
                     <td className="px-5 py-3 text-right tabular text-text-muted">
-                      {new Date(s.opened_at || s.created_at).toLocaleDateString()}
+                      {formatDate(s.opened_at || s.created_at)}
                     </td>
                     <td className="px-5 py-3 text-right">
                       <StatusBadge closed={closed} />

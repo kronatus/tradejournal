@@ -1,4 +1,5 @@
 import { bsmPrice } from "./pricing";
+import { appZoneTodayUtcMs } from "./utils";
 
 /** Matches the sandbox's assumption; see app/sandbox/page.tsx. */
 export const DEFAULT_RISK_FREE_RATE = 0.05;
@@ -125,11 +126,9 @@ export function buildSpreadCurves(params: {
     return { data: [], series: [], expiry: "" };
   }
 
-  const todayMs = Date.UTC(
-    asOf.getUTCFullYear(),
-    asOf.getUTCMonth(),
-    asOf.getUTCDate()
-  );
+  // Calendar day in the app's zone. Expiry dates are plain calendar dates, so
+  // both sides of the comparison are UTC-midnight stamps of a local day.
+  const todayMs = appZoneTodayUtcMs(asOf);
   const expiryMs = Math.max(...legs.map((l) => utcDay(l.expiry)));
   // A past expiry still draws a single intrinsic-value line.
   const days = chooseDays(Math.min(todayMs, expiryMs), expiryMs, maxCurves);

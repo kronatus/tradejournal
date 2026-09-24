@@ -10,7 +10,7 @@ const bearCallSpread: PayoffLeg[] = [
 ];
 
 const EXPIRY_MS = Date.UTC(2026, 9, 2);
-const TODAY = new Date(Date.UTC(2026, 8, 24));
+const TODAY = new Date(Date.UTC(2026, 8, 24, 18)); // 1pm US Central
 
 describe("positionValueAt — at expiry", () => {
   it("is worthless below the short strike", () => {
@@ -59,7 +59,7 @@ describe("buildSpreadCurves", () => {
   it("draws one line per day when expiry is close", () => {
     const { series } = buildSpreadCurves({
       legs: bearCallSpread, spotPrice: 739,
-      asOf: new Date(Date.UTC(2026, 9, 0)), // 2 days out
+      asOf: new Date(Date.UTC(2026, 8, 30, 18)), // 2 days out, 1pm Central
     });
     expect(series).toHaveLength(3);
     expect(series[0].label).toBe("30 Sep");
@@ -105,6 +105,18 @@ describe("buildSpreadCurves", () => {
     for (let i = 1; i < data.length; i++) {
       expect(data[i][expiryKey]).toBeLessThanOrEqual(data[i - 1][expiryKey] + 1e-6);
     }
+  });
+
+  it("takes today from US Central, not UTC", () => {
+    // 01:00 UTC on 25 Sep is still 20:00 on 24 Sep in Central. The first curve
+    // must be the 24th, or every chart is a day ahead each evening.
+    const { series } = buildSpreadCurves({
+      legs: bearCallSpread,
+      spotPrice: 739,
+      asOf: new Date(Date.UTC(2026, 8, 25, 1)),
+    });
+    expect(series[0].date).toBe("2026-09-24");
+    expect(series[0].label).toBe("24 Sep");
   });
 
   it("returns nothing without legs or a spot price", () => {

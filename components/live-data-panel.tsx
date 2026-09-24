@@ -1,6 +1,6 @@
 "use client";
 
-import { formatCents, formatOccSymbol } from "@/lib/utils";
+import { formatCents, formatOccSymbol, formatDateTime } from "@/lib/utils";
 import { useLiveQuotes } from "./strategy-detail/live-quotes-context";
 
 interface LiveDataPanelProps {
@@ -51,7 +51,7 @@ export function LiveDataPanel({
   const displayMin = live ? live.minValueCents : storedMin;
   const displayMax = live ? live.maxValueCents : storedMax;
   const markedAt = live ? live.asOf ?? live.fetchedAt : currentAt;
-  const displayAt = markedAt ? new Date(markedAt).toLocaleString() : null;
+  const displayAt = markedAt ? formatDateTime(markedAt) : null;
   const isDelayed = live?.stale ?? false;
 
   // Secondary value: for closed strategies show "Close", otherwise "Current"

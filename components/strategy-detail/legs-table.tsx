@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { formatCents, formatOccSymbol, formatSide } from "@/lib/utils";
+import {
+  formatCents,
+  formatOccSymbol,
+  formatSide,
+  toDatetimeLocalValue,
+} from "@/lib/utils";
 import { legPnLCents } from "@/lib/calculations";
 import { Leg } from "@/lib/types";
 
@@ -34,7 +39,7 @@ const initialNewLegForm: NewLegFormState = {
   side: "long",
   qty: "",
   entry_price_cents: "",
-  entry_at: new Date().toISOString().slice(0, 16), // datetime-local format
+  entry_at: toDatetimeLocalValue(),
   fees_cents: "",
 };
 

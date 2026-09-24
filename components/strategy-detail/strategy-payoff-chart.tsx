@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { buildSpreadCurves, type PayoffLeg } from "@/lib/payoff";
 import { parseOccSymbol } from "@/lib/occ";
+import { formatDateTime } from "@/lib/utils";
 import { useLiveQuotes } from "./live-quotes-context";
 
 // Categorical slots in fixed order. Curve count is capped at the slot count,
@@ -248,7 +249,7 @@ export function PayoffChartView({
       {curves && (
         <p className="text-xs text-text-subtle">
           Black-Scholes from each leg&apos;s live implied volatility, marked{" "}
-          {asOf ? new Date(asOf).toLocaleString() : "at last refresh"}.
+          {asOf ? formatDateTime(asOf) : "at last refresh"}.
           Negative values mean the position costs money to close, as a credit
           spread does.
           {curves.modelledLegs < quotedLegs &&
