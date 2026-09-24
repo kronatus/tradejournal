@@ -86,7 +86,8 @@ Last updated: 2026-05-27 (Phase 8 shipped)
 - [x] Fix `@testing-library/react` peer dependency for React 19
 - [x] Add `.npmrc` with `legacy-peer-deps=true` for Vercel builds
 - [x] Fix dashboard null-safety with bulk-imported strategies (884 closed strategies)
-- [ ] Apply `supabase/migrations/0004_greeks_snapshots.sql` to remote Supabase ← user action pending
+- [x] Apply `supabase/migrations/0004_greeks_snapshots.sql` to remote Supabase — confirmed present
+- [ ] Apply `supabase/migrations/0005_reconcile_strategy_columns.sql` ← 0002 and 0003 were never applied; this adds their columns idempotently
 - [x] Vercel: import project from GitHub via dashboard
 - [x] Vercel: add env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `TRADIER_API_TOKEN`)
 - [x] Supabase Auth → URL Configuration: set Site URL + add Vercel production & preview URLs to Redirect URLs
