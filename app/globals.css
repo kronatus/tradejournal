@@ -31,8 +31,13 @@
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
 
+/* Dark mode overrides the custom properties directly on :root.
+   It must NOT be an @theme block: Tailwind v4 hoists @theme out of any
+   at-rule wrapping it, which drops the media query and makes these values
+   unconditional -- the app was permanently dark as a result. Utilities read
+   var(--color-*) at runtime, so a plain :root override is all that is needed. */
 @media (prefers-color-scheme: dark) {
-  @theme {
+  :root {
     --color-bg: #09090b;
     --color-surface: #18181b;
     --color-muted: #27272a;
@@ -64,6 +69,7 @@ html,
 body {
   background: var(--color-bg);
   color: var(--color-text);
+  color-scheme: light dark;
 }
 
 body {

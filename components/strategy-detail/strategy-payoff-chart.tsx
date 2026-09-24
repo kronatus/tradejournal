@@ -206,11 +206,12 @@ export function PayoffChartView({
                 formatter={(value: number, name: string) => [money(value), name]}
               />
               <Legend
-                wrapperStyle={{
-                  fontSize: 11,
-                  color: "var(--color-text-muted)",
-                  paddingTop: 8,
-                }}
+                wrapperStyle={{ fontSize: 11, paddingTop: 8 }}
+                // Recharts tints legend text with the series colour by default.
+                // Identity belongs to the swatch; the label stays in ink.
+                formatter={(value: string) => (
+                  <span style={{ color: "var(--color-text-muted)" }}>{value}</span>
+                )}
               />
               <ReferenceLine y={0} stroke="var(--color-text-muted)" strokeOpacity={0.5} />
               {spotPrice != null && (
