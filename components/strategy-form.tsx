@@ -50,7 +50,38 @@ export default function StrategyForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleAddLeg = () => setLegs([...legs, emptyLeg()]);
+  /**
+   * A new leg inherits the ticker from Basics and the expiry from the first
+   * leg, which covers verticals, condors and strangles. Copied once, at the
+   * moment of adding, so a calendar spread can still change its own expiry
+   * without later legs being dragged along.
+   */
+  const handleAddLeg = () =>
+    setLegs((prev) => [
+      ...prev,
+      {
+        ...emptyLeg(),
+        ticker: underlying,
+        expiry: prev[0]?.expiry ?? "",
+      },
+    ]);
+
+  /**
+   * Typing the underlying fills in legs that have not been given a ticker of
+   * their own, and corrects those still carrying the previous value. A ticker
+   * the user typed by hand is left alone.
+   */
+  const handleUnderlyingChange = (next: string) => {
+    const previous = underlying;
+    setUnderlying(next);
+    setLegs((prev) =>
+      prev.map((leg) =>
+        leg.ticker === "" || leg.ticker === previous
+          ? { ...leg, ticker: next }
+          : leg
+      )
+    );
+  };
 
   // Delegates to the single shared implementation in lib/occ.ts rather than
   // re-deriving the encoding here — see OCC_SYMBOLOGY.md.
@@ -151,7 +182,7 @@ export default function StrategyForm() {
             <input
               type="text"
               value={underlying}
-              onChange={(e) => setUnderlying(e.target.value.toUpperCase())}
+              onChange={(e) => handleUnderlyingChange(e.target.value.toUpperCase())}
               placeholder="AAPL"
               className={inputCls + " font-mono"}
               required
@@ -237,21 +268,39 @@ export default function StrategyForm() {
           </button>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          {/* Twelve columns share the width, so without a floor each one
+              collapses until the native select arrow covers its own label.
+              Fixed layout plus a minimum width keeps every control readable
+              and lets the container scroll instead of squeezing. */}
+          <table className="w-full min-w-[1180px] table-fixed text-sm">
+            <colgroup>
+              <col className="w-[92px]" />
+              <col className="w-[84px]" />
+              <col className="w-[96px]" />
+              <col className="w-[150px]" />
+              <col className="w-[84px]" />
+              <col className="w-[92px]" />
+              <col className="w-[68px]" />
+              <col className="w-[92px]" />
+              <col className="w-[92px]" />
+              <col className="w-[92px]" />
+              <col className="w-[92px]" />
+              <col className="w-[44px]" />
+            </colgroup>
             <thead>
               <tr className="border-b border-border bg-muted/50 text-left text-[10px] font-medium uppercase tracking-wide text-text-muted">
-                <th className="px-3 py-2.5">Ticker</th>
-                <th className="px-3 py-2.5">Type</th>
-                <th className="px-3 py-2.5 text-right">Strike</th>
-                <th className="px-3 py-2.5">Expiry</th>
-                <th className="px-3 py-2.5">Side</th>
-                <th className="px-3 py-2.5">Action</th>
-                <th className="px-3 py-2.5 text-right">Qty</th>
-                <th className="px-3 py-2.5 text-right">Entry ($)</th>
-                <th className="px-3 py-2.5 text-right">Exit ($)</th>
-                <th className="px-3 py-2.5 text-right">Stop ($)</th>
-                <th className="px-3 py-2.5 text-right">Target ($)</th>
-                <th className="w-10 px-3 py-2.5" />
+                <th className="whitespace-nowrap px-2 py-2.5">Ticker</th>
+                <th className="whitespace-nowrap px-2 py-2.5">Type</th>
+                <th className="whitespace-nowrap px-2 py-2.5 text-right">Strike</th>
+                <th className="whitespace-nowrap px-2 py-2.5">Expiry</th>
+                <th className="whitespace-nowrap px-2 py-2.5">Side</th>
+                <th className="whitespace-nowrap px-2 py-2.5">Action</th>
+                <th className="whitespace-nowrap px-2 py-2.5 text-right">Qty</th>
+                <th className="whitespace-nowrap px-2 py-2.5 text-right">Entry ($)</th>
+                <th className="whitespace-nowrap px-2 py-2.5 text-right">Exit ($)</th>
+                <th className="whitespace-nowrap px-2 py-2.5 text-right">Stop ($)</th>
+                <th className="whitespace-nowrap px-2 py-2.5 text-right">Target ($)</th>
+                <th className="px-2 py-2.5" />
               </tr>
             </thead>
             <tbody>
@@ -260,7 +309,7 @@ export default function StrategyForm() {
                   key={idx}
                   className="border-b border-border last:border-0"
                 >
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <input
                       type="text"
                       value={leg.ticker}
@@ -271,7 +320,7 @@ export default function StrategyForm() {
                       required
                     />
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <select
                       value={leg.optionType}
                       onChange={(e) => handleLegChange(idx, "optionType", e.target.value as "C" | "P")}
@@ -281,7 +330,7 @@ export default function StrategyForm() {
                       <option value="P">Put</option>
                     </select>
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <input
                       type="number"
                       value={leg.strike}
@@ -292,7 +341,7 @@ export default function StrategyForm() {
                       required
                     />
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <input
                       type="date"
                       value={leg.expiry}
@@ -301,7 +350,7 @@ export default function StrategyForm() {
                       required
                     />
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <select
                       value={leg.side}
                       onChange={(e) => handleLegChange(idx, "side", e.target.value as "buy" | "sell")}
@@ -311,7 +360,7 @@ export default function StrategyForm() {
                       <option value="sell">Sell</option>
                     </select>
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <select
                       value={leg.action}
                       onChange={(e) => handleLegChange(idx, "action", e.target.value as "open" | "close")}
@@ -321,7 +370,7 @@ export default function StrategyForm() {
                       <option value="close">Close</option>
                     </select>
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <input
                       type="number"
                       value={leg.quantity}
@@ -330,7 +379,7 @@ export default function StrategyForm() {
                       min="1"
                     />
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <input
                       type="number"
                       value={leg.entry_price_cents / 100}
@@ -341,7 +390,7 @@ export default function StrategyForm() {
                       className={cellInputCls + " text-right tabular"}
                     />
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <input
                       type="number"
                       value={leg.exit_price_cents ? leg.exit_price_cents / 100 : ""}
@@ -357,7 +406,7 @@ export default function StrategyForm() {
                       placeholder="—"
                     />
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <input
                       type="number"
                       value={leg.stop_loss_cents ? leg.stop_loss_cents / 100 : ""}
@@ -373,7 +422,7 @@ export default function StrategyForm() {
                       placeholder="—"
                     />
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-2">
                     <input
                       type="number"
                       value={leg.target_cents ? leg.target_cents / 100 : ""}
@@ -389,7 +438,7 @@ export default function StrategyForm() {
                       placeholder="—"
                     />
                   </td>
-                  <td className="px-3 py-2 text-center">
+                  <td className="px-2 py-2 text-center">
                     <button
                       type="button"
                       onClick={() => handleRemoveLeg(idx)}
