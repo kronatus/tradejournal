@@ -21,7 +21,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <head>
+        {/* Runs before first paint so a pinned theme does not flash the other
+            one. Kept inline and dependency-free for that reason. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t}}catch(e){}",
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-bg text-text antialiased">
         <AuthProvider>
           <div className="min-h-screen">

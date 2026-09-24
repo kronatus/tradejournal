@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV = [
   { href: "/", label: "Dashboard" },
@@ -58,6 +59,7 @@ export default function Header() {
         ) : null}
 
         <div className="flex items-center gap-3 text-sm">
+          <ThemeToggle />
           {!loading && (
             user ? (
               <>
