@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { formatCents } from "@/lib/utils";
+import { formatCents, formatOccSymbol } from "@/lib/utils";
 
 type LiveQuoteResult = {
   currentValueCents: number;
@@ -15,8 +15,13 @@ type LiveQuoteResult = {
   creditsRemaining: number | null;
   perLeg: Array<{
     occ_symbol: string;
+    side: "long" | "short";
+    qty: number;
     price_cents: number;
+    delta_contribution: number;
     greeks: { delta: number; gamma: number; theta: number; vega: number };
+    as_of?: string;
+    greeks_missing?: boolean;
     error?: string;
   }>;
 };
@@ -173,6 +178,73 @@ export function LiveDataPanel({
           </div>
         </div>
       </div>
+
+      {/* Per-leg breakdown — spans the metrics grid */}
+      {live && live.perLeg.length > 0 && (
+        <div className="col-span-2 rounded-lg border border-border bg-surface p-4 shadow-sm md:col-span-4">
+          <div className="text-xs font-medium uppercase tracking-wide text-text-subtle">
+            Per-leg detail
+          </div>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="text-text-subtle">
+                <tr>
+                  <th className="pb-2 pr-3 font-medium">Contract</th>
+                  <th className="pb-2 pr-3 font-medium">Side</th>
+                  <th className="pb-2 pr-3 text-right font-medium">Qty</th>
+                  <th className="pb-2 pr-3 text-right font-medium">Mark</th>
+                  <th className="pb-2 pr-3 text-right font-medium">Delta</th>
+                  <th className="pb-2 text-right font-medium">Δ contribution</th>
+                </tr>
+              </thead>
+              <tbody>
+                {live.perLeg.map((l) => (
+                  <tr key={l.occ_symbol} className="border-t border-border">
+                    <td className="py-2 pr-3">{formatOccSymbol(l.occ_symbol)}</td>
+                    <td className="py-2 pr-3 capitalize text-text-muted">{l.side}</td>
+                    <td className="py-2 pr-3 text-right tabular">{l.qty}</td>
+                    <td className="py-2 pr-3 text-right tabular">
+                      {l.error ? "—" : formatCents(l.price_cents)}
+                    </td>
+                    <td className="py-2 pr-3 text-right tabular">
+                      {l.error || l.greeks_missing ? "—" : l.greeks.delta.toFixed(4)}
+                    </td>
+                    <td className="py-2 text-right tabular">
+                      {l.error || l.greeks_missing
+                        ? "—"
+                        : l.delta_contribution.toFixed(1)}
+                    </td>
+                  </tr>
+                ))}
+                <tr className="border-t border-border font-semibold">
+                  <td className="py-2 pr-3" colSpan={5}>
+                    Net
+                  </td>
+                  <td className="py-2 text-right tabular">
+                    {live.netGreeks.delta.toFixed(1)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          {live.perLeg.some((l) => l.error || l.greeks_missing) && (
+            <div className="mt-3 space-y-1 text-xs text-loss">
+              {live.perLeg
+                .filter((l) => l.error || l.greeks_missing)
+                .map((l) => (
+                  <div key={l.occ_symbol}>
+                    {formatOccSymbol(l.occ_symbol)}:{" "}
+                    {l.error ?? "Greeks not supplied — excluded from the net"}
+                  </div>
+                ))}
+              <div className="text-text-muted">
+                A leg missing here leaves its opposite unopposed, which inflates
+                the net Greeks above.
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Current value card */}
       <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">

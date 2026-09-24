@@ -11,8 +11,13 @@ export type GreekSnapshot = {
 
 export type LegQuoteResult = {
   occ_symbol: string;
+  side: "long" | "short";
+  qty: number;
   price_cents: number;
   greeks: GreekSnapshot;
+  /** This leg's signed share-equivalent delta: delta * qty * 100 * side.
+   *  Exposed so a surprising net can be traced to the leg producing it. */
+  delta_contribution: number;
   /** Provider timestamp for this mark. The free feed is delayed, so this is
    *  what the UI should show rather than the time of the request. */
   as_of?: string;
@@ -74,8 +79,11 @@ export async function computeNetGreeks(
       ...empty,
       perLeg: openLegs.map((leg) => ({
         occ_symbol: leg.occ_symbol,
+        side: leg.side,
+        qty: leg.qty,
         price_cents: 0,
         greeks: { ...EMPTY_GREEKS },
+        delta_contribution: 0,
         error: reason,
       })),
     };
@@ -95,8 +103,11 @@ export async function computeNetGreeks(
     if (!quote) {
       perLeg.push({
         occ_symbol: leg.occ_symbol,
+        side: leg.side,
+        qty: leg.qty,
         price_cents: 0,
         greeks: { ...EMPTY_GREEKS },
+        delta_contribution: 0,
         error: misses.get(leg.occ_symbol) ?? "No quote returned",
       });
       continue;
@@ -117,7 +128,12 @@ export async function computeNetGreeks(
 
     perLeg.push({
       occ_symbol: leg.occ_symbol,
+      side: leg.side,
+      qty: leg.qty,
       price_cents: priceCents,
+      delta_contribution: quote.greeksMissing
+        ? 0
+        : quote.delta * contractMultiplier * sideMultiplier,
       greeks: {
         delta: quote.delta,
         gamma: quote.gamma,
