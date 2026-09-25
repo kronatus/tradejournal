@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Last updated: 2026-05-27 (Phase 8 shipped)
+Last updated: 2026-09-25 (Phase 9 UI polish & live data enhancements)
 
 ## Phase 1: Core Trade Journal (MVP) ✅ COMPLETE
 - [x] Supabase schema (strategies, legs, import_batches tables) — migration 0001
@@ -80,37 +80,81 @@ Last updated: 2026-05-27 (Phase 8 shipped)
 - [x] Closing a strategy writes `close_net_delta/gamma/theta/vega` + `close_net_at` in the same UPDATE that sets `closed_at`
 - ⚠️ **Apply `supabase/migrations/0004_greeks_snapshots.sql` to the remote DB** (Supabase dashboard SQL editor or `supabase db push`) — without this, the new write paths will silently fail until the columns exist.
 
-## Phase 8: Deployment ✅ COMPLETE (except migration 0004 pending user action)
+## Phase 8: Deployment ✅ COMPLETE
 - [x] Sweep stale docs (Polygon → Tradier in `README.md` and `.env.example`)
 - [x] Push `main` to https://github.com/kronatus/tradejournal (private) — 83 files, full history
 - [x] Fix `@testing-library/react` peer dependency for React 19
 - [x] Add `.npmrc` with `legacy-peer-deps=true` for Vercel builds
 - [x] Fix dashboard null-safety with bulk-imported strategies (884 closed strategies)
 - [x] Apply `supabase/migrations/0004_greeks_snapshots.sql` to remote Supabase — confirmed present
-- [ ] Apply `supabase/migrations/0005_reconcile_strategy_columns.sql` ← 0002 and 0003 were never applied; this adds their columns idempotently
+- [x] Apply `supabase/migrations/0005_reconcile_strategy_columns.sql` — 0002 and 0003 were never applied; migration 0005 adds their columns idempotently
 - [x] Vercel: import project from GitHub via dashboard
 - [x] Vercel: add env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `TRADIER_API_TOKEN`)
 - [x] Supabase Auth → URL Configuration: set Site URL + add Vercel production & preview URLs to Redirect URLs
 - [x] Production smoke-test: login, live data refresh, sandbox scenario, CSV import all working with 884 strategies
 
+## Phase 9: UI Polish & Live Data Refinements ✅ COMPLETE
+- [x] **Theme switching** — Light/Dark/System toggle in header; pinned to localStorage; uses CSS `light-dark()` function
+  - Inline head script prevents flash of wrong theme on page load
+  - `useSyncExternalStore` instead of state to avoid cascading renders
+  - Validates in all four combinations (OS light/dark × pin light/dark)
+- [x] **Dashboard table expansion** — 5 columns → 9 columns: Open value, Current value, Unrealized P&L, Realized P&L, Updated timestamp
+  - New calculations: `strategyOpenValueCents()`, `strategyUnrealizedPnLCents()` with proper signed net-liquidation semantics
+  - Current value + Unrealized P&L show "—" until first refresh (null ≠ zero)
+  - Updated column shows time for today, date for older marks
+- [x] **Refresh All button** — Batches all open positions in dashboard, states credit cost upfront, shows live progress
+  - Requests go two at a time, not all at once
+  - Surfaces `persistError` if a write fails (e.g., missing DB column)
+  - Re-runs server components after completion so table shows fresh values
+- [x] **Fixed $NaN bug** — `formatCents()` now safely handles null, undefined, and NaN; no $NaN in UI ever
+  - `strategyUnrealizedPnLCents()` guards with `== null` (catches undefined) and `!Number.isFinite()`
+- [x] **Database reconciliation** — migration 0005 idempotently adds all missing columns from 0002, 0003, 0004
+  - Diagnosed root cause: 0002 and 0003 were never applied remotely; 0004 was
+  - Current value writes now persist and dashboard populates on refresh
+- [x] **Timezone pinning** — All display formatting in US Central (America/Chicago)
+  - 16 new tests for formatters validating CST/CDT zone transitions
+  - `appZoneTodayUtcMs()` fixes payoff chart off-by-one (was using UTC calendar, not Central)
+  - `formatDayOrTime()` shows time for today, date for older marks
+  - `datetime-local` inputs still use browser-local wall time (control semantics)
+- [x] **Legs table dropdown fixes** — Dropdowns were clipped (12 columns squashing text)
+  - Changed to `table-fixed` layout with explicit per-column widths + `min-w-[1180px]` floor
+  - Table scrolls horizontally instead of squeezing; verified at 1280, 1024, 820px
+  - Cell padding optimized: `px-3 py-2` → `px-2 py-2`
+- [x] **Leg inheritance** — New legs inherit ticker from Basics and expiry from first leg
+  - Typing the underlying fills empty tickers and corrects those matching previous value
+  - Expiry is copied once at add time, allowing calendar spreads to set their own
+- [x] **24-hour clock format** — All times now 00:00–23:59 (no AM/PM)
+  - Uses `hourCycle: "h23"` to guarantee `00` at midnight (not `24:00`)
+  - Tests pin midnight to `00:00`, no meridiem markers across the day
+- [x] **Database user query helper** — SQL templates for listing registered users (UID + email)
+
 ---
 
 ## 📋 Setup Notes
 
-### Phase 5.1: Tradier API Setup
-To use the live data refresh feature, you need a free Tradier brokerage account:
+### Phase 5.1: Live Market Data Provider Setup
+Two APIs are supported (provider chosen automatically based on configured token):
 
-1. Sign up at https://tradier.com (no deposit required)
-2. Get your API token at https://dash.tradier.com/settings/api
-3. Add to `.env.local`:
-   ```
-   TRADIER_API_TOKEN=your_production_token_here
-   ```
+**Marketdata.app (Primary)**
+- Sign up at https://marketdata.app (free tier: 100 credits/day, 1 credit per contract)
+- Get your API token from the dashboard
+- Add to `.env.local`: `MARKETDATA_API_TOKEN=your_token`
+- Returns: live option prices, no Greeks (using Black-Scholes locally where needed)
 
-Tradier returns:
-- Live options prices (last trade, or mid-price fallback if no recent trades)
-- Hourly greeks from ORATS (delta, gamma, theta, vega)
-- 120 requests/minute rate limit (plenty for manual trading journal use)
+**Tradier (Fallback)**
+- Free brokerage account at https://tradier.com (no deposit required)
+- Get API token at https://dash.tradier.com/settings/api
+- Add to `.env.local`: `TRADIER_API_TOKEN=your_token`
+- Returns: live option prices + hourly Greeks from ORATS, 120 req/min rate limit
+
+The app calls `isQuoteProviderConfigured()` and `resolveQuoteProvider()` to pick between them.
+
+### Phase 9: UI/UX Improvements
+- Theme toggle persists to localStorage and loads before paint (no flash)
+- All timestamps in US Central time (America/Chicago) with zone abbreviations
+- Clock format: 24-hour (00:00–23:59)
+- Dashboard shows live and persisted values together; Refresh updates everything in one action
+- Legs table dropdowns are now fully visible with proper spacing
 
 ---
 
@@ -131,9 +175,31 @@ Tradier returns:
 
 ---
 
+## Summary of Live Data Pipeline
+
+The app now fully supports live market data with proper persistence and display:
+
+1. **Fetch** — On-demand via Refresh button (or Refresh All on dashboard)
+2. **Compute** — Per-leg prices + net Greeks (from provider or Black-Scholes)
+3. **Persist** — Snapshots at entry/refresh/close; min/max extremes tracked
+4. **Display** — Dashboard shows current value + unrealized P&L; detail page shows Delta/Theta entry vs. current
+5. **Safety** — Missing DB columns are detected, error messages surfaced; all formatters handle null/NaN safely
+
+**Test coverage:** 150+ Vitest tests covering calculations, pricing, OCC symbols, and timezone logic. API routes and quote fetching have zero test coverage (known gap, marked as high-risk in nextsteps.md).
+
+**Known limitations:**
+- No background polling (Phase 5.3 deferred) — refresh is manual only
+- No Greek history — only current snapshot + min/max value range
+- No per-leg price history — live prices exist only in HTTP response
+- Unrealized P&L computed on-demand, not persisted
+
+---
+
 ## Notes
 
 - **SPEC.md** contains the full detailed specification for all planned features
 - **CLAUDE.md** contains project conventions and stack info
+- **OCC_SYMBOLOGY.md** documents the symbol conversion rules (storage vs. provider formats) — read before touching symbol code
 - **Active plans** are stored in `~/.claude/plans/` — reference there for detailed implementation notes and design decisions
 - All code follows strict TypeScript, Tailwind conventions, and includes tests for calculations
+- Marketdata.app integration added in Phase 5.4 (prior context); Tradier kept as fallback for existing users
