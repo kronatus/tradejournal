@@ -4,8 +4,9 @@ import { formatCents, formatKind, formatDate, formatDateTime } from "@/lib/utils
 import { strategyRealizedPnLCents } from "@/lib/calculations";
 import { Leg, Strategy } from "@/lib/types";
 import { StatusBadge } from "@/components/status-badge";
-import { LiveDataPanel } from "@/components/live-data-panel";
+import { LiveDataPanel, PerLegDetail } from "@/components/live-data-panel";
 import { StrategyEditor } from "@/components/strategy-detail/strategy-editor";
+import { ConvictionField, PlanCards } from "@/components/strategy-detail/editable-cards";
 import { LegsTable } from "@/components/strategy-detail/legs-table";
 import { CloseStrategyButton } from "@/components/strategy-detail/close-strategy-button";
 import { DeleteStrategyButton } from "@/components/strategy-detail/delete-strategy-button";
@@ -81,38 +82,48 @@ export default async function StrategyDetailPage({
           )}
         </div>
 
+        {/* One grid for every figure, so loading live data never reflows it */}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
-            <div className="text-xs font-medium uppercase tracking-wide text-text-subtle">
-              Realized P&L
-            </div>
-            <div
-              className={
-                "mt-2 text-2xl font-semibold tabular tracking-tight " +
-                (pnlTone === "gain" ? "text-gain" : pnlTone === "loss" ? "text-loss" : "text-text")
-              }
-            >
-              {formatCents(pnlCents)}
-            </div>
-          </div>
-
           <LiveDataPanel
             closed={closed}
             entryDelta={strategy.entry_net_delta}
             entryTheta={strategy.entry_net_theta}
+            entryIv={strategy.entry_net_iv}
             currentDelta={strategy.current_net_delta}
             currentTheta={strategy.current_net_theta}
+            currentIv={strategy.current_net_iv}
             currentAt={strategy.current_net_at}
             closeDelta={strategy.close_net_delta}
             closeTheta={strategy.close_net_theta}
             storedMin={strategy.min_value_cents}
             storedMax={strategy.max_value_cents}
             storedCurrentValue={strategy.current_value_cents}
+            summary={
+              <div className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-surface p-4 shadow-sm">
+                <div>
+                  <div className="text-xs font-medium uppercase tracking-wide text-text-subtle">
+                    Realized P&L
+                  </div>
+                  <div
+                    className={
+                      "mt-2 text-2xl font-semibold tabular tracking-tight " +
+                      (pnlTone === "gain" ? "text-gain" : pnlTone === "loss" ? "text-loss" : "text-text")
+                    }
+                  >
+                    {formatCents(pnlCents)}
+                  </div>
+                </div>
+                <ConvictionField strategy={strategy} />
+              </div>
+            }
           />
+          <PlanCards strategy={strategy} />
         </div>
       </section>
 
       <StrategyEditor strategy={strategy} />
+
+      <PerLegDetail closed={closed} />
 
       <LegsTable
         legs={strategy.legs || []}

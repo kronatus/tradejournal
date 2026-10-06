@@ -31,6 +31,8 @@ export type LiveQuoteResult = {
   maxValueCents: number | null;
   rawDelta: number | null;
   rawTheta: number | null;
+  /** Vega-weighted implied volatility as a decimal, or null when unavailable. */
+  netIv: number | null;
   legCount: number;
   underlyingPrice: number | null;
   fetchedAt: string;

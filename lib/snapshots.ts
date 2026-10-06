@@ -1,4 +1,5 @@
 import { fetchQuotes } from "@/lib/quotes";
+import { vegaWeightedIv } from "@/lib/calculations";
 import type { Leg } from "@/lib/types";
 import type { Quote } from "@/lib/schemas";
 
@@ -44,6 +45,9 @@ export type SnapshotComputation = {
   /** Net theta per one unit of the strategy, per share per day — the figure a
    *  chain quotes, as opposed to netGreeks.theta which reads as dollars/day. */
   rawTheta: number | null;
+  /** Vega-weighted implied volatility across the legs, as a decimal (0.21).
+   *  Null when no leg supplied one. */
+  netIv: number | null;
   /** Legs in the strategy, so the UI can say "per spread" vs "per contract". */
   legCount: number;
   /** Underlying spot, taken from whichever leg quote carried it. */
@@ -86,6 +90,7 @@ export async function computeNetGreeks(
     hasData: false,
     rawDelta: null,
     rawTheta: null,
+    netIv: null,
     legCount: openLegs.length,
     underlyingPrice: null,
     asOf: null,
@@ -201,6 +206,11 @@ export async function computeNetGreeks(
     rawTheta: anyResolved
       ? netGreeks.theta / (100 * positionUnit(openLegs))
       : null,
+    netIv: vegaWeightedIv(
+      perLeg
+        .filter((l) => !l.error)
+        .map((l) => ({ iv: l.iv, vega: l.greeks.vega, qty: l.qty }))
+    ),
     legCount: openLegs.length,
     underlyingPrice,
     asOf: oldestAsOf,
