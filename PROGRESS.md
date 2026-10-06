@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Last updated: 2026-09-25 (Phase 9 UI polish & live data enhancements)
+Last updated: 2026-10-06 (Phase 10 trade detail layout & IV)
 
 ## Phase 1: Core Trade Journal (MVP) ✅ COMPLETE
 - [x] Supabase schema (strategies, legs, import_batches tables) — migration 0001
@@ -172,6 +172,22 @@ The app calls `isQuoteProviderConfigured()` and `resolveQuoteProvider()` to pick
 - Support multiple accounts
 - Stocks and ETFs (not just options)
 - Account-level P&L aggregation
+
+## Phase 10: Trade Detail Layout & IV ✅ COMPLETE
+Shipped in PR #1 (merged to `main`); migration 0006 applied; confirmed working on live trades (INTC).
+- [x] **Layout shift fixed** — every figure now lives in one metrics grid, so pressing Refresh no longer pushes cards down
+  - Left column: Realized P&L + Conviction card with Current (live) beneath; then Delta, Theta, IV
+  - Cost/Credit, Target, Collateral, Stop sit directly under, above the tables
+  - Order: metrics → Thesis (→ Post-mortem) → Per-leg detail → Legs table → payoff chart
+  - Per-leg detail reserves its slot with a placeholder before the first refresh
+- [x] **IV card** — vega-weighted implied volatility across legs (`vegaWeightedIv()` in `lib/calculations.ts`), Entry vs Current
+  - Legs with no usable IV are skipped; all-zero vega falls back to a qty-weighted mean; no IV at all shows "—"
+  - Per-leg table gained an IV column
+  - Migration 0006 adds `entry_net_iv` / `current_net_iv`; entry IV is captured at trade creation, current IV on each refresh
+- [x] **Editor refactor** — shared `useStrategyPatch` hook and `editable-cards.tsx`; `strategy-editor.tsx` now only handles Thesis/Post-mortem; money fields validate input client-side
+- [x] **Tests** — 5 `vegaWeightedIv` tests and 2 `computeNetGreeks` netIv tests (157 total passing); lint/typecheck clean
+
+**Known limitations:** trades opened before 0006 (e.g. IREN) show "—" for Entry IV (not recoverable); closed trades show Entry IV only (no IV snapshot at close); layout verified by the user in the browser, not by automated UI tests.
 
 ---
 
