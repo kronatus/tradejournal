@@ -60,10 +60,12 @@ export type Strategy = {
   entry_net_gamma: number | null;
   entry_net_theta: number | null;
   entry_net_vega: number | null;
+  entry_net_iv: number | null;
   current_net_delta: number | null;
   current_net_gamma: number | null;
   current_net_theta: number | null;
   current_net_vega: number | null;
+  current_net_iv: number | null;
   current_net_at: string | null;
   close_net_delta: number | null;
   close_net_gamma: number | null;

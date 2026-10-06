@@ -59,6 +59,7 @@ export async function GET(request: NextRequest) {
         maxValueCents: typedStrategy.max_value_cents,
         rawDelta: null,
         rawTheta: null,
+        netIv: null,
         legCount: 0,
         underlyingPrice: null,
         asOf: null,
@@ -104,6 +105,7 @@ export async function GET(request: NextRequest) {
           current_net_gamma: snapshot.netGreeks.gamma,
           current_net_theta: snapshot.netGreeks.theta,
           current_net_vega: snapshot.netGreeks.vega,
+          current_net_iv: snapshot.netIv,
           current_net_at: nowIso,
         })
         .eq("id", strategyId);
@@ -124,6 +126,7 @@ export async function GET(request: NextRequest) {
       maxValueCents,
       rawDelta: snapshot.rawDelta,
       rawTheta: snapshot.rawTheta,
+      netIv: snapshot.netIv,
       underlyingPrice: snapshot.underlyingPrice,
       legCount: snapshot.legCount,
       asOf: snapshot.asOf,

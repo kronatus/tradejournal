@@ -100,6 +100,7 @@ export async function POST(request: NextRequest) {
               entry_net_gamma: snapshot.netGreeks.gamma,
               entry_net_theta: snapshot.netGreeks.theta,
               entry_net_vega: snapshot.netGreeks.vega,
+              entry_net_iv: snapshot.netIv,
             })
             .eq("id", strategy.id);
         }

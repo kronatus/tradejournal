@@ -218,3 +218,33 @@ describe("computeNetGreeks — bear call spread", () => {
     expect(longOnly.netGreeks.delta).toBeCloseTo(50, 6);
   });
 });
+
+describe("computeNetGreeks — netIv", () => {
+  it("vega-weights IV across the legs and skips legs that errored", async () => {
+    mockedFetch.mockResolvedValue({
+      quotes: new Map([
+        [SHORT_735, { ...quote(0.5), iv: 0.8, vega: 0.3 }],
+        [LONG_740, { ...quote(0.3), iv: 0.6, vega: 0.1 }],
+      ]),
+      misses: new Map(),
+      creditsRemaining: 90,
+    });
+    expect((await computeNetGreeks(bearCallSpread)).netIv).toBeCloseTo(0.75, 10);
+
+    mockedFetch.mockResolvedValue({
+      quotes: new Map([[SHORT_735, { ...quote(0.5), iv: 0.8, vega: 0.3 }]]),
+      misses: new Map([[LONG_740, "no_data"]]),
+      creditsRemaining: 90,
+    });
+    expect((await computeNetGreeks(bearCallSpread)).netIv).toBeCloseTo(0.8, 10);
+  });
+
+  it("is null when nothing resolved", async () => {
+    mockedFetch.mockResolvedValue({
+      quotes: new Map(),
+      misses: new Map([[SHORT_735, "no_data"], [LONG_740, "no_data"]]),
+      creditsRemaining: 90,
+    });
+    expect((await computeNetGreeks(bearCallSpread)).netIv).toBeNull();
+  });
+});

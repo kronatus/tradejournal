@@ -278,3 +278,32 @@ export function avgHoldingPeriodDays(
   );
   return Math.round(sum / closed.length);
 }
+
+export type IvLeg = {
+  /** Implied volatility as a decimal, e.g. 0.21. */
+  iv: number;
+  /** Per-share vega of this leg, unsigned or signed — only its magnitude is used. */
+  vega: number;
+  qty: number;
+};
+
+/**
+ * One implied volatility for a whole strategy: each leg's IV weighted by the
+ * vega it contributes (|vega| × qty), so the legs that move the position's
+ * value most dominate. Legs without a usable IV (zero, negative or non-finite)
+ * are skipped — absence is not a claim — and null is returned when none remain.
+ * If every remaining leg reports zero vega, falls back to a qty-weighted mean.
+ */
+export function vegaWeightedIv(legs: IvLeg[]): number | null {
+  const usable = legs.filter((l) => Number.isFinite(l.iv) && l.iv > 0);
+  if (usable.length === 0) return null;
+
+  const weight = (l: IvLeg) => Math.abs(l.vega) * l.qty;
+  let totalWeight = usable.reduce((sum, l) => sum + weight(l), 0);
+  if (!(totalWeight > 0)) {
+    const qtyWeighted = usable.reduce((sum, l) => sum + l.iv * l.qty, 0);
+    totalWeight = usable.reduce((sum, l) => sum + l.qty, 0);
+    return totalWeight > 0 ? qtyWeighted / totalWeight : null;
+  }
+  return usable.reduce((sum, l) => sum + l.iv * weight(l), 0) / totalWeight;
+}

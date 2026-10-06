@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { formatCents, formatOccSymbol, formatDateTime } from "@/lib/utils";
 import { useLiveQuotes } from "./strategy-detail/live-quotes-context";
 
@@ -7,14 +8,18 @@ interface LiveDataPanelProps {
   closed: boolean;
   entryDelta: number | null;
   entryTheta: number | null;
+  entryIv: number | null;
   currentDelta: number | null;
   currentTheta: number | null;
+  currentIv: number | null;
   currentAt: string | null;
   closeDelta: number | null;
   closeTheta: number | null;
   storedMin: number | null;
   storedMax: number | null;
   storedCurrentValue: number | null;
+  /** Realized P&L + Conviction card, rendered above Current in the first column. */
+  summary: ReactNode;
 }
 
 // Net Greeks are scaled by qty*100, so they read directly as dollars: delta is
@@ -25,6 +30,11 @@ function formatDollars(value: number | null): string {
 }
 
 /** The plain option delta, which sits in [-1, +1] for an ordinary spread. */
+/** IV is stored as a decimal (0.21) and read as a percentage. */
+function formatIv(value: number | null): string {
+  return value === null || !(value > 0) ? "—" : `${(value * 100).toFixed(1)}%`;
+}
+
 function formatRawDelta(value: number | null): string {
   return value === null ? "—" : value.toFixed(4);
 }
@@ -33,20 +43,24 @@ export function LiveDataPanel({
   closed,
   entryDelta,
   entryTheta,
+  entryIv,
   currentDelta,
   currentTheta,
+  currentIv,
   currentAt,
   closeDelta,
   closeTheta,
   storedMin,
   storedMax,
   storedCurrentValue,
+  summary,
 }: LiveDataPanelProps) {
   const { live, loading, error, refresh } = useLiveQuotes();
 
   // Live overrides persisted current_net_* when present
   const displayCurrentDelta = live ? live.netGreeks.delta : currentDelta;
   const displayCurrentTheta = live ? live.netGreeks.theta : currentTheta;
+  const displayCurrentIv = live ? live.netIv : currentIv;
   const displayCurrentValue = live ? live.currentValueCents : storedCurrentValue;
   const displayMin = live ? live.minValueCents : storedMin;
   const displayMax = live ? live.maxValueCents : storedMax;
@@ -61,6 +75,24 @@ export function LiveDataPanel({
 
   return (
     <>
+      {/* Left column: Realized P&L + Conviction, with Current stacked beneath */}
+      <div className="flex flex-col gap-3">
+        {summary}
+        <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
+          <div className="text-xs font-medium uppercase tracking-wide text-text-subtle">
+            Current {live ? "(live)" : "value"}
+          </div>
+          <div className="mt-2 text-2xl font-semibold tabular tracking-tight">
+            {displayCurrentValue !== null ? formatCents(displayCurrentValue) : "—"}
+          </div>
+          {displayMin !== null && displayMax !== null && (
+            <div className="mt-2 text-xs text-text-muted">
+              Range: {formatCents(displayMin)} – {formatCents(displayMax)}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Delta card */}
       <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
         <div className="flex items-center justify-between">
@@ -158,9 +190,59 @@ export function LiveDataPanel({
         <div className="mt-2 text-xs text-text-muted">$ per day</div>
       </div>
 
-      {/* Per-leg breakdown — spans the metrics grid */}
-      {live && live.perLeg.length > 0 && (
-        <div className="col-span-2 rounded-lg border border-border bg-surface p-4 shadow-sm md:col-span-4">
+
+      {/* IV card */}
+      <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
+        <div className="text-xs font-medium uppercase tracking-wide text-text-subtle">
+          IV
+        </div>
+        <div className="mt-2 space-y-1">
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="text-xs text-text-subtle">Entry</span>
+            <span className="text-lg font-semibold tabular tracking-tight">
+              {formatIv(entryIv)}
+            </span>
+          </div>
+          {!closed && (
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-xs text-text-subtle">Current</span>
+              <span className="text-lg font-semibold tabular tracking-tight">
+                {formatIv(displayCurrentIv)}
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="mt-2 text-xs text-text-muted">
+          Implied volatility, weighted by each leg&apos;s vega
+        </div>
+      </div>
+    </>
+  );
+}
+
+/**
+ * Per-leg breakdown. Lives below Thesis, outside the metrics grid, so loading it
+ * never moves a card. Open strategies reserve the slot before the first refresh.
+ */
+export function PerLegDetail({ closed }: { closed: boolean }) {
+  const { live } = useLiveQuotes();
+
+  if (!live || live.perLeg.length === 0) {
+    if (closed) return null;
+    return (
+      <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
+        <div className="text-xs font-medium uppercase tracking-wide text-text-subtle">
+          Per-leg detail
+        </div>
+        <div className="mt-3 text-xs text-text-muted">
+          Refresh the metrics above to load per-leg marks and Greeks.
+        </div>
+      </div>
+    );
+  }
+
+  return (
+              <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
           <div className="text-xs font-medium uppercase tracking-wide text-text-subtle">
             Per-leg detail
           </div>
@@ -172,6 +254,7 @@ export function LiveDataPanel({
                   <th className="pb-2 pr-3 font-medium">Side</th>
                   <th className="pb-2 pr-3 text-right font-medium">Qty</th>
                   <th className="pb-2 pr-3 text-right font-medium">Mark</th>
+                  <th className="pb-2 pr-3 text-right font-medium">IV</th>
                   <th className="pb-2 pr-3 text-right font-medium">Delta</th>
                   <th className="pb-2 pr-3 text-right font-medium">$ / point</th>
                   <th className="pb-2 pr-3 text-right font-medium">Theta</th>
@@ -186,6 +269,9 @@ export function LiveDataPanel({
                     <td className="py-2 pr-3 text-right tabular">{l.qty}</td>
                     <td className="py-2 pr-3 text-right tabular">
                       {l.error ? "—" : formatCents(l.price_cents)}
+                    </td>
+                    <td className="py-2 pr-3 text-right tabular">
+                      {l.error ? "—" : formatIv(l.iv)}
                     </td>
                     <td className="py-2 pr-3 text-right tabular">
                       {l.error || l.greeks_missing ? "—" : l.greeks.delta.toFixed(4)}
@@ -206,7 +292,7 @@ export function LiveDataPanel({
                   </tr>
                 ))}
                 <tr className="border-t border-border font-semibold">
-                  <td className="py-2 pr-3" colSpan={5}>
+                  <td className="py-2 pr-3" colSpan={6}>
                     Net
                   </td>
                   <td className="py-2 pr-3 text-right tabular">
@@ -237,22 +323,5 @@ export function LiveDataPanel({
             </div>
           )}
         </div>
-      )}
-
-      {/* Current value card */}
-      <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
-        <div className="text-xs font-medium uppercase tracking-wide text-text-subtle">
-          Current {live ? "(live)" : "value"}
-        </div>
-        <div className="mt-2 text-2xl font-semibold tabular tracking-tight">
-          {displayCurrentValue !== null ? formatCents(displayCurrentValue) : "—"}
-        </div>
-        {displayMin !== null && displayMax !== null && (
-          <div className="mt-2 text-xs text-text-muted">
-            Range: {formatCents(displayMin)} – {formatCents(displayMax)}
-          </div>
-        )}
-      </div>
-    </>
   );
 }

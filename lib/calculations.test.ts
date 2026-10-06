@@ -9,6 +9,7 @@ import {
   maxDrawdownCents,
   strategyOpenValueCents,
   strategyUnrealizedPnLCents,
+  vegaWeightedIv,
 } from "./calculations";
 import { Leg, Strategy } from "./types";
 import { formatCents } from "./utils";
@@ -61,9 +62,11 @@ const mockStrategy = (overrides?: Partial<Strategy>): Strategy => ({
   entry_net_gamma: null,
   entry_net_theta: null,
   entry_net_vega: null,
+  entry_net_iv: null,
   current_net_delta: null,
   current_net_gamma: null,
   current_net_theta: null,
+  current_net_iv: null,
   current_net_vega: null,
   current_net_at: null,
   close_net_delta: null,
@@ -323,5 +326,49 @@ describe("formatCents", () => {
     expect(formatCents(undefined)).toBe("—");
     expect(formatCents(NaN)).toBe("—");
     expect(formatCents(Infinity)).toBe("—");
+  });
+});
+
+describe("vegaWeightedIv", () => {
+  it("weights each leg's IV by |vega| x qty", () => {
+    const iv = vegaWeightedIv([
+      { iv: 0.8, vega: 0.3, qty: 10 },
+      { iv: 0.6, vega: 0.1, qty: 10 },
+    ]);
+    // (0.8*3 + 0.6*1) / 4 = 0.75
+    expect(iv).toBeCloseTo(0.75, 10);
+  });
+
+  it("ignores vega sign", () => {
+    expect(
+      vegaWeightedIv([
+        { iv: 0.5, vega: -0.2, qty: 1 },
+        { iv: 0.7, vega: 0.2, qty: 1 },
+      ])
+    ).toBeCloseTo(0.6, 10);
+  });
+
+  it("skips legs with no usable IV instead of dragging the average to zero", () => {
+    expect(
+      vegaWeightedIv([
+        { iv: 0, vega: 0.3, qty: 10 },
+        { iv: NaN, vega: 0.3, qty: 10 },
+        { iv: 0.9, vega: 0.2, qty: 10 },
+      ])
+    ).toBeCloseTo(0.9, 10);
+  });
+
+  it("returns null when no leg has an IV", () => {
+    expect(vegaWeightedIv([])).toBeNull();
+    expect(vegaWeightedIv([{ iv: 0, vega: 0.1, qty: 1 }])).toBeNull();
+  });
+
+  it("falls back to a qty-weighted mean when every vega is zero", () => {
+    expect(
+      vegaWeightedIv([
+        { iv: 0.4, vega: 0, qty: 1 },
+        { iv: 0.8, vega: 0, qty: 3 },
+      ])
+    ).toBeCloseTo(0.7, 10);
   });
 });
