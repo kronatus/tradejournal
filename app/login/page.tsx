@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -120,6 +121,16 @@ export default function LoginPage() {
               required
               minLength={6}
             />
+            {!isSignUp && (
+              <div className="mt-1.5 text-right">
+                <Link
+                  href="/forgot-password"
+                  className="text-xs text-text-muted hover:text-text"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            )}
           </div>
 
           <button
