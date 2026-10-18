@@ -1,14 +1,16 @@
+"use client";
+
 import Link from "next/link";
-import { supabaseServer } from "@/lib/supabase/server";
+import { supabaseBrowser } from "@/lib/supabase/client";
+import { useUserQuery } from "@/lib/use-user-query";
+import { ProtectedRoute } from "@/components/protected-route";
 import { formatKind, formatCents, formatDate } from "@/lib/utils";
 import { strategyNetPremiumCents } from "@/lib/calculations";
 import { StatusBadge } from "@/components/status-badge";
 import { Leg } from "@/lib/types";
 
-export const revalidate = 0;
-
 async function getStrategies() {
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseBrowser
     .from("strategies")
     .select("*, legs(id, side, qty, entry_price_cents)")
     .order("created_at", { ascending: false });
@@ -17,8 +19,22 @@ async function getStrategies() {
   return data || [];
 }
 
-export default async function TradesPage() {
-  const strategies = await getStrategies();
+export default function TradesPage() {
+  return (
+    <ProtectedRoute>
+      <TradesContent />
+    </ProtectedRoute>
+  );
+}
+
+function TradesContent() {
+  const { data, error, loading } = useUserQuery(getStrategies);
+
+  if (loading) return <div className="py-12 text-center">Loading...</div>;
+  if (error || !data) {
+    return <div className="py-12 text-center text-loss">Failed to load: {error}</div>;
+  }
+  const strategies = data;
 
   return (
     <div className="space-y-6">

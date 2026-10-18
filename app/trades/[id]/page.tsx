@@ -1,5 +1,10 @@
+"use client";
+
+import { use } from "react";
 import Link from "next/link";
-import { supabaseServer } from "@/lib/supabase/server";
+import { supabaseBrowser } from "@/lib/supabase/client";
+import { useUserQuery } from "@/lib/use-user-query";
+import { ProtectedRoute } from "@/components/protected-route";
 import { formatCents, formatKind, formatDate, formatDateTime } from "@/lib/utils";
 import { strategyRealizedPnLCents } from "@/lib/calculations";
 import { Leg, Strategy } from "@/lib/types";
@@ -13,10 +18,8 @@ import { DeleteStrategyButton } from "@/components/strategy-detail/delete-strate
 import { LiveQuotesProvider } from "@/components/strategy-detail/live-quotes-context";
 import { StrategyPayoffChart } from "@/components/strategy-detail/strategy-payoff-chart";
 
-export const revalidate = 0;
-
 async function getStrategy(id: string): Promise<Strategy & { legs: Leg[] }> {
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseBrowser
     .from("strategies")
     .select("*, legs(*)")
     .eq("id", id)
@@ -26,13 +29,27 @@ async function getStrategy(id: string): Promise<Strategy & { legs: Leg[] }> {
   return data;
 }
 
-export default async function StrategyDetailPage({
+export default function StrategyDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const strategy = await getStrategy(id);
+  const { id } = use(params);
+  return (
+    <ProtectedRoute>
+      <StrategyDetail id={id} />
+    </ProtectedRoute>
+  );
+}
+
+function StrategyDetail({ id }: { id: string }) {
+  const { data: strategy, error, loading } = useUserQuery(() => getStrategy(id), [id]);
+
+  if (loading) return <div className="py-12 text-center">Loading...</div>;
+  if (error || !strategy) {
+    // RLS hides other users' rows, so a foreign id lands here too.
+    return <div className="py-12 text-center text-loss">Strategy not found.</div>;
+  }
 
   const pnlCents = strategy.legs.length > 0
     ? strategyRealizedPnLCents(strategy, strategy.legs)

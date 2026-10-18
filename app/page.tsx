@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { supabaseServer } from "@/lib/supabase/server";
+import { supabaseBrowser } from "@/lib/supabase/client";
+import { useUserQuery } from "@/lib/use-user-query";
 import { formatCents } from "@/lib/utils";
 import {
   totalRealizedPnLCents,
@@ -19,10 +22,8 @@ import { RefreshAllButton } from "@/components/refresh-all-button";
 import { ProtectedRoute } from "@/components/protected-route";
 import { Strategy, Leg } from "@/lib/types";
 
-export const revalidate = 0;
-
 async function getDashboardData() {
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseBrowser
     .from("strategies")
     .select("*, legs(*)")
     .order("closed_at", { ascending: true, nullsFirst: false });
@@ -31,8 +32,14 @@ async function getDashboardData() {
   return (data || []).map((s) => ({ strategy: s as Strategy, legs: (s.legs ?? []) as Leg[] }));
 }
 
-async function DashboardContent() {
-  const rows = await getDashboardData();
+function DashboardContent() {
+  const { data, error, loading } = useUserQuery(getDashboardData);
+
+  if (loading) return <div className="py-12 text-center">Loading...</div>;
+  if (error || !data) {
+    return <div className="py-12 text-center text-loss">Failed to load: {error}</div>;
+  }
+  const rows = data;
 
   const curve = equityCurve(rows);
   const totalPnL = totalRealizedPnLCents(rows);
