@@ -16,6 +16,10 @@ type AuthContextType = {
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<void>;
+  /** True when the user arrived via a password-recovery email link. */
+  isRecovery: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -24,19 +28,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isRecovery, setIsRecovery] = useState(false);
 
   useEffect(() => {
+    // The recovery link lands with `#...&type=recovery`; supabase-js strips the
+    // hash while initialising, so capture it before the auth listener can race.
+    const recoveryLink = window.location.hash.includes("type=recovery");
+
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (recoveryLink && session) setIsRecovery(true);
       setLoading(false);
     });
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") setIsRecovery(true);
+      if (event === "SIGNED_OUT") setIsRecovery(false);
       setSession(session);
       setUser(session?.user ?? null);
     });
@@ -59,8 +71,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
   };
 
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) throw error;
+  };
+
+  const updatePassword = async (password: string) => {
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    setIsRecovery(false);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        loading,
+        signUp,
+        signIn,
+        signOut,
+        resetPassword,
+        updatePassword,
+        isRecovery,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -199,3 +199,17 @@ export const MarketdataStockResponseSchema = z.discriminatedUnion("s", [
   MarketdataNoDataSchema,
   MarketdataErrorSchema,
 ]);
+
+export const ForgotPasswordInputSchema = z.object({
+  email: z.string().trim().email("Enter a valid email address"),
+});
+
+export const ResetPasswordInputSchema = z
+  .object({
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirm: z.string(),
+  })
+  .refine((v) => v.password === v.confirm, {
+    message: "Passwords do not match",
+    path: ["confirm"],
+  });
