@@ -61,6 +61,19 @@ export function LegsTable({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Mutation results applied locally so the table updates as soon as the API
+  // responds, without waiting on router.refresh() to deliver new props.
+  const [closedLegs, setClosedLegs] = useState<Record<string, Leg>>({});
+  const [deletedLegIds, setDeletedLegIds] = useState<Set<string>>(new Set());
+  const [addedLegs, setAddedLegs] = useState<Leg[]>([]);
+
+  const displayedLegs = [
+    ...legs
+      .filter((l) => !deletedLegIds.has(l.id))
+      .map((l) => (l.exit_price_cents == null && closedLegs[l.id]) || l),
+    ...addedLegs.filter((a) => !legs.some((l) => l.id === a.id)),
+  ];
+
   const handleCloseClick = (leg: Leg) => {
     const livePrice = livePerLeg?.find((l) => l.occ_symbol === leg.occ_symbol);
     const initialPrice = livePrice ? (livePrice.price_cents / 100).toFixed(2) : "";
@@ -96,6 +109,8 @@ export function LegsTable({
         throw new Error(data.error || "Failed to close leg");
       }
 
+      const updated = (await res.json()) as Leg;
+      setClosedLegs((prev) => ({ ...prev, [leg.id]: updated }));
       setExpandedLegId(null);
       setExitPriceDraft("");
       router.refresh();
@@ -130,6 +145,7 @@ export function LegsTable({
         throw new Error(data.error || "Failed to delete leg");
       }
 
+      setDeletedLegIds((prev) => new Set(prev).add(leg.id));
       setDeletingLegId(null);
       router.refresh();
     } catch (err) {
@@ -195,6 +211,8 @@ export function LegsTable({
         throw new Error(data.error || "Failed to add leg");
       }
 
+      const created = (await res.json()) as Leg;
+      setAddedLegs((prev) => [...prev, created]);
       setAddingLeg(false);
       setNewLegForm(initialNewLegForm);
       router.refresh();
@@ -209,7 +227,7 @@ export function LegsTable({
     <section className="overflow-hidden rounded-lg border border-border bg-surface shadow-sm">
       <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <h2 className="text-sm font-semibold">Legs</h2>
-        <span className="text-xs text-text-muted">{legs?.length || 0} total</span>
+        <span className="text-xs text-text-muted">{displayedLegs.length} total</span>
       </div>
       <table className="w-full text-sm">
         <thead>
@@ -225,7 +243,7 @@ export function LegsTable({
           </tr>
         </thead>
         <tbody>
-          {[...legs]
+          {displayedLegs
             .sort((a, b) => {
               const aOpen = a.exit_price_cents === null;
               const bOpen = b.exit_price_cents === null;
