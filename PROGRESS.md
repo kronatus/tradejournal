@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Last updated: 2026-09-25 (Phase 9 UI polish & live data enhancements)
+Last updated: 2026-11-08 (Phase 10 Research & Market Pulse)
 
 ## Phase 1: Core Trade Journal (MVP) ✅ COMPLETE
 - [x] Supabase schema (strategies, legs, import_batches tables) — migration 0001
@@ -127,6 +127,27 @@ Last updated: 2026-09-25 (Phase 9 UI polish & live data enhancements)
   - Uses `hourCycle: "h23"` to guarantee `00` at midnight (not `24:00`)
   - Tests pin midnight to `00:00`, no meridiem markers across the day
 - [x] **Database user query helper** — SQL templates for listing registered users (UID + email)
+
+---
+
+## Phase 10: Research & Market Pulse 🚧 CODE COMPLETE (pending prod setup)
+
+Claude chat does the analysis (Robinhood MCP + web search) and writes it to
+the app through an app-hosted MCP server; the app computes the market-wide
+scan itself so Claude never sweeps 500+ tickers.
+
+- [x] Migration `0007_research.sql`: `research_tickers`, `ticker_reports`, `market_sweeps`, `mcp_tokens` (RLS own rows), `market_bars` + `market_scans` (shared, read-only to users) — validated in PGlite with RLS checks
+- [x] Universe `data/universe.json`: S&P 500 + Nasdaq-100 (518 names, GICS) + index/sector ETFs; `scripts/refresh-universe.mjs`
+- [x] EOD ingest from Massive Grouped Daily (1 call = whole market), daily Vercel cron, resumable backfill script
+- [x] `lib/technicals.ts` (SMA/EMA/RSI/MACD/ATR/HV/rel-vol…) and `lib/market-scan.ts` (breadth, sector rotation, industries, index contributors, anomalies with reason codes) — bounded digest
+- [x] MCP server `app/api/mcp/[token]` — 11 tools, Zod-validated writes, per-user secret URL (hash stored), revocable
+- [x] `/research`: grouped editable ticker sidebar (Sector › Industry, pivot presets), snapshot + live spot, key numbers, 4 technical cards, fundamentals, strategies placeholder, ≤5 articles (≤48h)
+- [x] `/pulse`: Claude's sweep (regime, highlights, picks → Add to Research, trends) over the computed scan
+- [x] Skills `skills/market-sweep`, `skills/ticker-research` + setup guide `skills/README.md`
+- [ ] Prod: apply 0007, set `MASSIVE_API_KEY` + `CRON_SECRET`, backfill, connect Claude (see `skills/README.md`)
+- [ ] Verify Massive free plan serves Grouped Daily (unverifiable from the build sandbox)
+- [ ] Options strategy framework (deferred by design; reports have no strategies column yet)
+- [ ] Optional: fill `shares_outstanding` for cap weighting (`refresh-universe.mjs --shares`)
 
 ---
 

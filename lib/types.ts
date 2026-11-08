@@ -1,3 +1,13 @@
+import type {
+  Article,
+  SweepHighlight,
+  SweepPick,
+  SweepTrend,
+  Technicals,
+  TickerSnapshot,
+} from "./schemas";
+import type { ScanDigest } from "./market-scan";
+
 export const STRATEGY_KINDS = [
   "long_call",
   "long_put",
@@ -90,4 +100,76 @@ export type Database = {
       legs: { Row: Leg };
     };
   };
+};
+
+// --- Research & Market Pulse (migration 0007) ------------------------------
+
+export type ResearchTicker = {
+  id: string;
+  user_id: string;
+  symbol: string;
+  sector: string | null;
+  industry: string | null;
+  setup: string | null;
+  notes: string | null;
+  sort_order: number;
+  added_by: "user" | "claude";
+  created_at: string;
+  updated_at: string;
+};
+
+export type TickerReport = {
+  id: string;
+  user_id: string;
+  symbol: string;
+  as_of: string;
+  created_at: string;
+  snapshot: TickerSnapshot;
+  technicals: Technicals | null;
+  fundamentals: string | null;
+  articles: Article[];
+  next_earnings_date: string | null;
+  model_notes: string | null;
+};
+
+export type MarketSweep = {
+  id: string;
+  user_id: string;
+  scan_date: string | null;
+  as_of: string;
+  created_at: string;
+  headline: string;
+  regime: string | null;
+  summary: string;
+  highlights: SweepHighlight[];
+  picks: SweepPick[];
+  trends: SweepTrend[];
+};
+
+export type McpToken = {
+  id: string;
+  user_id: string;
+  label: string;
+  created_at: string;
+  last_used_at: string | null;
+  revoked_at: string | null;
+};
+
+/** One end-of-day bar, prices in integer cents. */
+export type MarketBar = {
+  date: string;
+  symbol: string;
+  open_cents: number;
+  high_cents: number;
+  low_cents: number;
+  close_cents: number;
+  vwap_cents: number | null;
+  volume: number;
+};
+
+export type MarketScanRow = {
+  scan_date: string;
+  computed_at: string;
+  weighting: "cap" | "equal";
+  digest: ScanDigest;
 };

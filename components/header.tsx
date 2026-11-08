@@ -11,6 +11,8 @@ const NAV = [
   { href: "/trades/new", label: "New" },
   { href: "/trades/import", label: "Import" },
   { href: "/sandbox", label: "Sandbox" },
+  { href: "/research", label: "Research" },
+  { href: "/pulse", label: "Pulse" },
 ];
 
 export default function Header() {
@@ -28,16 +30,16 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-surface/80 backdrop-blur">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-        <Link href="/" className="flex items-center gap-2">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+        <Link href="/" className="flex shrink-0 items-center gap-2">
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-accent text-white text-sm font-bold">
             TJ
           </span>
-          <span className="text-sm font-semibold tracking-tight">Trade Journal</span>
+          <span className="hidden text-sm font-semibold tracking-tight sm:inline">Trade Journal</span>
         </Link>
 
         {!loading && user ? (
-          <div className="flex items-center gap-1">
+          <div className="-mx-1 flex min-w-0 items-center gap-1 overflow-x-auto px-1 [scrollbar-width:none]">
             {NAV.map((item) => {
               const active = isActive(item.href);
               return (
@@ -45,7 +47,7 @@ export default function Header() {
                   key={item.href}
                   href={item.href}
                   className={
-                    "rounded-md px-3 py-1.5 text-sm transition-colors " +
+                    "shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 text-sm transition-colors " +
                     (active
                       ? "bg-muted text-text font-medium"
                       : "text-text-muted hover:bg-muted hover:text-text")
@@ -58,7 +60,7 @@ export default function Header() {
           </div>
         ) : null}
 
-        <div className="flex items-center gap-3 text-sm">
+        <div className="flex shrink-0 items-center gap-3 text-sm">
           <ThemeToggle />
           {!loading && (
             user ? (

@@ -35,6 +35,10 @@ performance metrics, and fetching market quotes for open positions.
 - Absent Greeks are flagged via `Quote.greeksMissing` and excluded from net Greeks. Zero is a claim; absence is not.
 - Tradier `updated_at` may fail strict Zod `.datetime()` validation — use a fresh ISO timestamp instead. Marketdata's `updated` (unix seconds) is trustworthy and IS preserved, because the free feed is delayed and the real mark time matters.
 
+- **Research / Pulse (Claude chat integration):** Claude chat — not the app — talks to Robinhood. It reaches the app through the app-hosted MCP server at `app/api/mcp/[token]` (tools in `lib/mcp/server.ts`); the path segment is a per-user secret whose sha256 lives in `mcp_tokens`. Tool inputs reuse the Zod schemas in `lib/schemas.ts`; keep `skills/*/SKILL.md` in step with any schema or tool change.
+- **Market scan:** `lib/market-scan.ts` turns `market_bars` for the S&P 500 + Nasdaq-100 universe (`data/universe.json`, built by `scripts/refresh-universe.mjs`) into a bounded digest stored in `market_scans`. Bars come from Massive Grouped Daily (`lib/market-data/eod.ts`, `MASSIVE_API_KEY`, free tier 5 calls/min) via the daily cron `app/api/market/ingest` (`CRON_SECRET`). Only `lib/market-data/eod.ts` knows the provider.
+- Service-role routes bypass RLS: everything in `lib/research-store.ts` must filter by `user_id` explicitly (enforced by its tests).
+
 ## Workflow
 - Run `npm run lint` and `npm test` after any change to `lib/` or `app/api/`
 - For DB schema changes: write a new file in `supabase/migrations/`, then regenerate types

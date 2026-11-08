@@ -1,0 +1,6463 @@
+{
+ "generated_at": "2026-11-08T01:31:51.548Z",
+ "sources": {
+  "sp500": "https://raw.githubusercontent.com/datasets/s-and-p-500-companies/main/data/constituents.csv",
+  "ndx": "https://raw.githubusercontent.com/Gary-Strauss/NASDAQ100_Constituents/master/data/nasdaq100_constituents.csv",
+  "shares": "massive /v3/reference/tickers"
+ },
+ "count": 533,
+ "entries": [
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "A",
+   "name": "Agilent Technologies",
+   "sector": "Health Care",
+   "sub_industry": "Life Sciences Tools & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AAPL",
+   "name": "Apple Inc.",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Hardware, Storage & Peripherals",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ABBV",
+   "name": "AbbVie",
+   "sector": "Health Care",
+   "sub_industry": "Biotechnology",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ABNB",
+   "name": "Airbnb",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Hotels, Resorts & Cruise Lines",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ABT",
+   "name": "Abbott Laboratories",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ACGL",
+   "name": "Arch Capital Group",
+   "sector": "Financials",
+   "sub_industry": "Property & Casualty Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ACN",
+   "name": "Accenture",
+   "sector": "Information Technology",
+   "sub_industry": "IT Consulting & Other Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ADBE",
+   "name": "Adobe Inc.",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ADI",
+   "name": "Analog Devices",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ADM",
+   "name": "Archer Daniels Midland",
+   "sector": "Consumer Staples",
+   "sub_industry": "Agricultural Products & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ADP",
+   "name": "Automatic Data Processing",
+   "sector": "Industrials",
+   "sub_industry": "Human Resource & Employment Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ADSK",
+   "name": "Autodesk",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AEE",
+   "name": "Ameren",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AEP",
+   "name": "American Electric Power",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AES",
+   "name": "AES Corporation",
+   "sector": "Utilities",
+   "sub_industry": "Independent Power Producers & Energy Traders",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AFL",
+   "name": "Aflac",
+   "sector": "Financials",
+   "sub_industry": "Life & Health Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AIG",
+   "name": "American International Group",
+   "sector": "Financials",
+   "sub_industry": "Multi-line Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AIZ",
+   "name": "Assurant",
+   "sector": "Financials",
+   "sub_industry": "Multi-line Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AJG",
+   "name": "Arthur J. Gallagher & Co.",
+   "sector": "Financials",
+   "sub_industry": "Insurance Brokers",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AKAM",
+   "name": "Akamai Technologies",
+   "sector": "Information Technology",
+   "sub_industry": "Internet Services & Infrastructure",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ALAB",
+   "name": "Astera Labs",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ALB",
+   "name": "Albemarle Corporation",
+   "sector": "Materials",
+   "sub_industry": "Specialty Chemicals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ALGN",
+   "name": "Align Technology",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Supplies",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ALL",
+   "name": "Allstate",
+   "sector": "Financials",
+   "sub_industry": "Property & Casualty Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ALLE",
+   "name": "Allegion",
+   "sector": "Industrials",
+   "sub_industry": "Building Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ALNY",
+   "name": "Alnylam Pharmaceuticals",
+   "sector": "Health Care",
+   "sub_industry": "Biotechnology",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AMAT",
+   "name": "Applied Materials",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductor Materials & Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AMCR",
+   "name": "Amcor",
+   "sector": "Materials",
+   "sub_industry": "Paper & Plastic Packaging Products & Materials",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AMD",
+   "name": "Advanced Micro Devices",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AME",
+   "name": "Ametek",
+   "sector": "Industrials",
+   "sub_industry": "Electrical Components & Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AMGN",
+   "name": "Amgen",
+   "sector": "Health Care",
+   "sub_industry": "Biotechnology",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AMP",
+   "name": "Ameriprise Financial",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AMT",
+   "name": "American Tower",
+   "sector": "Real Estate",
+   "sub_industry": "Telecom Tower REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AMZN",
+   "name": "Amazon",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Broadline Retail",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ANET",
+   "name": "Arista Networks",
+   "sector": "Information Technology",
+   "sub_industry": "Communications Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AON",
+   "name": "Aon plc",
+   "sector": "Financials",
+   "sub_industry": "Insurance Brokers",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AOS",
+   "name": "A. O. Smith",
+   "sector": "Industrials",
+   "sub_industry": "Building Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "APA",
+   "name": "APA Corporation",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Exploration & Production",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "APD",
+   "name": "Air Products",
+   "sector": "Materials",
+   "sub_industry": "Industrial Gases",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "APH",
+   "name": "Amphenol",
+   "sector": "Information Technology",
+   "sub_industry": "Electronic Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "APO",
+   "name": "Apollo Global Management",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "APP",
+   "name": "AppLovin",
+   "sector": "Communication Services",
+   "sub_industry": "Advertising",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "APTV",
+   "name": "Aptiv",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Automotive Parts & Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ARE",
+   "name": "Alexandria Real Estate Equities",
+   "sector": "Real Estate",
+   "sub_industry": "Office REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ARES",
+   "name": "Ares Management",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ARM",
+   "name": "Arm Holdings",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ASML",
+   "name": "ASML Holding",
+   "sector": "Information Technology",
+   "sub_industry": "Industrial Machinery",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ATO",
+   "name": "Atmos Energy",
+   "sector": "Utilities",
+   "sub_industry": "Gas Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AVGO",
+   "name": "Broadcom",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AVY",
+   "name": "Avery Dennison",
+   "sector": "Materials",
+   "sub_industry": "Paper & Plastic Packaging Products & Materials",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AWK",
+   "name": "American Water Works",
+   "sector": "Utilities",
+   "sub_industry": "Water Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AXON",
+   "name": "Axon Enterprise",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AXP",
+   "name": "American Express",
+   "sector": "Financials",
+   "sub_industry": "Consumer Finance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "AZO",
+   "name": "AutoZone",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Automotive Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BA",
+   "name": "Boeing",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BAC",
+   "name": "Bank of America",
+   "sector": "Financials",
+   "sub_industry": "Diversified Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BALL",
+   "name": "Ball Corporation",
+   "sector": "Materials",
+   "sub_industry": "Metal, Glass & Plastic Containers",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BAX",
+   "name": "Baxter International",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BBY",
+   "name": "Best Buy",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Computer & Electronics Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BDX",
+   "name": "Becton Dickinson",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BE",
+   "name": "Bloom Energy",
+   "sector": "Industrials",
+   "sub_industry": "Electrical Components & Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BEN",
+   "name": "Franklin Resources",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BF.B",
+   "name": "Brown–Forman",
+   "sector": "Consumer Staples",
+   "sub_industry": "Distillers & Vintners",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BG",
+   "name": "Bunge Global",
+   "sector": "Consumer Staples",
+   "sub_industry": "Agricultural Products & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BIIB",
+   "name": "Biogen",
+   "sector": "Health Care",
+   "sub_industry": "Biotechnology",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BKNG",
+   "name": "Booking Holdings",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Hotels, Resorts & Cruise Lines",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BKR",
+   "name": "Baker Hughes",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Equipment & Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BLK",
+   "name": "BlackRock",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BMY",
+   "name": "Bristol Myers Squibb",
+   "sector": "Health Care",
+   "sub_industry": "Pharmaceuticals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BNY",
+   "name": "BNY Mellon",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BR",
+   "name": "Broadridge Financial Solutions",
+   "sector": "Industrials",
+   "sub_industry": "Data Processing & Outsourced Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BRK.B",
+   "name": "Berkshire Hathaway",
+   "sector": "Financials",
+   "sub_industry": "Multi-Sector Holdings",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BRO",
+   "name": "Brown & Brown",
+   "sector": "Financials",
+   "sub_industry": "Insurance Brokers",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BSX",
+   "name": "Boston Scientific",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BX",
+   "name": "Blackstone Inc.",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "BXP",
+   "name": "BXP, Inc.",
+   "sector": "Real Estate",
+   "sub_industry": "Office REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "C",
+   "name": "Citigroup",
+   "sector": "Financials",
+   "sub_industry": "Diversified Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CAH",
+   "name": "Cardinal Health",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Distributors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CARR",
+   "name": "Carrier Global",
+   "sector": "Industrials",
+   "sub_industry": "Building Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CASY",
+   "name": "Casey's",
+   "sector": "Consumer Staples",
+   "sub_industry": "Food Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CAT",
+   "name": "Caterpillar Inc.",
+   "sector": "Industrials",
+   "sub_industry": "Construction Machinery & Heavy Transportation Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CB",
+   "name": "Chubb Limited",
+   "sector": "Financials",
+   "sub_industry": "Property & Casualty Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CBOE",
+   "name": "Cboe Global Markets",
+   "sector": "Financials",
+   "sub_industry": "Financial Exchanges & Data",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CBRE",
+   "name": "CBRE Group",
+   "sector": "Real Estate",
+   "sub_industry": "Real Estate Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CCEP",
+   "name": "Coca-Cola Europacific Partners",
+   "sector": "Consumer Staples",
+   "sub_industry": "Soft Drinks",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CCI",
+   "name": "Crown Castle",
+   "sector": "Real Estate",
+   "sub_industry": "Telecom Tower REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CCL",
+   "name": "Carnival Corporation",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Hotels, Resorts & Cruise Lines",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CDNS",
+   "name": "Cadence Design Systems",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CDW",
+   "name": "CDW Corporation",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Distributors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CEG",
+   "name": "Constellation Energy",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CF",
+   "name": "CF Industries",
+   "sector": "Materials",
+   "sub_industry": "Fertilizers & Agricultural Chemicals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CFG",
+   "name": "Citizens Financial Group",
+   "sector": "Financials",
+   "sub_industry": "Regional Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CHD",
+   "name": "Church & Dwight",
+   "sector": "Consumer Staples",
+   "sub_industry": "Household Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CHRW",
+   "name": "C.H. Robinson",
+   "sector": "Industrials",
+   "sub_industry": "Air Freight & Logistics",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CHTR",
+   "name": "Charter Communications",
+   "sector": "Communication Services",
+   "sub_industry": "Cable & Satellite",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CI",
+   "name": "Cigna",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CIEN",
+   "name": "Ciena",
+   "sector": "Information Technology",
+   "sub_industry": "Communications Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CINF",
+   "name": "Cincinnati Financial",
+   "sector": "Financials",
+   "sub_industry": "Property & Casualty Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CL",
+   "name": "Colgate-Palmolive",
+   "sector": "Consumer Staples",
+   "sub_industry": "Household Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CLX",
+   "name": "Clorox",
+   "sector": "Consumer Staples",
+   "sub_industry": "Household Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CMCSA",
+   "name": "Comcast",
+   "sector": "Communication Services",
+   "sub_industry": "Cable & Satellite",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CME",
+   "name": "CME Group",
+   "sector": "Financials",
+   "sub_industry": "Financial Exchanges & Data",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CMG",
+   "name": "Chipotle Mexican Grill",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Restaurants",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CMI",
+   "name": "Cummins",
+   "sector": "Industrials",
+   "sub_industry": "Construction Machinery & Heavy Transportation Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CMS",
+   "name": "CMS Energy",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CNC",
+   "name": "Centene Corporation",
+   "sector": "Health Care",
+   "sub_industry": "Managed Health Care",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CNP",
+   "name": "CenterPoint Energy",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "COF",
+   "name": "Capital One",
+   "sector": "Financials",
+   "sub_industry": "Consumer Finance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "COHR",
+   "name": "Coherent Corp.",
+   "sector": "Information Technology",
+   "sub_industry": "Electronic Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "COIN",
+   "name": "Coinbase",
+   "sector": "Financials",
+   "sub_industry": "Financial Exchanges & Data",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "COO",
+   "name": "Cooper Companies (The)",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Supplies",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "COP",
+   "name": "ConocoPhillips",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Exploration & Production",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "COR",
+   "name": "Cencora",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Distributors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "COST",
+   "name": "Costco",
+   "sector": "Consumer Staples",
+   "sub_industry": "Consumer Staples Merchandise Retail",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CPAY",
+   "name": "Corpay",
+   "sector": "Financials",
+   "sub_industry": "Transaction & Payment Processing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CPRT",
+   "name": "Copart",
+   "sector": "Industrials",
+   "sub_industry": "Diversified Support Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CPT",
+   "name": "Camden Property Trust",
+   "sector": "Real Estate",
+   "sub_industry": "Multi-Family Residential REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CRH",
+   "name": "CRH plc",
+   "sector": "Materials",
+   "sub_industry": "Construction Materials",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CRL",
+   "name": "Charles River Laboratories",
+   "sector": "Health Care",
+   "sub_industry": "Life Sciences Tools & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CRM",
+   "name": "Salesforce",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CRWD",
+   "name": "CrowdStrike",
+   "sector": "Information Technology",
+   "sub_industry": "Systems Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CRWV",
+   "name": "CoreWeave",
+   "sector": "Information Technology",
+   "sub_industry": "Computer Services",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CSCO",
+   "name": "Cisco",
+   "sector": "Information Technology",
+   "sub_industry": "Communications Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CSGP",
+   "name": "CoStar Group",
+   "sector": "Real Estate",
+   "sub_industry": "Real Estate Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CSX",
+   "name": "CSX Corporation",
+   "sector": "Industrials",
+   "sub_industry": "Rail Transportation",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CTAS",
+   "name": "Cintas",
+   "sector": "Industrials",
+   "sub_industry": "Diversified Support Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CTSH",
+   "name": "Cognizant",
+   "sector": "Information Technology",
+   "sub_industry": "IT Consulting & Other Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CVNA",
+   "name": "Carvana",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Automotive Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CVS",
+   "name": "CVS Health",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "CVX",
+   "name": "Chevron Corporation",
+   "sector": "Energy",
+   "sub_industry": "Integrated Oil & Gas",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "D",
+   "name": "Dominion Energy",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DAL",
+   "name": "Delta Air Lines",
+   "sector": "Industrials",
+   "sub_industry": "Passenger Airlines",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DASH",
+   "name": "DoorDash",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Specialized Consumer Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DD",
+   "name": "DuPont",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Conglomerates",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DDOG",
+   "name": "Datadog",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DE",
+   "name": "Deere & Company",
+   "sector": "Industrials",
+   "sub_industry": "Agricultural & Farm Machinery",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DECK",
+   "name": "Deckers Brands",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Footwear",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DELL",
+   "name": "Dell Technologies",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Hardware, Storage & Peripherals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DG",
+   "name": "Dollar General",
+   "sector": "Consumer Staples",
+   "sub_industry": "Consumer Staples Merchandise Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DGX",
+   "name": "Quest Diagnostics",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DHI",
+   "name": "D. R. Horton",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Homebuilding",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DHR",
+   "name": "Danaher Corporation",
+   "sector": "Health Care",
+   "sub_industry": "Life Sciences Tools & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DIA",
+   "name": "SPDR Dow Jones Industrial Average ETF",
+   "sector": null,
+   "sub_industry": null,
+   "indexes": [],
+   "role": "index"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DIS",
+   "name": "Walt Disney Company (The)",
+   "sector": "Communication Services",
+   "sub_industry": "Movies & Entertainment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DLR",
+   "name": "Digital Realty",
+   "sector": "Real Estate",
+   "sub_industry": "Data Center REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DLTR",
+   "name": "Dollar Tree",
+   "sector": "Consumer Staples",
+   "sub_industry": "Consumer Staples Merchandise Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DOC",
+   "name": "Healthpeak Properties",
+   "sector": "Real Estate",
+   "sub_industry": "Health Care REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DOV",
+   "name": "Dover Corporation",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DOW",
+   "name": "Dow Inc.",
+   "sector": "Materials",
+   "sub_industry": "Commodity Chemicals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DPZ",
+   "name": "Domino's",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Restaurants",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DRI",
+   "name": "Darden Restaurants",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Restaurants",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DTE",
+   "name": "DTE Energy",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DUK",
+   "name": "Duke Energy",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DVA",
+   "name": "DaVita",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DVN",
+   "name": "Devon Energy",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Exploration & Production",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "DXCM",
+   "name": "Dexcom",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EBAY",
+   "name": "eBay Inc.",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Broadline Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ECHO",
+   "name": "EchoStar",
+   "sector": "Communication Services",
+   "sub_industry": "Wireless Telecommunication Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ECL",
+   "name": "Ecolab",
+   "sector": "Materials",
+   "sub_industry": "Specialty Chemicals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ED",
+   "name": "Consolidated Edison",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EFX",
+   "name": "Equifax",
+   "sector": "Industrials",
+   "sub_industry": "Research & Consulting Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EG",
+   "name": "Everest Group",
+   "sector": "Financials",
+   "sub_industry": "Reinsurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EIX",
+   "name": "Edison International",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EL",
+   "name": "Estée Lauder Companies (The)",
+   "sector": "Consumer Staples",
+   "sub_industry": "Personal Care Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ELV",
+   "name": "Elevance Health",
+   "sector": "Health Care",
+   "sub_industry": "Managed Health Care",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EME",
+   "name": "Emcor",
+   "sector": "Industrials",
+   "sub_industry": "Construction & Engineering",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EMR",
+   "name": "Emerson Electric",
+   "sector": "Industrials",
+   "sub_industry": "Electrical Components & Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EOG",
+   "name": "EOG Resources",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Exploration & Production",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EQIX",
+   "name": "Equinix",
+   "sector": "Real Estate",
+   "sub_industry": "Data Center REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EQT",
+   "name": "EQT Corporation",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Exploration & Production",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ERIE",
+   "name": "Erie Indemnity",
+   "sector": "Financials",
+   "sub_industry": "Insurance Brokers",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ES",
+   "name": "Eversource Energy",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ESS",
+   "name": "Essex Property Trust",
+   "sector": "Real Estate",
+   "sub_industry": "Multi-Family Residential REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ETN",
+   "name": "Eaton Corporation",
+   "sector": "Industrials",
+   "sub_industry": "Electrical Components & Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ETR",
+   "name": "Entergy",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EVRG",
+   "name": "Evergy",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EW",
+   "name": "Edwards Lifesciences",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EXC",
+   "name": "Exelon",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EXE",
+   "name": "Expand Energy",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Exploration & Production",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EXPD",
+   "name": "Expeditors International",
+   "sector": "Industrials",
+   "sub_industry": "Air Freight & Logistics",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EXPE",
+   "name": "Expedia Group",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Hotels, Resorts & Cruise Lines",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "EXR",
+   "name": "Extra Space Storage",
+   "sector": "Real Estate",
+   "sub_industry": "Self-Storage REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "F",
+   "name": "Ford Motor Company",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Automobile Manufacturers",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FANG",
+   "name": "Diamondback Energy",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Exploration & Production",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FAST",
+   "name": "Fastenal",
+   "sector": "Industrials",
+   "sub_industry": "Trading Companies & Distributors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FCX",
+   "name": "Freeport-McMoRan",
+   "sector": "Materials",
+   "sub_industry": "Copper",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FDS",
+   "name": "FactSet",
+   "sector": "Financials",
+   "sub_industry": "Financial Exchanges & Data",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FDX",
+   "name": "FedEx",
+   "sector": "Industrials",
+   "sub_industry": "Air Freight & Logistics",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FDXF",
+   "name": "FedEx Freight",
+   "sector": "Industrials",
+   "sub_industry": "Cargo Ground Transportation",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FE",
+   "name": "FirstEnergy",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FER",
+   "name": "Ferrovial",
+   "sector": "Industrials",
+   "sub_industry": "Military, Government, Technical",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FERG",
+   "name": "Ferguson Enterprises",
+   "sector": "Industrials",
+   "sub_industry": "Trading Companies & Distributors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FFIV",
+   "name": "F5, Inc.",
+   "sector": "Information Technology",
+   "sub_industry": "Communications Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FICO",
+   "name": "Fair Isaac",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FIS",
+   "name": "Fidelity National Information Services",
+   "sector": "Financials",
+   "sub_industry": "Transaction & Payment Processing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FISV",
+   "name": "Fiserv",
+   "sector": "Financials",
+   "sub_industry": "Transaction & Payment Processing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FITB",
+   "name": "Fifth Third Bancorp",
+   "sector": "Financials",
+   "sub_industry": "Regional Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FIX",
+   "name": "Comfort Systems USA",
+   "sector": "Industrials",
+   "sub_industry": "Construction & Engineering",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FLEX",
+   "name": "Flex Ltd.",
+   "sector": "Information Technology",
+   "sub_industry": "Electronic Manufacturing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FOX",
+   "name": "Fox Corporation (Class B)",
+   "sector": "Communication Services",
+   "sub_industry": "Broadcasting",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FOXA",
+   "name": "Fox Corporation (Class A)",
+   "sector": "Communication Services",
+   "sub_industry": "Broadcasting",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FRT",
+   "name": "Federal Realty Investment Trust",
+   "sector": "Real Estate",
+   "sub_industry": "Retail REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FSLR",
+   "name": "First Solar",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FTNT",
+   "name": "Fortinet",
+   "sector": "Information Technology",
+   "sub_industry": "Systems Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "FTV",
+   "name": "Fortive",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GD",
+   "name": "General Dynamics",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GDDY",
+   "name": "GoDaddy",
+   "sector": "Information Technology",
+   "sub_industry": "Internet Services & Infrastructure",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GE",
+   "name": "GE Aerospace",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GEHC",
+   "name": "GE HealthCare",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GEN",
+   "name": "Gen Digital",
+   "sector": "Information Technology",
+   "sub_industry": "Systems Software",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GEV",
+   "name": "GE Vernova",
+   "sector": "Industrials",
+   "sub_industry": "Heavy Electrical Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GILD",
+   "name": "Gilead Sciences",
+   "sector": "Health Care",
+   "sub_industry": "Biotechnology",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GIS",
+   "name": "General Mills",
+   "sector": "Consumer Staples",
+   "sub_industry": "Packaged Foods & Meats",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GL",
+   "name": "Globe Life",
+   "sector": "Financials",
+   "sub_industry": "Life & Health Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GLW",
+   "name": "Corning Inc.",
+   "sector": "Information Technology",
+   "sub_industry": "Electronic Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GM",
+   "name": "General Motors",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Automobile Manufacturers",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GNRC",
+   "name": "Generac",
+   "sector": "Industrials",
+   "sub_industry": "Heavy Electrical Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GOOG",
+   "name": "Alphabet Inc. (Class C)",
+   "sector": "Communication Services",
+   "sub_industry": "Interactive Media & Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GOOGL",
+   "name": "Alphabet Inc. (Class A)",
+   "sector": "Communication Services",
+   "sub_industry": "Interactive Media & Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GPC",
+   "name": "Genuine Parts Company",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Distributors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GPN",
+   "name": "Global Payments",
+   "sector": "Financials",
+   "sub_industry": "Transaction & Payment Processing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GRMN",
+   "name": "Garmin",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Consumer Electronics",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GS",
+   "name": "Goldman Sachs",
+   "sector": "Financials",
+   "sub_industry": "Investment Banking & Brokerage",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "GWW",
+   "name": "W. W. Grainger",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HAL",
+   "name": "Halliburton",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Equipment & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HAS",
+   "name": "Hasbro",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Leisure Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HBAN",
+   "name": "Huntington Bancshares",
+   "sector": "Financials",
+   "sub_industry": "Regional Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HCA",
+   "name": "HCA Healthcare",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Facilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HD",
+   "name": "Home Depot (The)",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Home Improvement Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HIG",
+   "name": "Hartford (The)",
+   "sector": "Financials",
+   "sub_industry": "Property & Casualty Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HII",
+   "name": "Huntington Ingalls Industries",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HLT",
+   "name": "Hilton Worldwide",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Hotels, Resorts & Cruise Lines",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HON",
+   "name": "Honeywell Technologies",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Conglomerates",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HONA",
+   "name": "Honeywell Aerospace",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HOOD",
+   "name": "Robinhood Markets",
+   "sector": "Financials",
+   "sub_industry": "Investment Banking & Brokerage",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HPE",
+   "name": "Hewlett Packard Enterprise",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Hardware, Storage & Peripherals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HPQ",
+   "name": "HP Inc.",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Hardware, Storage & Peripherals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HRL",
+   "name": "Hormel Foods",
+   "sector": "Consumer Staples",
+   "sub_industry": "Packaged Foods & Meats",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HSIC",
+   "name": "Henry Schein",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Distributors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HST",
+   "name": "Host Hotels & Resorts",
+   "sector": "Real Estate",
+   "sub_industry": "Hotel & Resort REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HSY",
+   "name": "Hershey Company (The)",
+   "sector": "Consumer Staples",
+   "sub_industry": "Packaged Foods & Meats",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HUBB",
+   "name": "Hubbell Incorporated",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HUM",
+   "name": "Humana",
+   "sector": "Health Care",
+   "sub_industry": "Managed Health Care",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "HWM",
+   "name": "Howmet Aerospace",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IBKR",
+   "name": "Interactive Brokers",
+   "sector": "Financials",
+   "sub_industry": "Investment Banking & Brokerage",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IBM",
+   "name": "IBM",
+   "sector": "Information Technology",
+   "sub_industry": "IT Consulting & Other Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ICE",
+   "name": "Intercontinental Exchange",
+   "sector": "Financials",
+   "sub_industry": "Financial Exchanges & Data",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IDXX",
+   "name": "Idexx Laboratories",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IEX",
+   "name": "IDEX Corporation",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IFF",
+   "name": "International Flavors & Fragrances",
+   "sector": "Materials",
+   "sub_industry": "Specialty Chemicals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ILMN",
+   "name": "Illumina, Inc.",
+   "sector": "Health Care",
+   "sub_industry": "Life Sciences Tools & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "INCY",
+   "name": "Incyte",
+   "sector": "Health Care",
+   "sub_industry": "Biotechnology",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "INTC",
+   "name": "Intel",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "INTU",
+   "name": "Intuit",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "INVH",
+   "name": "Invitation Homes",
+   "sector": "Real Estate",
+   "sub_industry": "Single-Family Residential REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IP",
+   "name": "International Paper",
+   "sector": "Materials",
+   "sub_industry": "Paper & Plastic Packaging Products & Materials",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IQV",
+   "name": "IQVIA",
+   "sector": "Health Care",
+   "sub_industry": "Life Sciences Tools & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IR",
+   "name": "Ingersoll Rand",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IRM",
+   "name": "Iron Mountain",
+   "sector": "Real Estate",
+   "sub_industry": "Other Specialized REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ISRG",
+   "name": "Intuitive Surgical",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IT",
+   "name": "Gartner",
+   "sector": "Information Technology",
+   "sub_industry": "IT Consulting & Other Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ITW",
+   "name": "Illinois Tool Works",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IVZ",
+   "name": "Invesco",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "IWM",
+   "name": "iShares Russell 2000 ETF",
+   "sector": null,
+   "sub_industry": null,
+   "indexes": [],
+   "role": "index"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "J",
+   "name": "Jacobs Solutions",
+   "sector": "Industrials",
+   "sub_industry": "Construction & Engineering",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "JBHT",
+   "name": "J.B. Hunt",
+   "sector": "Industrials",
+   "sub_industry": "Cargo Ground Transportation",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "JBL",
+   "name": "Jabil",
+   "sector": "Information Technology",
+   "sub_industry": "Electronic Manufacturing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "JCI",
+   "name": "Johnson Controls",
+   "sector": "Industrials",
+   "sub_industry": "Building Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "JKHY",
+   "name": "Jack Henry & Associates",
+   "sector": "Financials",
+   "sub_industry": "Transaction & Payment Processing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "JNJ",
+   "name": "Johnson & Johnson",
+   "sector": "Health Care",
+   "sub_industry": "Pharmaceuticals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "JPM",
+   "name": "JPMorgan Chase",
+   "sector": "Financials",
+   "sub_industry": "Diversified Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KDP",
+   "name": "Keurig Dr Pepper",
+   "sector": "Consumer Staples",
+   "sub_industry": "Soft Drinks & Non-alcoholic Beverages",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KEY",
+   "name": "KeyCorp",
+   "sector": "Financials",
+   "sub_industry": "Regional Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KEYS",
+   "name": "Keysight Technologies",
+   "sector": "Information Technology",
+   "sub_industry": "Electronic Equipment & Instruments",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KHC",
+   "name": "Kraft Heinz",
+   "sector": "Consumer Staples",
+   "sub_industry": "Packaged Foods & Meats",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KIM",
+   "name": "Kimco Realty",
+   "sector": "Real Estate",
+   "sub_industry": "Retail REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KKR",
+   "name": "KKR & Co.",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KLAC",
+   "name": "KLA Corporation",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductor Materials & Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KMB",
+   "name": "Kimberly-Clark",
+   "sector": "Consumer Staples",
+   "sub_industry": "Household Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KMI",
+   "name": "Kinder Morgan",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Storage & Transportation",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KO",
+   "name": "Coca-Cola Company (The)",
+   "sector": "Consumer Staples",
+   "sub_industry": "Soft Drinks & Non-alcoholic Beverages",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "KR",
+   "name": "Kroger",
+   "sector": "Consumer Staples",
+   "sub_industry": "Food Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "L",
+   "name": "Loews Corporation",
+   "sector": "Financials",
+   "sub_industry": "Multi-line Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LDOS",
+   "name": "Leidos",
+   "sector": "Industrials",
+   "sub_industry": "Diversified Support Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LEN",
+   "name": "Lennar",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Homebuilding",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LH",
+   "name": "Labcorp",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LHX",
+   "name": "L3Harris",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LII",
+   "name": "Lennox International",
+   "sector": "Industrials",
+   "sub_industry": "Building Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LIN",
+   "name": "Linde plc",
+   "sector": "Materials",
+   "sub_industry": "Industrial Gases",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LITE",
+   "name": "Lumentum",
+   "sector": "Information Technology",
+   "sub_industry": "Communications Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LLY",
+   "name": "Lilly (Eli)",
+   "sector": "Health Care",
+   "sub_industry": "Pharmaceuticals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LMT",
+   "name": "Lockheed Martin",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LNT",
+   "name": "Alliant Energy",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LOW",
+   "name": "Lowe's",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Home Improvement Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LRCX",
+   "name": "Lam Research",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductor Materials & Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LULU",
+   "name": "Lululemon Athletica",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Apparel, Accessories & Luxury Goods",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LUV",
+   "name": "Southwest Airlines",
+   "sector": "Industrials",
+   "sub_industry": "Passenger Airlines",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LVS",
+   "name": "Las Vegas Sands",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Casinos & Gaming",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LYB",
+   "name": "LyondellBasell",
+   "sector": "Materials",
+   "sub_industry": "Specialty Chemicals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "LYV",
+   "name": "Live Nation Entertainment",
+   "sector": "Communication Services",
+   "sub_industry": "Movies & Entertainment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MA",
+   "name": "Mastercard",
+   "sector": "Financials",
+   "sub_industry": "Transaction & Payment Processing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MAA",
+   "name": "Mid-America Apartment Communities",
+   "sector": "Real Estate",
+   "sub_industry": "Multi-Family Residential REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MAR",
+   "name": "Marriott International",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Hotels, Resorts & Cruise Lines",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MAS",
+   "name": "Masco",
+   "sector": "Industrials",
+   "sub_industry": "Building Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MCD",
+   "name": "McDonald's",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Restaurants",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MCHP",
+   "name": "Microchip Technology",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MCK",
+   "name": "McKesson",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Distributors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MCO",
+   "name": "Moody's Corporation",
+   "sector": "Financials",
+   "sub_industry": "Financial Exchanges & Data",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MDLZ",
+   "name": "Mondelez International",
+   "sector": "Consumer Staples",
+   "sub_industry": "Packaged Foods & Meats",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MDT",
+   "name": "Medtronic",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MELI",
+   "name": "Mercado Libre",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Catalog/Specialty Distribution",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MET",
+   "name": "MetLife",
+   "sector": "Financials",
+   "sub_industry": "Life & Health Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "META",
+   "name": "Meta Platforms",
+   "sector": "Communication Services",
+   "sub_industry": "Interactive Media & Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MGM",
+   "name": "MGM Resorts",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Casinos & Gaming",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MKC",
+   "name": "McCormick & Company",
+   "sector": "Consumer Staples",
+   "sub_industry": "Packaged Foods & Meats",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MLM",
+   "name": "Martin Marietta Materials",
+   "sector": "Materials",
+   "sub_industry": "Construction Materials",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MMM",
+   "name": "3M",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Conglomerates",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MNST",
+   "name": "Monster Beverage",
+   "sector": "Consumer Staples",
+   "sub_industry": "Soft Drinks & Non-alcoholic Beverages",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MO",
+   "name": "Altria",
+   "sector": "Consumer Staples",
+   "sub_industry": "Tobacco",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MOS",
+   "name": "Mosaic Company (The)",
+   "sector": "Materials",
+   "sub_industry": "Fertilizers & Agricultural Chemicals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MPC",
+   "name": "Marathon Petroleum",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Refining & Marketing",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MPWR",
+   "name": "Monolithic Power Systems",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MRK",
+   "name": "Merck & Co.",
+   "sector": "Health Care",
+   "sub_industry": "Pharmaceuticals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MRNA",
+   "name": "Moderna",
+   "sector": "Health Care",
+   "sub_industry": "Biotechnology",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MRSH",
+   "name": "Marsh McLennan",
+   "sector": "Financials",
+   "sub_industry": "Insurance Brokers",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MRVL",
+   "name": "Marvell Technology",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MS",
+   "name": "Morgan Stanley",
+   "sector": "Financials",
+   "sub_industry": "Investment Banking & Brokerage",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MSCI",
+   "name": "MSCI",
+   "sector": "Financials",
+   "sub_industry": "Financial Exchanges & Data",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MSFT",
+   "name": "Microsoft",
+   "sector": "Information Technology",
+   "sub_industry": "Systems Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MSI",
+   "name": "Motorola Solutions",
+   "sector": "Information Technology",
+   "sub_industry": "Communications Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MSTR",
+   "name": "MicroStrategy",
+   "sector": "Information Technology",
+   "sub_industry": "Software",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MTB",
+   "name": "M&T Bank",
+   "sector": "Financials",
+   "sub_industry": "Regional Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MTD",
+   "name": "Mettler Toledo",
+   "sector": "Health Care",
+   "sub_industry": "Life Sciences Tools & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "MU",
+   "name": "Micron Technology",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NBIS",
+   "name": "Nebius Group",
+   "sector": "Information Technology",
+   "sub_industry": "Computer Services",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NCLH",
+   "name": "Norwegian Cruise Line Holdings",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Hotels, Resorts & Cruise Lines",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NDAQ",
+   "name": "Nasdaq, Inc.",
+   "sector": "Financials",
+   "sub_industry": "Financial Exchanges & Data",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NDSN",
+   "name": "Nordson Corporation",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NEE",
+   "name": "NextEra Energy",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NEM",
+   "name": "Newmont",
+   "sector": "Materials",
+   "sub_industry": "Gold",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NFLX",
+   "name": "Netflix",
+   "sector": "Communication Services",
+   "sub_industry": "Movies & Entertainment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NI",
+   "name": "NiSource",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NKE",
+   "name": "Nike, Inc.",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Apparel, Accessories & Luxury Goods",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NOC",
+   "name": "Northrop Grumman",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NOW",
+   "name": "ServiceNow",
+   "sector": "Information Technology",
+   "sub_industry": "Systems Software",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NRG",
+   "name": "NRG Energy",
+   "sector": "Utilities",
+   "sub_industry": "Independent Power Producers & Energy Traders",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NSC",
+   "name": "Norfolk Southern",
+   "sector": "Industrials",
+   "sub_industry": "Rail Transportation",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NTAP",
+   "name": "NetApp",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Hardware, Storage & Peripherals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NTRS",
+   "name": "Northern Trust",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NUE",
+   "name": "Nucor",
+   "sector": "Materials",
+   "sub_industry": "Steel",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NVDA",
+   "name": "Nvidia",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NVR",
+   "name": "NVR, Inc.",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Homebuilding",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NWS",
+   "name": "News Corp (Class B)",
+   "sector": "Communication Services",
+   "sub_industry": "Publishing",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NWSA",
+   "name": "News Corp (Class A)",
+   "sector": "Communication Services",
+   "sub_industry": "Publishing",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "NXPI",
+   "name": "NXP Semiconductors",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "O",
+   "name": "Realty Income",
+   "sector": "Real Estate",
+   "sub_industry": "Retail REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ODFL",
+   "name": "Old Dominion",
+   "sector": "Industrials",
+   "sub_industry": "Cargo Ground Transportation",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "OKE",
+   "name": "Oneok",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Storage & Transportation",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "OKTA",
+   "name": "Okta, Inc.",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "OMC",
+   "name": "Omnicom Group",
+   "sector": "Communication Services",
+   "sub_industry": "Advertising",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ON",
+   "name": "ON Semiconductor",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ORCL",
+   "name": "Oracle Corporation",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ORLY",
+   "name": "O'Reilly Automotive",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Automotive Retail",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "OTIS",
+   "name": "Otis Worldwide",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "OXY",
+   "name": "Occidental Petroleum",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Exploration & Production",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "P",
+   "name": "Everpure",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Hardware, Storage & Peripherals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PANW",
+   "name": "Palo Alto Networks",
+   "sector": "Information Technology",
+   "sub_industry": "Systems Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PAYX",
+   "name": "Paychex",
+   "sector": "Industrials",
+   "sub_industry": "Human Resource & Employment Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PCAR",
+   "name": "Paccar",
+   "sector": "Industrials",
+   "sub_industry": "Construction Machinery & Heavy Transportation Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PCG",
+   "name": "PG&E Corporation",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PDD",
+   "name": "PDD Holdings",
+   "sector": "Information Technology",
+   "sub_industry": "EDP Services",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PEG",
+   "name": "Public Service Enterprise Group",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PEP",
+   "name": "PepsiCo",
+   "sector": "Consumer Staples",
+   "sub_industry": "Soft Drinks & Non-alcoholic Beverages",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PFE",
+   "name": "Pfizer",
+   "sector": "Health Care",
+   "sub_industry": "Pharmaceuticals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PFG",
+   "name": "Principal Financial Group",
+   "sector": "Financials",
+   "sub_industry": "Life & Health Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PG",
+   "name": "Procter & Gamble",
+   "sector": "Consumer Staples",
+   "sub_industry": "Personal Care Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PGR",
+   "name": "Progressive Corporation",
+   "sector": "Financials",
+   "sub_industry": "Property & Casualty Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PH",
+   "name": "Parker Hannifin",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PHM",
+   "name": "PulteGroup",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Homebuilding",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PKG",
+   "name": "Packaging Corporation of America",
+   "sector": "Materials",
+   "sub_industry": "Paper & Plastic Packaging Products & Materials",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PLD",
+   "name": "Prologis",
+   "sector": "Real Estate",
+   "sub_industry": "Industrial REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PLTR",
+   "name": "Palantir Technologies",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PM",
+   "name": "Philip Morris International",
+   "sector": "Consumer Staples",
+   "sub_industry": "Tobacco",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PNC",
+   "name": "PNC Financial Services",
+   "sector": "Financials",
+   "sub_industry": "Diversified Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PNR",
+   "name": "Pentair",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PNW",
+   "name": "Pinnacle West Capital",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PODD",
+   "name": "Insulet Corporation",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PPG",
+   "name": "PPG Industries",
+   "sector": "Materials",
+   "sub_industry": "Specialty Chemicals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PPL",
+   "name": "PPL Corporation",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PRU",
+   "name": "Prudential Financial",
+   "sector": "Financials",
+   "sub_industry": "Life & Health Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PSA",
+   "name": "Public Storage",
+   "sector": "Real Estate",
+   "sub_industry": "Self-Storage REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PSX",
+   "name": "Phillips 66",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Refining & Marketing",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PTC",
+   "name": "PTC Inc.",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PWR",
+   "name": "Quanta Services",
+   "sector": "Industrials",
+   "sub_industry": "Construction & Engineering",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "PYPL",
+   "name": "PayPal",
+   "sector": "Financials",
+   "sub_industry": "Transaction & Payment Processing Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "Q",
+   "name": "Qnity Electronics",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductor Materials & Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "QCOM",
+   "name": "Qualcomm",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "QQQ",
+   "name": "Invesco QQQ (Nasdaq-100)",
+   "sector": null,
+   "sub_industry": null,
+   "indexes": [],
+   "role": "index"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "RCL",
+   "name": "Royal Caribbean Group",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Hotels, Resorts & Cruise Lines",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "RDDT",
+   "name": "Reddit",
+   "sector": "Communication Services",
+   "sub_industry": "Interactive Media & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "REG",
+   "name": "Regency Centers",
+   "sector": "Real Estate",
+   "sub_industry": "Retail REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "REGN",
+   "name": "Regeneron Pharmaceuticals",
+   "sector": "Health Care",
+   "sub_industry": "Biotechnology",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "RF",
+   "name": "Regions Financial Corporation",
+   "sector": "Financials",
+   "sub_industry": "Regional Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "RJF",
+   "name": "Raymond James Financial",
+   "sector": "Financials",
+   "sub_industry": "Investment Banking & Brokerage",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "RKLB",
+   "name": "Rocket Lab",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "RL",
+   "name": "Ralph Lauren Corporation",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Apparel, Accessories & Luxury Goods",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "RMD",
+   "name": "ResMed",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ROK",
+   "name": "Rockwell Automation",
+   "sector": "Industrials",
+   "sub_industry": "Electrical Components & Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ROL",
+   "name": "Rollins, Inc.",
+   "sector": "Industrials",
+   "sub_industry": "Environmental & Facilities Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ROP",
+   "name": "Roper Technologies",
+   "sector": "Information Technology",
+   "sub_industry": "Electronic Equipment & Instruments",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ROST",
+   "name": "Ross Stores",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Apparel Retail",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "RSG",
+   "name": "Republic Services",
+   "sector": "Industrials",
+   "sub_industry": "Environmental & Facilities Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "RTX",
+   "name": "RTX Corporation",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "RVTY",
+   "name": "Revvity",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SBAC",
+   "name": "SBA Communications",
+   "sector": "Real Estate",
+   "sub_industry": "Telecom Tower REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SBUX",
+   "name": "Starbucks",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Restaurants",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SCHW",
+   "name": "Charles Schwab Corporation",
+   "sector": "Financials",
+   "sub_industry": "Investment Banking & Brokerage",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SHOP",
+   "name": "Shopify",
+   "sector": "Information Technology",
+   "sub_industry": "Software",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SHW",
+   "name": "Sherwin-Williams",
+   "sector": "Materials",
+   "sub_industry": "Specialty Chemicals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SJM",
+   "name": "J.M. Smucker Company (The)",
+   "sector": "Consumer Staples",
+   "sub_industry": "Packaged Foods & Meats",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SKYD",
+   "name": "Skydance",
+   "sector": "Communication Services",
+   "sub_industry": "Movies & Entertainment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SLB",
+   "name": "Schlumberger",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Equipment & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SMCI",
+   "name": "Supermicro",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Hardware, Storage & Peripherals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SNA",
+   "name": "Snap-on",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SNDK",
+   "name": "Sandisk",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Hardware, Storage & Peripherals",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SNPS",
+   "name": "Synopsys",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SO",
+   "name": "Southern Company",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SOLV",
+   "name": "Solventum",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Technology",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SPCX",
+   "name": "SpaceX",
+   "sector": "Communication Services",
+   "sub_industry": "Telecommunications Services",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SPG",
+   "name": "Simon Property Group",
+   "sector": "Real Estate",
+   "sub_industry": "Retail REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SPGI",
+   "name": "S&P Global",
+   "sector": "Financials",
+   "sub_industry": "Financial Exchanges & Data",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SPY",
+   "name": "SPDR S&P 500 ETF",
+   "sector": null,
+   "sub_industry": null,
+   "indexes": [],
+   "role": "index"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SRE",
+   "name": "Sempra",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "STE",
+   "name": "Steris",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "STLD",
+   "name": "Steel Dynamics",
+   "sector": "Materials",
+   "sub_industry": "Steel",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "STT",
+   "name": "State Street Corporation",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "STX",
+   "name": "Seagate Technology",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Hardware, Storage & Peripherals",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "STZ",
+   "name": "Constellation Brands",
+   "sector": "Consumer Staples",
+   "sub_industry": "Distillers & Vintners",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SW",
+   "name": "Smurfit Westrock",
+   "sector": "Materials",
+   "sub_industry": "Paper & Plastic Packaging Products & Materials",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SWK",
+   "name": "Stanley Black & Decker",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SWKS",
+   "name": "Skyworks Solutions",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SYF",
+   "name": "Synchrony Financial",
+   "sector": "Financials",
+   "sub_industry": "Consumer Finance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SYK",
+   "name": "Stryker Corporation",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "SYY",
+   "name": "Sysco",
+   "sector": "Consumer Staples",
+   "sub_industry": "Food Distributors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "T",
+   "name": "AT&T",
+   "sector": "Communication Services",
+   "sub_industry": "Integrated Telecommunication Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TDG",
+   "name": "TransDigm Group",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TDY",
+   "name": "Teledyne Technologies",
+   "sector": "Information Technology",
+   "sub_industry": "Electronic Equipment & Instruments",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TECH",
+   "name": "Bio-Techne",
+   "sector": "Health Care",
+   "sub_industry": "Life Sciences Tools & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TEL",
+   "name": "TE Connectivity",
+   "sector": "Information Technology",
+   "sub_industry": "Electronic Manufacturing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TER",
+   "name": "Teradyne",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductor Materials & Equipment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TFC",
+   "name": "Truist Financial",
+   "sector": "Financials",
+   "sub_industry": "Diversified Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TGT",
+   "name": "Target Corporation",
+   "sector": "Consumer Staples",
+   "sub_industry": "Consumer Staples Merchandise Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TJX",
+   "name": "TJX Companies",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Apparel Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TKO",
+   "name": "TKO Group Holdings",
+   "sector": "Communication Services",
+   "sub_industry": "Movies & Entertainment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TMO",
+   "name": "Thermo Fisher Scientific",
+   "sector": "Health Care",
+   "sub_industry": "Life Sciences Tools & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TMUS",
+   "name": "T-Mobile US",
+   "sector": "Communication Services",
+   "sub_industry": "Wireless Telecommunication Services",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TPL",
+   "name": "Texas Pacific Land Corporation",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Exploration & Production",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TPR",
+   "name": "Tapestry, Inc.",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Apparel, Accessories & Luxury Goods",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TRGP",
+   "name": "Targa Resources",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Storage & Transportation",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TRI",
+   "name": "Thomson Reuters",
+   "sector": "Information Technology",
+   "sub_industry": "Software",
+   "indexes": [
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TRMB",
+   "name": "Trimble Inc.",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TROW",
+   "name": "T. Rowe Price",
+   "sector": "Financials",
+   "sub_industry": "Asset Management & Custody Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TRV",
+   "name": "Travelers Companies (The)",
+   "sector": "Financials",
+   "sub_industry": "Property & Casualty Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TSCO",
+   "name": "Tractor Supply",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Other Specialty Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TSLA",
+   "name": "Tesla, Inc.",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Automobile Manufacturers",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TSN",
+   "name": "Tyson Foods",
+   "sector": "Consumer Staples",
+   "sub_industry": "Packaged Foods & Meats",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TT",
+   "name": "Trane Technologies",
+   "sector": "Industrials",
+   "sub_industry": "Building Products",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TTWO",
+   "name": "Take-Two Interactive",
+   "sector": "Communication Services",
+   "sub_industry": "Interactive Home Entertainment",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TWLO",
+   "name": "Twilio",
+   "sector": "Information Technology",
+   "sub_industry": "Systems Software",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TXN",
+   "name": "Texas Instruments",
+   "sector": "Information Technology",
+   "sub_industry": "Semiconductors",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TXT",
+   "name": "Textron",
+   "sector": "Industrials",
+   "sub_industry": "Aerospace & Defense",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "TYL",
+   "name": "Tyler Technologies",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "UAL",
+   "name": "United Airlines Holdings",
+   "sector": "Industrials",
+   "sub_industry": "Passenger Airlines",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "UBER",
+   "name": "Uber",
+   "sector": "Industrials",
+   "sub_industry": "Passenger Ground Transportation",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "UDR",
+   "name": "UDR, Inc.",
+   "sector": "Real Estate",
+   "sub_industry": "Multi-Family Residential REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "UHS",
+   "name": "Universal Health Services",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Facilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ULTA",
+   "name": "Ulta Beauty",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Other Specialty Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "UNH",
+   "name": "UnitedHealth Group",
+   "sector": "Health Care",
+   "sub_industry": "Managed Health Care",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "UNP",
+   "name": "Union Pacific Corporation",
+   "sector": "Industrials",
+   "sub_industry": "Rail Transportation",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "UPS",
+   "name": "United Parcel Service",
+   "sector": "Industrials",
+   "sub_industry": "Air Freight & Logistics",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "URI",
+   "name": "United Rentals",
+   "sector": "Industrials",
+   "sub_industry": "Trading Companies & Distributors",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "USB",
+   "name": "U.S. Bancorp",
+   "sector": "Financials",
+   "sub_industry": "Diversified Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "V",
+   "name": "Visa Inc.",
+   "sector": "Financials",
+   "sub_industry": "Transaction & Payment Processing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VEEV",
+   "name": "Veeva Systems",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Technology",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VICI",
+   "name": "Vici Properties",
+   "sector": "Real Estate",
+   "sub_industry": "Hotel & Resort REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VLO",
+   "name": "Valero Energy",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Refining & Marketing",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VLTO",
+   "name": "Veralto",
+   "sector": "Industrials",
+   "sub_industry": "Environmental & Facilities Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VMC",
+   "name": "Vulcan Materials Company",
+   "sector": "Materials",
+   "sub_industry": "Construction Materials",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VMRK",
+   "name": "Vivmark Residential",
+   "sector": "Real Estate",
+   "sub_industry": "Multi-Family Residential REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VRSK",
+   "name": "Verisk Analytics",
+   "sector": "Industrials",
+   "sub_industry": "Research & Consulting Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VRSN",
+   "name": "Verisign",
+   "sector": "Information Technology",
+   "sub_industry": "Internet Services & Infrastructure",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VRT",
+   "name": "Vertiv",
+   "sector": "Industrials",
+   "sub_industry": "Electrical Components & Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VRTX",
+   "name": "Vertex Pharmaceuticals",
+   "sector": "Health Care",
+   "sub_industry": "Biotechnology",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VST",
+   "name": "Vistra Corp.",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VTR",
+   "name": "Ventas",
+   "sector": "Real Estate",
+   "sub_industry": "Health Care REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VTRS",
+   "name": "Viatris",
+   "sector": "Health Care",
+   "sub_industry": "Pharmaceuticals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VYLR",
+   "name": "Vylor",
+   "sector": "Consumer Staples",
+   "sub_industry": "Agricultural Products & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "VZ",
+   "name": "Verizon",
+   "sector": "Communication Services",
+   "sub_industry": "Integrated Telecommunication Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WAB",
+   "name": "Wabtec",
+   "sector": "Industrials",
+   "sub_industry": "Construction Machinery & Heavy Transportation Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WAT",
+   "name": "Waters Corporation",
+   "sector": "Health Care",
+   "sub_industry": "Life Sciences Tools & Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WDAY",
+   "name": "Workday, Inc.",
+   "sector": "Information Technology",
+   "sub_industry": "Application Software",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WDC",
+   "name": "Western Digital",
+   "sector": "Information Technology",
+   "sub_industry": "Technology Hardware, Storage & Peripherals",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WEC",
+   "name": "WEC Energy Group",
+   "sector": "Utilities",
+   "sub_industry": "Electric Utilities",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WELL",
+   "name": "Welltower",
+   "sector": "Real Estate",
+   "sub_industry": "Health Care REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WFC",
+   "name": "Wells Fargo",
+   "sector": "Financials",
+   "sub_industry": "Diversified Banks",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WM",
+   "name": "Waste Management",
+   "sector": "Industrials",
+   "sub_industry": "Environmental & Facilities Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WMB",
+   "name": "Williams Companies",
+   "sector": "Energy",
+   "sub_industry": "Oil & Gas Storage & Transportation",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WMT",
+   "name": "Walmart",
+   "sector": "Consumer Staples",
+   "sub_industry": "Consumer Staples Merchandise Retail",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WRB",
+   "name": "W. R. Berkley Corporation",
+   "sector": "Financials",
+   "sub_industry": "Property & Casualty Insurance",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WSM",
+   "name": "Williams-Sonoma, Inc.",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Homefurnishing Retail",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WST",
+   "name": "West Pharmaceutical Services",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Supplies",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WTW",
+   "name": "Willis Towers Watson",
+   "sector": "Financials",
+   "sub_industry": "Insurance Brokers",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WY",
+   "name": "Weyerhaeuser",
+   "sector": "Real Estate",
+   "sub_industry": "Timber REITs",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "WYNN",
+   "name": "Wynn Resorts",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Casinos & Gaming",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XEL",
+   "name": "Xcel Energy",
+   "sector": "Utilities",
+   "sub_industry": "Multi-Utilities",
+   "indexes": [
+    "SPX",
+    "NDX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLB",
+   "name": "Materials Select Sector SPDR",
+   "sector": "Materials",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLC",
+   "name": "Communication Services Select Sector SPDR",
+   "sector": "Communication Services",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLE",
+   "name": "Energy Select Sector SPDR",
+   "sector": "Energy",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLF",
+   "name": "Financial Select Sector SPDR",
+   "sector": "Financials",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLI",
+   "name": "Industrial Select Sector SPDR",
+   "sector": "Industrials",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLK",
+   "name": "Technology Select Sector SPDR",
+   "sector": "Information Technology",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLP",
+   "name": "Consumer Staples Select Sector SPDR",
+   "sector": "Consumer Staples",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLRE",
+   "name": "Real Estate Select Sector SPDR",
+   "sector": "Real Estate",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLU",
+   "name": "Utilities Select Sector SPDR",
+   "sector": "Utilities",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLV",
+   "name": "Health Care Select Sector SPDR",
+   "sector": "Health Care",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XLY",
+   "name": "Consumer Discretionary Select Sector SPDR",
+   "sector": "Consumer Discretionary",
+   "sub_industry": null,
+   "indexes": [],
+   "role": "sector_etf"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XOM",
+   "name": "ExxonMobil",
+   "sector": "Energy",
+   "sub_industry": "Integrated Oil & Gas",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XYL",
+   "name": "Xylem Inc.",
+   "sector": "Industrials",
+   "sub_industry": "Industrial Machinery & Supplies & Components",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "XYZ",
+   "name": "Block, Inc.",
+   "sector": "Financials",
+   "sub_industry": "Transaction & Payment Processing Services",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "YUM",
+   "name": "Yum! Brands",
+   "sector": "Consumer Discretionary",
+   "sub_industry": "Restaurants",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ZBH",
+   "name": "Zimmer Biomet",
+   "sector": "Health Care",
+   "sub_industry": "Health Care Equipment",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ZBRA",
+   "name": "Zebra Technologies",
+   "sector": "Information Technology",
+   "sub_industry": "Electronic Equipment & Instruments",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  },
+  {
+   "shares_outstanding": null,
+   "shares_as_of": null,
+   "symbol": "ZTS",
+   "name": "Zoetis",
+   "sector": "Health Care",
+   "sub_industry": "Pharmaceuticals",
+   "indexes": [
+    "SPX"
+   ],
+   "role": "member"
+  }
+ ]
+}

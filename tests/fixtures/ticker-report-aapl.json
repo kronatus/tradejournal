@@ -1,0 +1,70 @@
+{
+  "symbol": "aapl",
+  "as_of": "2026-11-07T01:00:00Z",
+  "sector": "Information Technology",
+  "industry": "Technology Hardware, Storage & Peripherals",
+  "setup": "Uptrend pullback",
+  "snapshot": {
+    "price_cents": 34265,
+    "price_as_of": "2026-11-07T00:59:43Z",
+    "session": "extended",
+    "prev_close_cents": 34417,
+    "change_pct": -0.53,
+    "day_open_cents": 33830,
+    "day_high_cents": 34579,
+    "day_low_cents": 33830,
+    "volume": 44703764,
+    "avg_volume_30d": 47013134,
+    "week52_high_cents": 35538,
+    "week52_low_cents": 24342,
+    "market_cap_cents": 497524399200000,
+    "pe_ratio": 38.13,
+    "pb_ratio": 44.39,
+    "dividend_yield_pct": 0.31,
+    "beta": null,
+    "iv": null,
+    "iv_rank": null,
+    "analyst": {
+      "buy": 27,
+      "hold": 16,
+      "sell": 6,
+      "target_mean_cents": 33972,
+      "target_high_cents": 40500,
+      "target_low_cents": 25000
+    }
+  },
+  "technicals": {
+    "trend": {
+      "rating": "up",
+      "summary": "Price above rising 50- and 200-day averages; set a 52-week high on Nov 5 and is consolidating just below it.",
+      "metrics": { "sma50": 33100, "sma200": 29800 }
+    },
+    "momentum": {
+      "rating": "positive",
+      "summary": "RSI cooling from overbought; MACD still above signal.",
+      "metrics": { "rsi14": 61.2 }
+    },
+    "volatility": {
+      "rating": "normal",
+      "summary": "Daily ranges in line with the 20-day ATR.",
+      "metrics": { "atr14_pct": 1.6 }
+    },
+    "risk": {
+      "rating": "moderate",
+      "summary": "Trading at ~1% above the mean analyst target with a rich P/E; ex-dividend Nov 12.",
+      "metrics": { "dist_target_pct": 0.9 }
+    }
+  },
+  "fundamentals": "Apple trades near $4.98T market cap at ~38x earnings, above its historical range, with a 0.31% dividend yield and a $0.27 quarterly dividend going ex on Nov 12. Analysts lean Buy (27/16/6) but the mean target sits roughly at the current price.",
+  "articles": [
+    {
+      "title": "Example headline about Apple",
+      "url": "https://example.com/apple-story",
+      "source": "Example News",
+      "published_at": "2026-11-06T18:30:00Z",
+      "summary": "Fixture article."
+    }
+  ],
+  "next_earnings_date": null,
+  "model_notes": "Fixture built from Robinhood MCP fundamentals/quotes/ratings for AAPL on 2026-11-06."
+}
