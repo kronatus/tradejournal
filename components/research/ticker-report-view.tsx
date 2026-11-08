@@ -15,6 +15,8 @@ import {
 import type { ResearchTicker, TickerReport } from "@/lib/types";
 import type { Technicals } from "@/lib/schemas";
 import { Card, PromptHandoff, signClass, Stat, ToneBadge } from "./ui";
+import { PriceChartCard } from "./price-chart";
+import { Term } from "@/components/ui/term";
 
 type Spot = { price_cents: number; fetched_at: string } | { error: string } | null;
 
@@ -65,6 +67,8 @@ export function TickerReportView({
   return (
     <div className="space-y-5">
       <TickerHeader symbol={symbol} ticker={ticker} report={report} />
+
+      <PriceChartCard symbol={symbol} />
 
       {!report ? (
         <Card>
@@ -167,15 +171,47 @@ function TickerHeader({
   );
 }
 
-function RangeBar({ low, high, value }: { low: number; high: number; value: number }) {
-  const pct = high > low ? Math.min(100, Math.max(0, ((value - low) / (high - low)) * 100)) : 50;
+/**
+ * Low–high range with the current price (accent tick) and, optionally, a
+ * reference mark such as the mean analyst target (hollow diamond). A price
+ * outside the range is pinned to the nearest end and flagged in the caption.
+ */
+function RangeBar({
+  low,
+  high,
+  value,
+  mark,
+  markLabel,
+}: {
+  low: number;
+  high: number;
+  value: number;
+  mark?: number | null;
+  markLabel?: string;
+}) {
+  const pos = (v: number) => (high > low ? Math.min(100, Math.max(0, ((v - low) / (high - low)) * 100)) : 50);
+  const outside = value < low ? "below range" : value > high ? "above range" : null;
   return (
     <div className="mt-1.5">
       <div className="relative h-1.5 rounded-full bg-muted">
-        <div className="absolute top-1/2 h-3 w-0.5 -translate-y-1/2 rounded bg-accent" style={{ left: `${pct}%` }} />
+        {mark != null && (
+          <div
+            className="absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border-2 border-text-muted bg-surface"
+            style={{ left: `${pos(mark)}%` }}
+            title={markLabel}
+          />
+        )}
+        <div className="absolute top-1/2 h-3.5 w-1 -translate-x-1/2 -translate-y-1/2 rounded bg-accent" style={{ left: `${pos(value)}%` }} />
       </div>
-      <div className="tabular mt-1 flex justify-between text-[11px] text-text-subtle">
+      <div className="tabular mt-1 flex justify-between gap-2 text-[11px] text-text-subtle">
         <span>{formatCents(low)}</span>
+        {(mark != null || outside) && (
+          <span className="truncate">
+            <span className="text-accent">▮</span> price {formatCents(value)}
+            {outside && ` (${outside})`}
+            {mark != null && <> · ◇ {markLabel ?? "mark"} {formatCents(mark)}</>}
+          </span>
+        )}
         <span>{formatCents(high)}</span>
       </div>
     </div>
@@ -192,19 +228,21 @@ function KeyNumbers({ report }: { report: TickerReport }) {
   return (
     <Card title="Key numbers" action={<span className="text-xs text-text-subtle">as of {formatDateTime(report.as_of)}</span>}>
       <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-4">
-        <Stat label="Market cap" value={s.market_cap_cents != null ? `$${formatCompact(s.market_cap_cents / 100)}` : "—"} />
-        <Stat label="P/E" value={s.pe_ratio?.toFixed(1) ?? "—"} sub={s.pb_ratio != null ? `P/B ${s.pb_ratio.toFixed(1)}` : undefined} />
+        <Stat label="Market cap" term="market_cap" value={s.market_cap_cents != null ? `$${formatCompact(s.market_cap_cents / 100)}` : "—"} />
+        <Stat label="P/E" term="pe" value={s.pe_ratio?.toFixed(1) ?? "—"} sub={s.pb_ratio != null ? `P/B ${s.pb_ratio.toFixed(1)}` : undefined} />
         <Stat
           label="Volume"
+          term="rel_volume"
           value={formatCompact(s.volume)}
           sub={relVol !== null ? `${relVol.toFixed(2)}× 30-day avg` : undefined}
           valueClass={relVol !== null && relVol >= 2 ? "text-warn" : ""}
         />
         <Stat label="Day range" value={`${formatCents(s.day_low_cents)} – ${formatCents(s.day_high_cents)}`} sub={s.prev_close_cents != null ? `Prev close ${formatCents(s.prev_close_cents)}` : undefined} />
-        <Stat label="Dividend yield" value={s.dividend_yield_pct != null ? `${s.dividend_yield_pct.toFixed(2)}%` : "—"} />
-        <Stat label="Beta" value={s.beta?.toFixed(2) ?? "—"} />
+        <Stat label="Dividend yield" term="dividend_yield" value={s.dividend_yield_pct != null ? `${s.dividend_yield_pct.toFixed(2)}%` : "—"} />
+        <Stat label="Beta" term="beta" value={s.beta?.toFixed(2) ?? "—"} />
         <Stat
           label="Implied vol"
+          term="iv"
           value={s.iv != null ? `${(s.iv * 100).toFixed(1)}%` : "—"}
           sub={s.iv_rank != null ? `IV rank ${Math.round(s.iv_rank)}` : undefined}
         />
@@ -215,6 +253,7 @@ function KeyNumbers({ report }: { report: TickerReport }) {
         {a && (
           <Stat
             label="Analysts"
+            term="analyst"
             value={
               <span>
                 <span className="text-gain">{a.buy}</span> / <span>{a.hold}</span> / <span className="text-loss">{a.sell}</span>
@@ -224,9 +263,25 @@ function KeyNumbers({ report }: { report: TickerReport }) {
           />
         )}
         {s.week52_low_cents != null && s.week52_high_cents != null && s.price_cents != null && (
-          <div className="col-span-2 min-w-0">
-            <div className="text-xs text-text-muted">52-week range</div>
+          <div className="col-span-2 min-w-0" data-term-row>
+            <div className="text-xs text-text-muted">
+              <Term k="week52">52-week range</Term>
+            </div>
             <RangeBar low={s.week52_low_cents} high={s.week52_high_cents} value={s.price_cents} />
+          </div>
+        )}
+        {a?.target_low_cents != null && a.target_high_cents != null && s.price_cents != null && (
+          <div className="col-span-2 min-w-0" data-term-row>
+            <div className="text-xs text-text-muted">
+              <Term k="analyst_target">Analyst target range</Term>
+            </div>
+            <RangeBar
+              low={a.target_low_cents}
+              high={a.target_high_cents}
+              value={s.price_cents}
+              mark={a.target_mean_cents}
+              markLabel="mean target"
+            />
           </div>
         )}
       </div>
@@ -255,13 +310,23 @@ function TechnicalsGrid({ technicals }: { technicals: Technicals }) {
         const d = technicals[key];
         const metrics = Object.entries(d.metrics ?? {});
         return (
-          <Card key={key} title={label} action={<ToneBadge tone={ratingTone(d.rating)}>{formatRating(d.rating)}</ToneBadge>}>
+          <Card
+            key={key}
+            title={
+              <span data-term-row>
+                <Term k={key}>{label}</Term>
+              </span>
+            }
+            action={<ToneBadge tone={ratingTone(d.rating)}>{formatRating(d.rating)}</ToneBadge>}
+          >
             <p className="text-sm leading-relaxed">{d.summary}</p>
             {metrics.length > 0 && (
               <dl className="mt-3 space-y-1 border-t border-border pt-3 text-xs">
                 {metrics.map(([name, v]) => (
-                  <div key={name} className="flex justify-between gap-3">
-                    <dt className="text-text-muted">{name.replace(/_cents$/, "").replace(/_/g, " ")}</dt>
+                  <div key={name} className="flex justify-between gap-3" data-term-row>
+                    <dt className="text-text-muted">
+                      <Term k={name}>{name.replace(/_cents$/, "").replace(/_/g, " ")}</Term>
+                    </dt>
                     <dd className="tabular">{formatMetric(name, v)}</dd>
                   </div>
                 ))}

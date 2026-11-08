@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Tone } from "@/lib/research";
+import { Term } from "@/components/ui/term";
 
 const TONE_CLASSES: Record<Tone, string> = {
   gain: "bg-gain-soft text-gain",
@@ -101,18 +102,23 @@ export function PromptHandoff({ prompt, hint }: { prompt: string; hint?: string 
 
 export function Stat({
   label,
+  term,
   value,
   sub,
   valueClass = "",
 }: {
   label: string;
+  /** Glossary key: renders the label as a <Term> with an explanation bubble. */
+  term?: string;
   value: React.ReactNode;
   sub?: React.ReactNode;
   valueClass?: string;
 }) {
   return (
-    <div className="min-w-0">
-      <div className="text-xs text-text-muted">{label}</div>
+    // data-term-row: the bubble is placed outside this whole block, so it
+    // never covers the value under the label.
+    <div className="min-w-0" data-term-row>
+      <div className="text-xs text-text-muted">{term ? <Term k={term}>{label}</Term> : label}</div>
       <div className={"tabular mt-0.5 truncate text-sm font-medium " + valueClass}>{value}</div>
       {sub && <div className="tabular truncate text-xs text-text-subtle">{sub}</div>}
     </div>

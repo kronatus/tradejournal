@@ -36,6 +36,7 @@ import {
   MassiveGroupedDailySchema,
   TickerReportInputSchema,
   TickerSymbolSchema,
+  sweepProblems,
   tickerReportProblems,
 } from "./schemas";
 
@@ -137,5 +138,49 @@ describe("MassiveGroupedDailySchema", () => {
   });
   it("rejects an unrecognised status", () => {
     expect(MassiveGroupedDailySchema.safeParse({ status: "NOT_AUTHORIZED", resultsCount: 0 }).success).toBe(false);
+  });
+});
+
+describe("sweep news", () => {
+  const headline = {
+    title: "Fed holds rates, signals one more cut",
+    url: "https://example.com/fed",
+    source: "Example Wire",
+    published_at: "2026-11-06T19:00:00Z",
+    summary: "Yields fell after the statement.",
+    impact: "market",
+    symbols: ["spy"],
+    sectors: ["Financials"],
+  };
+  const sweep = (news: unknown[]) =>
+    MarketSweepInputSchema.parse({
+      as_of: "2026-11-07T21:00:00Z",
+      headline: "h",
+      regime: "neutral",
+      summary: "s",
+      news,
+    });
+
+  it("accepts headlines, normalises symbols and defaults to none", () => {
+    expect(sweep([headline]).news[0].symbols).toEqual(["SPY"]);
+    expect(sweep([]).news).toEqual([]);
+    expect(MarketSweepInputSchema.parse({ as_of: "2026-11-07T21:00:00Z", headline: "h", regime: "neutral", summary: "s" }).news).toEqual([]);
+  });
+
+  it("enforces limits, URL scheme and the impact enum", () => {
+    expect(() => sweep(new Array(9).fill(headline))).toThrow();
+    expect(() => sweep([{ ...headline, url: "javascript:alert(1)" }])).toThrow();
+    expect(() => sweep([{ ...headline, impact: "huge" }])).toThrow();
+    expect(() => sweep([{ ...headline, symbols: new Array(7).fill("AAPL") }])).toThrow();
+  });
+
+  it("rejects stale, future-dated and duplicate headlines", () => {
+    expect(sweepProblems(sweep([headline]))).toEqual([]);
+    const stale = sweepProblems(sweep([{ ...headline, published_at: "2026-11-05T08:00:00Z" }]));
+    expect(stale[0]).toMatch(/older than 36h/);
+    const future = sweepProblems(sweep([{ ...headline, published_at: "2026-11-08T12:00:00Z" }]));
+    expect(future[0]).toMatch(/after as_of/);
+    const dup = sweepProblems(sweep([headline, headline]));
+    expect(dup[0]).toMatch(/duplicates/);
   });
 });

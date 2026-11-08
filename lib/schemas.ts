@@ -364,6 +364,20 @@ export const SweepTrendSchema = z.object({
   sectors: z.array(z.string().trim().max(80)).max(11).default([]),
 });
 
+export const NEWS_IMPACTS = ["market", "sector", "stock"] as const;
+
+/** A market headline of the day, shown on Pulse. */
+export const SweepNewsSchema = z.object({
+  title: z.string().trim().min(1).max(300),
+  url: ArticleSchema.shape.url,
+  source: z.string().trim().min(1).max(100),
+  published_at: IsoDateTime,
+  summary: z.string().trim().max(300).default(""),
+  impact: z.enum(NEWS_IMPACTS),
+  symbols: z.array(TickerSymbolSchema).max(6).default([]),
+  sectors: z.array(z.string().trim().max(80)).max(3).default([]),
+});
+
 export const MarketSweepInputSchema = z.object({
   scan_date: IsoDate.nullable().optional(),
   as_of: IsoDateTime,
@@ -373,7 +387,29 @@ export const MarketSweepInputSchema = z.object({
   highlights: z.array(SweepHighlightSchema).max(12).default([]),
   picks: z.array(SweepPickSchema).max(10).default([]),
   trends: z.array(SweepTrendSchema).max(8).default([]),
+  news: z.array(SweepNewsSchema).max(8).default([]),
 });
+
+/** "Of the day": headlines older than this, relative to as_of, are rejected. */
+export const SWEEP_NEWS_MAX_AGE_HOURS = 36;
+
+/** Cross-field checks for a sweep (kept out of the schema, like reports). */
+export function sweepProblems(s: MarketSweepInput): string[] {
+  const problems: string[] = [];
+  const asOf = Date.parse(s.as_of);
+  const slackMs = 6 * 60 * 60 * 1000;
+  const urls = new Set<string>();
+  s.news.forEach((n, i) => {
+    const t = Date.parse(n.published_at);
+    if (t > asOf + slackMs) problems.push(`news[${i}].published_at is after as_of`);
+    if (t < asOf - SWEEP_NEWS_MAX_AGE_HOURS * 3_600_000) {
+      problems.push(`news[${i}] is older than ${SWEEP_NEWS_MAX_AGE_HOURS}h — only news of the day belongs here`);
+    }
+    if (urls.has(n.url)) problems.push(`news[${i}] duplicates another headline`);
+    urls.add(n.url);
+  });
+  return problems;
+}
 
 export type TickerSnapshot = z.infer<typeof TickerSnapshotSchema>;
 export type Technicals = z.infer<typeof TechnicalsSchema>;
@@ -382,6 +418,7 @@ export type TickerReportInput = z.infer<typeof TickerReportInputSchema>;
 export type SweepHighlight = z.infer<typeof SweepHighlightSchema>;
 export type SweepPick = z.infer<typeof SweepPickSchema>;
 export type SweepTrend = z.infer<typeof SweepTrendSchema>;
+export type SweepNews = z.infer<typeof SweepNewsSchema>;
 export type MarketSweepInput = z.infer<typeof MarketSweepInputSchema>;
 
 // --- Massive (ex-Polygon) grouped daily bars -------------------------------

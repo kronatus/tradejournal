@@ -13,7 +13,7 @@ names, and explain what matters.
 
 ## Budget
 
-Aim for **~12–15 tool calls and ≤ 5 web searches** in total. The scan is
+Aim for **~12–15 tool calls and ≤ 6 web searches** in total. The scan is
 designed so you never need to look at the whole market yourself.
 
 - **Never** loop Robinhood quotes/historicals over the universe or a sector.
@@ -55,12 +55,18 @@ designed so you never need to look at the whole market yourself.
    - `get_index_quotes` for VIX (and SPX if useful) once.
    - Optionally `get_earnings_calendar` once to catch earnings-driven moves.
 6. **Why is it moving?** — web search, **only the last ~2 days** relative to
-   today. One search per top name or a combined sector query; plus one for
-   the macro calendar (Fed, CPI, jobs, big earnings) if relevant. Never cite
+   today. One search per top name or a combined sector query. Never cite
    older news as the cause of today's move.
-7. **Exposure** — `list_open_positions()`; flag picks or sectors that overlap
+7. **News of the day** — 5–8 headlines from **the last ~24 hours** that
+   matter to the market: Fed/central banks and macro data (CPI, jobs, PMI),
+   the biggest earnings, and sector-moving events (regulation, commodities,
+   deals). Reuse what the step-6 searches surfaced and add at most one or two
+   broad "stock market news today" searches. Order by market impact. Fewer is
+   fine — **never pad with older items** (the tool rejects anything older than
+   36h).
+8. **Exposure** — `list_open_positions()`; flag picks or sectors that overlap
    the user's open strategies.
-8. **Publish** — `post_market_sweep` (fields below), then give the user a short
+9. **Publish** — `post_market_sweep` (fields below), then give the user a short
    chat summary and offer to run **ticker-research** on any pick.
 
 ## What to write (`post_market_sweep`)
@@ -84,6 +90,11 @@ designed so you never need to look at the whole market yourself.
   `thesis` says why it is worth a deep dive and what would invalidate it.
 - `trends` (≤ 8): `{title, body, sectors}` — multi-day patterns (rotation,
   breadth thrust/divergence, leadership changes).
+- `news` (≤ 8): `{title, url, source, published_at, summary, impact, symbols,
+  sectors}` — `impact` is `market` (moves the whole tape), `sector`, or
+  `stock`; `summary` is one sentence on why it matters for markets;
+  `symbols` (≤ 6) and `sectors` (≤ 3) are what it touches; `published_at` is
+  the article's real publish time.
 
 Conventions: percentages in percent units (1.25 = 1.25%), money in integer
 cents, null rather than 0 for anything unknown. If the tool rejects a payload,

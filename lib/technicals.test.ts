@@ -7,12 +7,16 @@ import {
   emaSeries,
   historicalVolatility,
   macd,
+  macdSeries,
   maxDrawdown,
   pctChange,
   rsi,
+  rsiSeries,
   sma,
+  smaSeries,
   stdev,
   streak,
+  volumeAvgSeries,
   type OhlcvBar,
 } from "./technicals";
 
@@ -140,5 +144,49 @@ describe("computeTechnicals", () => {
 
   it("is null for an empty series", () => {
     expect(computeTechnicals([])).toBeNull();
+  });
+});
+
+// --- series --------------------------------------------------------------
+
+describe("series agree with the scalar indicators", () => {
+  // A deterministic wiggly series long enough for every warm-up.
+  const closes = Array.from({ length: 120 }, (_, i) => 10000 + Math.round(400 * Math.sin(i / 5) + i * 7));
+
+  it("smaSeries aligns with sma and is null during warm-up", () => {
+    const s = smaSeries(closes, 20);
+    expect(s).toHaveLength(closes.length);
+    expect(s[18]).toBeNull();
+    expect(s[19]).toBeCloseTo(sma(closes.slice(0, 20), 20)!, 9);
+    expect(s.at(-1)).toBeCloseTo(sma(closes, 20)!, 9);
+  });
+
+  it("rsiSeries' last value equals rsi", () => {
+    const s = rsiSeries(closes, 14);
+    expect(s[13]).toBeNull();
+    expect(s[14]).not.toBeNull();
+    expect(s.at(-1)).toBeCloseTo(rsi(closes, 14)!, 9);
+    expect(rsiSeries([1, 2, 3], 14).every((v) => v === null)).toBe(true);
+  });
+
+  it("macdSeries' last values equal macd", () => {
+    const s = macdSeries(closes);
+    const m = macd(closes)!;
+    expect(s.line.at(-1)).toBeCloseTo(m.line, 9);
+    expect(s.signal.at(-1)).toBeCloseTo(m.signal, 9);
+    expect(s.histogram.at(-1)).toBeCloseTo(m.histogram, 9);
+    expect(s.line[24]).toBeNull();
+    expect(s.line[25]).not.toBeNull();
+    expect(s.signal[32]).toBeNull();
+    expect(s.signal[33]).not.toBeNull();
+  });
+
+  it("volumeAvgSeries averages the prior sessions only, like computeTechnicals", () => {
+    const vols = [...new Array(25).fill(1000), 3000];
+    const b = bars(new Array(26).fill(5000), { volume: vols });
+    const s = volumeAvgSeries(b, 20);
+    expect(s[19]).toBeNull();
+    expect(s[20]).toBe(1000);
+    expect(s.at(-1)).toBe(computeTechnicals(b)!.avg_volume_20d);
   });
 });

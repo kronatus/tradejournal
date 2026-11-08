@@ -16,6 +16,7 @@ import {
   MarketSweepInputSchema,
   TickerReportInputSchema,
   TickerSymbolSchema,
+  sweepProblems,
   tickerReportProblems,
 } from "@/lib/schemas";
 import { computeTechnicals } from "@/lib/technicals";
@@ -38,7 +39,7 @@ Use it with the market-sweep and ticker-research skills.
 - get_market_scan is the whole S&P 500 + Nasdaq-100 picture in ONE call (breadth, sector rotation, industries, index contributors, anomalies with reason codes). Never sweep the universe through Robinhood.
 - get_symbol_detail gives computed technicals from stored daily bars for up to 10 symbols — prefer it over fetching historicals elsewhere.
 - Conventions for everything you write: money in integer cents, percentages in percent units (1.25 = 1.25%), implied volatility as a decimal, timestamps ISO-8601 with offset, and null (not 0) for anything unknown.
-- Articles: only items published within ~2 days of the analysis, at most 5, never padded with older ones.
+- Articles: only items published within ~2 days of the analysis, at most 5, never padded with older ones. Sweep news: headlines of the day only (≤ 36h old), at most 8.
 - This server cannot trade. Never place or review orders in any connected brokerage as part of research.`;
 
 const text = (value: unknown) => ({
@@ -198,6 +199,7 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
             highlights: s.highlights.map((h) => `${h.kind}: ${h.title}`),
             picks: s.picks.map((p) => ({ symbol: p.symbol, direction: p.direction, signal: p.signal })),
             trends: s.trends.map((t) => t.title),
+            news: (s.news ?? []).map((n) => n.title),
           }))
         );
       })
@@ -208,13 +210,16 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
     {
       title: "Publish a market sweep",
       description:
-        "Save the sweep shown on the Pulse tab: headline, regime, summary, highlights (abnormality/sector/trend/breadth/macro), up to 10 picks to dig into, and trends. Set scan_date to the scan you based it on.",
+        "Save the sweep shown on the Pulse tab: headline, regime, summary, highlights (abnormality/sector/trend/breadth/macro), up to 10 picks to dig into, trends, and up to 8 news headlines of the day (published within 36h of as_of, ordered by market impact). Set scan_date to the scan you based it on.",
       inputSchema: MarketSweepInputSchema.shape,
       annotations: { readOnlyHint: false },
     },
     async (input) =>
       guarded(async () => {
-        const saved = await deps.research.postSweep(MarketSweepInputSchema.parse(input));
+        const sweep = MarketSweepInputSchema.parse(input);
+        const problems = sweepProblems(sweep);
+        if (problems.length) return fail(`Sweep rejected: ${problems.join("; ")}`);
+        const saved = await deps.research.postSweep(sweep);
         return text({ ...saved, view: "/pulse" });
       })
   );

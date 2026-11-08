@@ -5,15 +5,16 @@
  * Drives the app's own ingest route, so the logic lives in one place:
  *
  *   APP_URL=https://your-app.vercel.app CRON_SECRET=... \
- *     node scripts/backfill-market.mjs --days 70
+ *     node scripts/backfill-market.mjs --days 300
  *
  * APP_URL defaults to http://localhost:3000 (run `npm run dev` first; the dev
  * server then needs MASSIVE_API_KEY, CRON_SECRET and the Supabase keys in
  * .env.local). CRON_SECRET is read from the environment or .env.local.
  *
  * The free Massive plan allows 5 calls/minute, so the script asks for 4
- * sessions per call and waits ~65s between calls: 70 sessions ≈ 18 minutes.
- * 70 sessions covers the scan's 20/50-day metrics and ~3-month highs/lows.
+ * sessions per call and waits ~65s between calls: 300 sessions ≈ 80 minutes.
+ * 300 sessions gives the Research charts a 200-day average and a 1-year view;
+ * `--days 70` (~18 min) is enough for the scan's 20/50-day metrics alone.
  * Safe to re-run: stored sessions are skipped.
  */
 import { readFileSync, existsSync } from "node:fs";
@@ -38,7 +39,7 @@ if (!CRON_SECRET) {
 }
 
 const argDays = process.argv.indexOf("--days");
-const days = argDays > -1 ? Number(process.argv[argDays + 1]) : 70;
+const days = argDays > -1 ? Number(process.argv[argDays + 1]) : 300;
 if (!Number.isInteger(days) || days < 1 || days > 500) {
   console.error("--days must be an integer between 1 and 500");
   process.exit(1);

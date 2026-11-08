@@ -223,6 +223,43 @@ describe("market tools", () => {
   });
 });
 
+describe("sweep news", () => {
+  const base = {
+    as_of: "2026-11-07T21:00:00Z",
+    headline: "Semis lead",
+    regime: "rotation",
+    summary: "Tech carried the tape.",
+  };
+  const item = {
+    title: "Chipmaker beats and raises",
+    url: "https://example.com/chip",
+    source: "Example Wire",
+    published_at: "2026-11-07T13:00:00Z",
+    impact: "stock",
+    symbols: ["nvda"],
+  };
+
+  it("saves headlines of the day with the sweep", async () => {
+    const { deps, saved } = memoryDeps();
+    const r = await call(deps, "post_market_sweep", { ...base, news: [item] });
+    expect(r.body.result.isError).toBeFalsy();
+    const news = (saved.sweeps[0] as { news: { symbols: string[]; summary: string }[] }).news;
+    expect(news[0].symbols).toEqual(["NVDA"]);
+    expect(news[0].summary).toBe("");
+  });
+
+  it("rejects stale news with a message Claude can act on", async () => {
+    const { deps, saved } = memoryDeps();
+    const r = await call(deps, "post_market_sweep", {
+      ...base,
+      news: [{ ...item, published_at: "2026-11-04T13:00:00Z" }],
+    });
+    expect(r.body.result.isError).toBe(true);
+    expect(r.body.result.content[0].text).toMatch(/older than 36h/);
+    expect(saved.sweeps).toHaveLength(0);
+  });
+});
+
 describe("research list and sweeps", () => {
   it("lists tickers with freshness", async () => {
     const { deps } = memoryDeps();

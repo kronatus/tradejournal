@@ -5,6 +5,7 @@ import type { AnomalyFlag, AnomalyRow, ScanDigest } from "@/lib/market-scan";
 import { formatPct } from "@/lib/research";
 import { formatCents } from "@/lib/utils";
 import { Card, signClass, Stat, ToneBadge } from "@/components/research/ui";
+import { Term } from "@/components/ui/term";
 
 const FLAG_LABEL: Record<AnomalyFlag, string> = {
   REL_VOL: "Volume spike",
@@ -29,9 +30,11 @@ const FLAG_TONE: Record<AnomalyFlag, "gain" | "loss" | "warn" | "neutral"> = {
 
 const ratio = (v: number | null) => (v === null ? "—" : `${v.toFixed(2)}×`);
 
-function Th({ children, right }: { children: React.ReactNode; right?: boolean }) {
+function Th({ children, right, term }: { children: React.ReactNode; right?: boolean; term?: string }) {
   return (
-    <th className={"px-3 py-2 font-medium " + (right ? "text-right" : "text-left")}>{children}</th>
+    <th data-term-row className={"px-3 py-2 font-medium " + (right ? "text-right" : "text-left")}>
+      {term ? <Term k={term}>{children}</Term> : children}
+    </th>
   );
 }
 
@@ -80,12 +83,12 @@ export function ScanView({ digest }: { digest: ScanDigest }) {
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4 lg:grid-cols-7">
           <Stat label="Universe" value={formatPct(b.universe_ret_1d)} valueClass={signClass(b.universe_ret_1d)} sub={`EW ${formatPct(b.equal_weight_ret_1d)}`} />
-          <Stat label="Advancers" value={b.advancers} valueClass="text-gain" />
+          <Stat label="Advancers" term="breadth" value={b.advancers} valueClass="text-gain" />
           <Stat label="Decliners" value={b.decliners} valueClass="text-loss" />
-          <Stat label="Above 20-day" value={b.pct_above_sma20 === null ? "—" : `${b.pct_above_sma20}%`} />
-          <Stat label="Above 50-day" value={b.pct_above_sma50 === null ? "—" : `${b.pct_above_sma50}%`} />
-          <Stat label="New highs" value={b.new_highs} sub={`${digest.meta.high_low_window_days}-session window`} />
-          <Stat label="New lows" value={b.new_lows} />
+          <Stat label="Above 20-day" term="sma20" value={b.pct_above_sma20 === null ? "—" : `${b.pct_above_sma20}%`} />
+          <Stat label="Above 50-day" term="sma50" value={b.pct_above_sma50 === null ? "—" : `${b.pct_above_sma50}%`} />
+          <Stat label="New highs" term="NEW_HIGH" value={b.new_highs} sub={`${digest.meta.high_low_window_days}-session window`} />
+          <Stat label="New lows" term="NEW_LOW" value={b.new_lows} />
         </div>
         {digest.indices.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-4 text-sm">
@@ -105,14 +108,14 @@ export function ScanView({ digest }: { digest: ScanDigest }) {
         <Table
           head={
             <>
-              <Th>#</Th>
+              <Th term="rank_change">#</Th>
               <Th>Sector</Th>
               <Th right>1d</Th>
               <Th right>5d</Th>
               <Th right>20d</Th>
-              <Th right>Breadth</Th>
-              <Th right>Rel vol</Th>
-              <Th right>ETF 1d</Th>
+              <Th right term="breadth">Breadth</Th>
+              <Th right term="rel_volume">Rel vol</Th>
+              <Th right term="etf">ETF 1d</Th>
             </>
           }
         >
@@ -164,7 +167,7 @@ function MoversCard({ title, rows }: { title: string; rows: ScanDigest["movers"]
       {rows.length === 0 ? (
         <p className="text-sm text-text-muted">None.</p>
       ) : (
-        <Table head={<><Th>Symbol</Th><Th>Sector</Th><Th right>1d</Th><Th right>Contribution</Th><Th right>Rel vol</Th></>}>
+        <Table head={<><Th>Symbol</Th><Th>Sector</Th><Th right>1d</Th><Th right term="contribution">Contribution</Th><Th right term="rel_volume">Rel vol</Th></>}>
           {rows.map((m) => (
             <tr key={m.symbol}>
               <Td><SymbolLink symbol={m.symbol} /></Td>
@@ -183,7 +186,7 @@ function MoversCard({ title, rows }: { title: string; rows: ScanDigest["movers"]
 function IndustryCard({ title, rows }: { title: string; rows: ScanDigest["industries"]["leaders"] }) {
   return (
     <Card title={title}>
-      <Table head={<><Th>Industry</Th><Th right>Names</Th><Th right>1d</Th><Th right>5d</Th><Th right>Rel vol</Th></>}>
+      <Table head={<><Th>Industry</Th><Th right>Names</Th><Th right>1d</Th><Th right>5d</Th><Th right term="rel_volume">Rel vol</Th></>}>
         {rows.map((r) => (
           <tr key={r.sub_industry}>
             <Td>
@@ -215,9 +218,9 @@ function AnomaliesCard({ rows }: { rows: AnomalyRow[] }) {
               <Th right>Close</Th>
               <Th right>1d</Th>
               <Th right>5d</Th>
-              <Th right>Rel vol</Th>
-              <Th right>z</Th>
-              <Th right>Gap</Th>
+              <Th right term="rel_volume">Rel vol</Th>
+              <Th right term="z_score">z</Th>
+              <Th right term="gap">Gap</Th>
             </>
           }
         >
@@ -230,10 +233,14 @@ function AnomaliesCard({ rows }: { rows: AnomalyRow[] }) {
               <Td>
                 <div className="flex flex-wrap gap-1">
                   {a.flags.map((f) => (
-                    <ToneBadge key={f} tone={FLAG_TONE[f]}>
-                      {FLAG_LABEL[f]}
-                      {f === "STREAK" ? ` ${a.streak > 0 ? "+" : ""}${a.streak}` : ""}
-                    </ToneBadge>
+                    <span key={f} data-term-row>
+                      <ToneBadge tone={FLAG_TONE[f]}>
+                        <Term k={f}>
+                          {FLAG_LABEL[f]}
+                          {f === "STREAK" ? ` ${a.streak > 0 ? "+" : ""}${a.streak}` : ""}
+                        </Term>
+                      </ToneBadge>
+                    </span>
                   ))}
                 </div>
               </Td>

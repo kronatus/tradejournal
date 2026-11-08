@@ -6,6 +6,7 @@ import { formatRating, ratingTone } from "@/lib/research";
 import { HIGHLIGHT_KINDS, type SweepPick } from "@/lib/schemas";
 import type { MarketSweep } from "@/lib/types";
 import { Card, ToneBadge } from "@/components/research/ui";
+import { NewsCard } from "./news-card";
 
 const KIND_LABEL: Record<(typeof HIGHLIGHT_KINDS)[number], string> = {
   abnormality: "Abnormalities",
@@ -46,6 +47,8 @@ export function SweepView({
         </div>
         <p className="mt-3 whitespace-pre-line text-sm leading-relaxed">{sweep.summary}</p>
       </Card>
+
+      <NewsCard news={sweep.news ?? []} asOf={sweep.as_of} />
 
       {byKind.length > 0 && (
         <div className="grid gap-5 lg:grid-cols-2">

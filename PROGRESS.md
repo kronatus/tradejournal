@@ -144,7 +144,10 @@ scan itself so Claude never sweeps 500+ tickers.
 - [x] `/research`: grouped editable ticker sidebar (Sector › Industry, pivot presets), snapshot + live spot, key numbers, 4 technical cards, fundamentals, strategies placeholder, ≤5 articles (≤48h)
 - [x] `/pulse`: Claude's sweep (regime, highlights, picks → Add to Research, trends) over the computed scan
 - [x] Skills `skills/market-sweep`, `skills/ticker-research` + setup guide `skills/README.md`
-- [ ] Prod: apply 0007, set `MASSIVE_API_KEY` + `CRON_SECRET`, backfill, connect Claude (see `skills/README.md`)
+- [x] Ticker charts: price + SMA 20/50/200, volume vs 20-day avg, RSI 14, MACD — synced crosshair with a readout strip (no floating tooltip over the data), 1M–All ranges, from stored `market_bars`
+- [x] Glossary bubbles on technical terms (`lib/glossary.ts`, `components/ui/term.tsx`) — placed outside the label+value row so values stay visible; hover, focus or tap
+- [x] News of the day on Pulse (migration `0008_sweep_news.sql`, ≤ 8 headlines ≤ 36h old, impact + symbol tags)
+- [ ] Prod: apply 0007 + 0008, set `MASSIVE_API_KEY` + `CRON_SECRET`, backfill `--days 300`, connect Claude (see `skills/README.md`)
 - [ ] Verify Massive free plan serves Grouped Daily (unverifiable from the build sandbox)
 - [ ] Options strategy framework (deferred by design; reports have no strategies column yet)
 - [ ] Optional: fill `shares_outstanding` for cap weighting (`refresh-universe.mjs --shares`)

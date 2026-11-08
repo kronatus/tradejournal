@@ -231,6 +231,7 @@ export function createResearchStore(db: SupabaseClient, userId: string): Researc
             highlights: input.highlights,
             picks: input.picks,
             trends: input.trends,
+            news: input.news,
           })
           .select("id, created_at")
           .single()

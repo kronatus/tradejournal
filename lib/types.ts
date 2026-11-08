@@ -1,6 +1,7 @@
 import type {
   Article,
   SweepHighlight,
+  SweepNews,
   SweepPick,
   SweepTrend,
   Technicals,
@@ -144,6 +145,8 @@ export type MarketSweep = {
   highlights: SweepHighlight[];
   picks: SweepPick[];
   trends: SweepTrend[];
+  /** Absent on sweeps saved before migration 0008. */
+  news?: SweepNews[];
 };
 
 export type McpToken = {

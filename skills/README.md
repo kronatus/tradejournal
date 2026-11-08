@@ -20,7 +20,9 @@ search, and writes results through the journal's own MCP connector.
    ```
    You should see `entry_net_delta`, `current_net_iv` etc. If not, run
    `0004`–`0006` from `supabase/migrations/` first, in order.
-2. Paste and run `supabase/migrations/0007_research.sql`.
+2. Paste and run `supabase/migrations/0007_research.sql`, then
+   `supabase/migrations/0008_sweep_news.sql` (adds news of the day to sweeps;
+   safe to re-run).
    (Alternative with the CLI: `npx supabase link --project-ref <ref>` then
    `npx supabase db push`.)
 
@@ -41,13 +43,15 @@ search, and writes results through the journal's own MCP connector.
 
 ### 3. Backfill history
 
-The scan needs ~70 sessions for its 20/50-day metrics. Run once:
+The Research charts need ~300 sessions for the 200-day average and a 1-year
+view (the scan itself needs ~70). Run once:
 
 ```bash
-APP_URL=https://<your-app>.vercel.app CRON_SECRET=<secret> node scripts/backfill-market.mjs --days 70
+APP_URL=https://<your-app>.vercel.app CRON_SECRET=<secret> node scripts/backfill-market.mjs --days 300
 ```
 
-(~18 minutes; the free plan allows 5 calls/minute. Safe to re-run.)
+(~80 minutes; the free plan allows 5 calls/minute. Resumable and safe to
+re-run. `--days 70` is a ~18-minute quick start without the 200-day line.)
 
 Optional, for cap-weighted index contributions (otherwise equal-weighted):
 

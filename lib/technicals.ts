@@ -175,6 +175,86 @@ export function maxDrawdown(closes: number[]): number | null {
   return worst;
 }
 
+// --- Series (for charts) ----------------------------------------------------
+//
+// Each returns an array aligned index-for-index with its input, null during
+// warm-up. The last element always equals the scalar function above; the
+// tests pin that so the chart and the summary can never disagree.
+
+export function smaSeries(values: number[], period: number): (number | null)[] {
+  const out: (number | null)[] = new Array(values.length).fill(null);
+  if (period <= 0) return out;
+  let sum = 0;
+  for (let i = 0; i < values.length; i++) {
+    sum += values[i];
+    if (i >= period) sum -= values[i - period];
+    if (i >= period - 1) out[i] = sum / period;
+  }
+  return out;
+}
+
+/** Wilder's RSI at every bar. */
+export function rsiSeries(closes: number[], period = 14): (number | null)[] {
+  const out: (number | null)[] = new Array(closes.length).fill(null);
+  if (closes.length < period + 1) return out;
+  let gain = 0;
+  let loss = 0;
+  for (let i = 1; i <= period; i++) {
+    const d = closes[i] - closes[i - 1];
+    if (d >= 0) gain += d;
+    else loss -= d;
+  }
+  let avgGain = gain / period;
+  let avgLoss = loss / period;
+  const value = () =>
+    avgLoss === 0 ? (avgGain === 0 ? 50 : 100) : 100 - 100 / (1 + avgGain / avgLoss);
+  out[period] = value();
+  for (let i = period + 1; i < closes.length; i++) {
+    const d = closes[i] - closes[i - 1];
+    avgGain = (avgGain * (period - 1) + Math.max(d, 0)) / period;
+    avgLoss = (avgLoss * (period - 1) + Math.max(-d, 0)) / period;
+    out[i] = value();
+  }
+  return out;
+}
+
+/** MACD line, signal and histogram at every bar. */
+export function macdSeries(
+  closes: number[],
+  fast = 12,
+  slow = 26,
+  signal = 9
+): { line: (number | null)[]; signal: (number | null)[]; histogram: (number | null)[] } {
+  const n = closes.length;
+  const f = emaSeries(closes, fast);
+  const s = emaSeries(closes, slow);
+  const line: (number | null)[] = closes.map((_, i) => {
+    const a = f[i];
+    const b = s[i];
+    return a !== null && b !== null ? a - b : null;
+  });
+  const firstLine = line.findIndex((v) => v !== null);
+  const sig: (number | null)[] = new Array(n).fill(null);
+  if (firstLine >= 0) {
+    const defined = line.slice(firstLine) as number[];
+    emaSeries(defined, signal).forEach((v, j) => (sig[firstLine + j] = v));
+  }
+  const histogram = line.map((v, i) => (v !== null && sig[i] !== null ? v - (sig[i] as number) : null));
+  return { line, signal: sig, histogram };
+}
+
+/** Average volume of the `period` sessions BEFORE each bar (spike excluded). */
+export function volumeAvgSeries(bars: OhlcvBar[], period = 20): (number | null)[] {
+  const out: (number | null)[] = new Array(bars.length).fill(null);
+  let sum = 0;
+  for (let i = 0; i < bars.length; i++) {
+    if (i >= period) out[i] = sum / period;
+    sum += bars[i].volume;
+    if (i >= period) sum -= bars[i - period].volume;
+  }
+  return out;
+}
+
 export type TechnicalSummary = {
   as_of: string;
   bars: number;
