@@ -1,8 +1,16 @@
 import Link from "next/link";
 import StrategyForm from "@/components/strategy-form";
 import { ProtectedRoute } from "@/components/protected-route";
+import { IdeaTradeForm } from "@/components/idea-trade-form";
 
-export default function NewTradePage() {
+export default async function NewTradePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const setId = typeof params.set === "string" ? params.set : null;
+  const rank = typeof params.idea === "string" ? Number(params.idea) : NaN;
   return (
     <ProtectedRoute>
       <div className="space-y-6">
@@ -22,7 +30,7 @@ export default function NewTradePage() {
           </p>
         </header>
 
-        <StrategyForm />
+        {setId && Number.isInteger(rank) ? <IdeaTradeForm setId={setId} rank={rank} /> : <StrategyForm />}
       </div>
     </ProtectedRoute>
   );

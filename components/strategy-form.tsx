@@ -6,6 +6,7 @@ import { STRATEGY_KINDS } from "@/lib/types";
 import { formatKind, toDatetimeLocalValue } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { buildStorageOcc } from "@/lib/occ";
+import type { TradePrefill } from "@/lib/strategy-ideas";
 
 type LegRow = LegInput & {
   side: "buy" | "sell";
@@ -35,18 +36,22 @@ const inputCls =
 const cellInputCls =
   "w-full rounded-md border border-border bg-surface px-2 py-1.5 text-xs placeholder:text-text-subtle transition-colors focus:border-accent";
 
-export default function StrategyForm() {
+export default function StrategyForm({ initial }: { initial?: TradePrefill } = {}) {
   const { session } = useAuth();
-  const [underlying, setUnderlying] = useState("");
-  const [strategyKind, setStrategyKind] = useState<string>("");
+  const [underlying, setUnderlying] = useState(initial?.underlying ?? "");
+  const [strategyKind, setStrategyKind] = useState<string>(initial?.strategy_kind ?? "");
   const [conviction, setConviction] = useState(5);
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
   const [openedAt, setOpenedAt] = useState(() => {
     const now = new Date();
     now.setSeconds(0, 0);
     return toDatetimeLocalValue(now);
   });
-  const [legs, setLegs] = useState<LegRow[]>([emptyLeg()]);
+  const [legs, setLegs] = useState<LegRow[]>(() =>
+    initial?.legs.length
+      ? initial.legs.map((l) => ({ ...emptyLeg(), ...l, ticker: initial.underlying }))
+      : [emptyLeg()]
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

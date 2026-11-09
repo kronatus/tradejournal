@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { HORIZONS, STRATEGY_FAMILIES, STRATEGY_RULES } from "./strategy-rules";
 
 // OCC symbol: O:AAPL250117C00150000
 export const OccSymbolSchema = z
@@ -410,6 +411,141 @@ export function sweepProblems(s: MarketSweepInput): string[] {
   });
   return problems;
 }
+
+// --- Options strategies (Phase 11) ----------------------------------------
+//
+// Claude supplies quotes (a bounded chain slice from Robinhood) and, for each
+// idea, legs plus prose. Every risk number is computed server-side by
+// lib/strategy-economics.ts — the model never writes max loss, PoP or EV.
+
+const OptionTypeSchema = z.enum(["call", "put"]);
+
+export const ChainContractSchema = z.object({
+  expiry: IsoDate,
+  strike_cents: Cents.positive(),
+  type: OptionTypeSchema,
+  bid_cents: Cents.nonnegative().nullable(),
+  ask_cents: Cents.nonnegative().nullable(),
+  /** Implied volatility as a decimal (0.32 = 32%). */
+  iv: z.number().min(0).max(10).nullable(),
+  delta: NullableNum.optional(),
+  open_interest: z.number().int().nonnegative().nullable().optional(),
+  volume: z.number().int().nonnegative().nullable().optional(),
+  /** When this contract was quoted (venue time). */
+  quoted_at: IsoDateTime,
+});
+
+export const StructureLegSchema = z.object({
+  expiry: IsoDate,
+  strike_cents: Cents.positive(),
+  type: OptionTypeSchema,
+  side: z.enum(["long", "short"]),
+  /** Contracts of this leg per unit of the structure (2 for a butterfly body). */
+  ratio: z.number().int().min(1).max(10).default(1),
+});
+
+export const CustomStructureSchema = z.object({
+  name: z.string().trim().min(1).max(60),
+  legs: z.array(StructureLegSchema).min(1).max(8),
+});
+
+export const StrategyHorizonSchema = z.enum(HORIZONS);
+
+const strategyRun = {
+  symbol: TickerSymbolSchema,
+  /** When the analysis was done. */
+  as_of: IsoDateTime,
+  horizons: z.array(StrategyHorizonSchema).min(1).max(2),
+  /** Underlying price the set is priced off (RH quote), and when it was marked. */
+  reference_price_cents: Cents.positive(),
+  reference_at: IsoDateTime,
+  /** Options account value from Robinhood, for the max-loss-per-position cap. */
+  account_value_cents: Cents.positive(),
+  chain: z.array(ChainContractSchema).min(1).max(STRATEGY_RULES.maxChainContracts),
+};
+
+export const EvaluateStrategiesInputSchema = z.object({
+  ...strategyRun,
+  custom_structures: z.array(CustomStructureSchema).max(STRATEGY_RULES.maxCustomStructures).default([]),
+});
+
+export const StrategyIdeaInputSchema = z.object({
+  family: z.enum([...STRATEGY_FAMILIES, "custom"]),
+  /** Required for custom structures; ignored otherwise. */
+  name: z.string().trim().min(1).max(60).optional(),
+  legs: z.array(StructureLegSchema).min(1).max(8),
+  rationale: z.string().trim().min(1).max(500),
+  catalysts: z.array(z.string().trim().min(1).max(160)).max(4).default([]),
+  risks: z.array(z.string().trim().min(1).max(160)).max(4).default([]),
+  exit_plan: z.string().trim().max(300).default(""),
+});
+
+export const SaveStrategySetInputSchema = z.object({
+  ...strategyRun,
+  ideas: z.array(StrategyIdeaInputSchema).max(STRATEGY_RULES.maxIdeas).default([]),
+  no_setup_reason: z.string().trim().max(400).nullable().optional(),
+  model_notes: z.string().trim().max(1000).nullable().optional(),
+});
+
+/** Minutes after which quotes for the shortest requested horizon are stale. */
+export function stalenessMinutes(horizons: readonly ("short" | "long")[]): number {
+  return horizons.includes("short") ? STRATEGY_RULES.staleness.shortMinutes : STRATEGY_RULES.staleness.longMinutes;
+}
+
+/** Cross-field checks shared by evaluate and save. `now` is the server clock. */
+export function strategyRunProblems(r: EvaluateStrategiesInput | SaveStrategySetInput, now: Date): string[] {
+  const problems: string[] = [];
+  const asOf = Date.parse(r.as_of);
+  const slackMs = 10 * 60_000;
+  const staleMs = stalenessMinutes(r.horizons) * 60_000;
+  if (asOf > now.getTime() + slackMs) problems.push("as_of is in the future");
+  if (now.getTime() - asOf > staleMs) problems.push(`as_of is older than ${stalenessMinutes(r.horizons)} minutes — re-quote before saving`);
+  const ref = Date.parse(r.reference_at);
+  if (ref > asOf + slackMs) problems.push("reference_at is after as_of");
+  if (asOf - ref > staleMs) problems.push("reference price is stale — re-quote the underlying");
+  const keys = new Set<string>();
+  let stale = 0;
+  r.chain.forEach((c, i) => {
+    const k = `${c.expiry}|${c.type}|${c.strike_cents}`;
+    if (keys.has(k)) problems.push(`chain[${i}] duplicates another contract`);
+    keys.add(k);
+    const q = Date.parse(c.quoted_at);
+    if (q > asOf + slackMs) problems.push(`chain[${i}].quoted_at is after as_of`);
+    if (asOf - q > staleMs) stale++;
+  });
+  if (stale) problems.push(`${stale} chain quote(s) are stale — re-quote them`);
+  return problems;
+}
+
+export function strategySetProblems(s: SaveStrategySetInput, now: Date): string[] {
+  const problems = strategyRunProblems(s, now);
+  if (!s.ideas.length && !s.no_setup_reason) {
+    problems.push("no ideas: set no_setup_reason (\"no compliant setup\" and why)");
+  }
+  const keys = new Set(s.chain.map((c) => `${c.expiry}|${c.type}|${c.strike_cents}`));
+  const sigs = new Set<string>();
+  s.ideas.forEach((idea, i) => {
+    if (idea.family === "custom" && !idea.name) problems.push(`ideas[${i}]: custom structures need a name`);
+    idea.legs.forEach((l, j) => {
+      if (!keys.has(`${l.expiry}|${l.type}|${l.strike_cents}`)) {
+        problems.push(`ideas[${i}].legs[${j}] is not in the supplied chain`);
+      }
+    });
+    const sig = idea.legs
+      .map((l) => `${l.side}${l.ratio}${l.type}${l.strike_cents}${l.expiry}`)
+      .sort()
+      .join(",");
+    if (sigs.has(sig)) problems.push(`ideas[${i}] duplicates another idea`);
+    sigs.add(sig);
+  });
+  return problems;
+}
+
+export type ChainContractInput = z.infer<typeof ChainContractSchema>;
+export type StructureLegInput = z.infer<typeof StructureLegSchema>;
+export type EvaluateStrategiesInput = z.infer<typeof EvaluateStrategiesInputSchema>;
+export type StrategyIdeaInput = z.infer<typeof StrategyIdeaInputSchema>;
+export type SaveStrategySetInput = z.infer<typeof SaveStrategySetInputSchema>;
 
 export type TickerSnapshot = z.infer<typeof TickerSnapshotSchema>;
 export type Technicals = z.infer<typeof TechnicalsSchema>;

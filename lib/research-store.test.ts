@@ -48,7 +48,7 @@ function fakeDb(resolve: Resolver) {
 const U = "user-1";
 const has = (call: Call, method: string, ...args: unknown[]) =>
   call.ops.some((o) => o.method === method && JSON.stringify(o.args) === JSON.stringify(args));
-const USER_TABLES = new Set(["research_tickers", "ticker_reports", "market_sweeps", "strategies"]);
+const USER_TABLES = new Set(["research_tickers", "ticker_reports", "market_sweeps", "strategies", "strategy_sets"]);
 
 function assertUserScoped(calls: Call[]) {
   for (const c of calls.filter((c) => USER_TABLES.has(c.table))) {
@@ -81,7 +81,22 @@ describe("createResearchStore", () => {
       MarketSweepInputSchema.parse({ as_of: "2026-11-07T21:00:00Z", headline: "h", regime: "neutral", summary: "s" })
     );
     await store.listOpenPositions();
-    expect(calls.length).toBeGreaterThan(8);
+    await store.getLatestStrategySet("AAPL");
+    await store.saveStrategySet({
+      symbol: "AAPL",
+      as_of: "2026-11-09T15:00:00Z",
+      horizons: ["long"],
+      reference_price_cents: 10000,
+      reference_at: "2026-11-09T15:00:00Z",
+      account_value_cents: 1_000_000,
+      regime: {},
+      ideas: [],
+      no_setup_reason: "nothing cleared the gate",
+      rejected_summary: { evaluated: 0, passed: 0, rejected: {} },
+      model_notes: null,
+    });
+    expect(calls.length).toBeGreaterThan(10);
+    expect(calls.some((c) => c.table === "strategy_sets")).toBe(true);
     assertUserScoped(calls);
   });
 

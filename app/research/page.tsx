@@ -12,7 +12,7 @@ import { supabaseBrowser } from "@/lib/supabase/client";
 import { useUserQuery } from "@/lib/use-user-query";
 import { DEFAULT_GROUPING, GROUPINGS, PROMPTS } from "@/lib/research";
 import type { TickerWithStatus } from "@/lib/research-store";
-import type { ResearchTicker, TickerReport } from "@/lib/types";
+import type { ResearchTicker, StrategySet, TickerReport } from "@/lib/types";
 
 const GROUPING_KEY = "research.grouping";
 
@@ -44,17 +44,29 @@ async function loadTickers(): Promise<{ tickers: TickerWithStatus[]; loadedAt: n
   };
 }
 
-async function loadReport(symbol: string | null): Promise<TickerReport | null> {
-  if (!symbol) return null;
+async function latestRow<T>(table: "ticker_reports" | "strategy_sets", symbol: string): Promise<T | null> {
   const { data, error } = await supabaseBrowser
-    .from("ticker_reports")
+    .from(table)
     .select("*")
     .eq("symbol", symbol)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
   if (error) throw error;
-  return data as TickerReport | null;
+  return data as T | null;
+}
+
+/** The latest report and, separately, the latest options strategy set. */
+async function loadReport(
+  symbol: string | null
+): Promise<{ report: TickerReport | null; strategies: StrategySet | null } | null> {
+  if (!symbol) return null;
+  const [report, strategies] = await Promise.all([
+    latestRow<TickerReport>("ticker_reports", symbol),
+    // A missing table (migration 0009 not applied yet) must not hide the report.
+    latestRow<StrategySet>("strategy_sets", symbol).catch(() => null),
+  ]);
+  return { report, strategies };
 }
 
 function readGrouping(): string {
@@ -222,7 +234,8 @@ function ResearchContent() {
             <TickerReportView
               symbol={selected}
               ticker={selectedTicker}
-              report={report.data}
+              report={report.data?.report ?? null}
+              strategies={report.data?.strategies ?? null}
               now={now}
             />
           )}

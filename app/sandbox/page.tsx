@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { Suspense, useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { formatCents } from "@/lib/utils";
 import { bsmPrice, bsmGreeks, type Greeks as BsmGreeks } from "@/lib/pricing";
@@ -8,6 +9,7 @@ import { PayoffChart, type PayoffChartData } from "@/components/sandbox/payoff-c
 import { DecayChart, type DecayChartData } from "@/components/sandbox/decay-chart";
 import { GreeksPanel, type GreekLegData } from "@/components/sandbox/greeks-panel";
 import { buildStorageOcc } from "@/lib/occ";
+import { parseSandboxLegs } from "@/lib/strategy-ideas";
 
 interface SandboxLeg {
   id: string;
@@ -42,11 +44,32 @@ function daysUntil(date: string): number {
 }
 
 export default function SandboxPage() {
-  const { session } = useAuth();
+  return (
+    <Suspense fallback={<div className="py-12 text-center">Loading...</div>}>
+      <SandboxContent />
+    </Suspense>
+  );
+}
 
-  const [underlying, setUnderlying] = useState("SPY");
-  const [spotPrice, setSpotPrice] = useState(580);
-  const [legs, setLegs] = useState<SandboxLeg[]>([]);
+/** Seed from `?symbol=&spot=&legs=` ("Open in Sandbox" on a strategy idea). */
+function readSeed(params: URLSearchParams) {
+  const symbol = params.get("symbol")?.toUpperCase();
+  const spot = Number(params.get("spot"));
+  return {
+    underlying: symbol && /^[A-Z][A-Z0-9.]{0,9}$/.test(symbol) ? symbol : "SPY",
+    spot: Number.isFinite(spot) && spot > 0 ? spot : 580,
+    legs: parseSandboxLegs(params.get("legs")).map((l, i) => ({ ...l, id: `seed-${i}` })),
+  };
+}
+
+function SandboxContent() {
+  const { session } = useAuth();
+  const params = useSearchParams();
+  const [seed] = useState(() => readSeed(params));
+
+  const [underlying, setUnderlying] = useState(seed.underlying);
+  const [spotPrice, setSpotPrice] = useState(seed.spot);
+  const [legs, setLegs] = useState<SandboxLeg[]>(seed.legs);
 
   const [scenarioSpot, setScenarioSpot] = useState(spotPrice);
   const [scenarioDaysOffset, setScenarioDaysOffset] = useState(0);

@@ -12,11 +12,12 @@ import {
   ratingTone,
   reportFreshness,
 } from "@/lib/research";
-import type { ResearchTicker, TickerReport } from "@/lib/types";
+import type { ResearchTicker, StrategySet, TickerReport } from "@/lib/types";
 import type { Technicals } from "@/lib/schemas";
 import { Card, PromptHandoff, signClass, Stat, ToneBadge } from "./ui";
 import { PriceChartCard } from "./price-chart";
 import { Term } from "@/components/ui/term";
+import { StrategyIdeasCard } from "./strategy-ideas-card";
 
 type Spot = { price_cents: number; fetched_at: string } | { error: string } | null;
 
@@ -55,18 +56,23 @@ export function TickerReportView({
   symbol,
   ticker,
   report,
+  strategies,
   now,
 }: {
   symbol: string;
   ticker: ResearchTicker | null;
   report: TickerReport | null;
+  /** Latest options strategy set (saved separately by the options-strategist skill). */
+  strategies: StrategySet | null;
   now: number;
 }) {
   const freshness = reportFreshness(report?.as_of, now);
+  const spot = useLiveSpot(symbol);
+  const spotCents = spot && "price_cents" in spot ? spot.price_cents : null;
 
   return (
     <div className="space-y-5">
-      <TickerHeader symbol={symbol} ticker={ticker} report={report} />
+      <TickerHeader symbol={symbol} ticker={ticker} report={report} spot={spot} />
 
       <PriceChartCard symbol={symbol} />
 
@@ -79,7 +85,11 @@ export function TickerReportView({
             </div>
           </div>
         </Card>
-      ) : (
+      ) : null}
+      {!report && strategies && (
+        <StrategyIdeasCard symbol={symbol} set={strategies} spotCents={spotCents} now={now} />
+      )}
+      {!report ? null : (
         <>
           {freshness === "stale" && (
             <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-warn/40 bg-warn-soft px-4 py-2 text-sm text-warn">
@@ -94,11 +104,7 @@ export function TickerReportView({
               <p className="text-sm leading-relaxed">{report.fundamentals}</p>
             </Card>
           )}
-          <Card title="Options strategies">
-            <p className="text-sm text-text-muted">
-              Strategy ideas will appear here once the strategy framework is defined.
-            </p>
-          </Card>
+          <StrategyIdeasCard symbol={symbol} set={strategies} spotCents={spotCents} now={now} />
           <ArticlesList report={report} />
           {report.model_notes && (
             <p className="text-xs text-text-subtle">Analyst notes: {report.model_notes}</p>
@@ -113,12 +119,13 @@ function TickerHeader({
   symbol,
   ticker,
   report,
+  spot,
 }: {
   symbol: string;
   ticker: ResearchTicker | null;
   report: TickerReport | null;
+  spot: Spot;
 }) {
-  const spot = useLiveSpot(symbol);
   const snap = report?.snapshot;
   const sector = ticker?.sector;
   const industry = ticker?.industry;

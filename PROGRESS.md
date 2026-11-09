@@ -140,7 +140,7 @@ scan itself so Claude never sweeps 500+ tickers.
 - [x] Universe `data/universe.json`: S&P 500 + Nasdaq-100 (518 names, GICS) + index/sector ETFs; `scripts/refresh-universe.mjs`
 - [x] EOD ingest from Massive Grouped Daily (1 call = whole market), daily Vercel cron, resumable backfill script
 - [x] `lib/technicals.ts` (SMA/EMA/RSI/MACD/ATR/HV/rel-vol…) and `lib/market-scan.ts` (breadth, sector rotation, industries, index contributors, anomalies with reason codes) — bounded digest
-- [x] MCP server `app/api/mcp/[token]` — 11 tools, Zod-validated writes, per-user secret URL (hash stored), revocable
+- [x] MCP server `app/api/mcp/[token]` — 11 tools (14 after Phase 11), Zod-validated writes, per-user secret URL (hash stored), revocable
 - [x] `/research`: grouped editable ticker sidebar (Sector › Industry, pivot presets), snapshot + live spot, key numbers, 4 technical cards, fundamentals, strategies placeholder, ≤5 articles (≤48h)
 - [x] `/pulse`: Claude's sweep (regime, highlights, picks → Add to Research, trends) over the computed scan
 - [x] Skills `skills/market-sweep`, `skills/ticker-research` + setup guide `skills/README.md`
@@ -149,25 +149,66 @@ scan itself so Claude never sweeps 500+ tickers.
 - [x] News of the day on Pulse (migration `0008_sweep_news.sql`, ≤ 8 headlines ≤ 36h old, impact + symbol tags)
 - [x] Prod: 0007 + 0008 applied, `MASSIVE_API_KEY` + `CRON_SECRET` set, 300-session backfill done, connector + skills live in claude.ai and feeding both tabs
 - [x] Massive free plan serves Grouped Daily (verified in production)
-- [ ] Options strategy framework → moved to Phase 11
+- [x] Options strategy framework → Phase 11
 - [ ] Optional: fill `shares_outstanding` for cap weighting (`refresh-universe.mjs --shares`)
 
 ---
 
-## Phase 11: Options Strategy Framework 📋 NEXT
+## Phase 11: Options Strategy Framework ✅ BUILT (deploy pending)
 
-Fills the "Options strategies" placeholder card on `/research`. Code picks
-the strategy type, Claude picks real strikes and expiries from the Robinhood
-chain, and the app computes the risk numbers. The model never writes them.
+Fills the "Options strategies" section of the ticker report on `/research`.
+Code reads the regime, picks families, builds and prices structures and gates
+them. Claude pulls the chain slice from Robinhood, may add creative custom
+structures, and writes the rationale. The model never writes risk numbers.
 
-- [ ] Define the framework (open questions): defined-risk only or also short puts / covered calls; typical DTE range; max loss per trade or account size; which strategies are in scope
-- [ ] Rules-based selector in `lib/` (trend/momentum ratings × IV regime × days to earnings → candidate strategy types), with Vitest tests
-- [ ] `OptionStrategyIdeaSchema` in `lib/schemas.ts` (legs, expiry, DTE, rationale, catalysts, risks) plus cross-checks (expiry vs earnings, leg consistency); OCC handling only via `lib/occ.ts`
-- [ ] Server-side risk math reusing `lib/payoff.ts`, `lib/pricing.ts`, `lib/greeks.ts`: max profit/loss, breakevens, probability of profit
-- [ ] Migration `0009`: `ticker_reports.strategies jsonb` (≤ 3 ideas), verified in PGlite
-- [ ] MCP `save_ticker_report` accepts strategies; update `skills/ticker-research/SKILL.md`, then re-zip and re-upload it
-- [ ] UI card: up to 3 ideas with a mini payoff chart, plus "Open in Sandbox" / "Log as trade"
-- [ ] Never pull whole chains through Marketdata (billing); chain data comes from Claude's RH calls
+**Framework (decided 2026-11-09):**
+- Options-only small account, run aggressively. Max loss up to 50% of the
+  account per position, 2–3 concurrent. Claude passes the account value from
+  Robinhood on each run.
+- Sell premium by default (theta-positive). Debit spreads only when the setup
+  demands direction (strong bias, or IV cheap vs realized).
+- Horizons: short 0–3 DTE and long 4–21 DTE. Longer is to be defined later.
+- Universe: research watchlist plus picks from the last 5 sweeps.
+- Gate: all must hold.
+  - (A) max loss ≤ 3.25 × max gain. The original "$3.25 reward per $1 risked"
+    is impossible for premium selling, so it was redefined.
+  - (B) expected P&L > 0 under realized vol (hv20) at natural bid/ask.
+  - (C) one unit's max loss ≤ 50% of the account.
+  - (D) a gap of max(largest 20-session gap, ATR14) toward the worse side
+    doesn't reach max loss.
+
+  Ranked by EV ÷ max loss (liquidity-penalised), ≤ 3 ideas, one per family.
+  If nothing passes, the answer is "no compliant setup".
+
+**Built:**
+- [x] `lib/levels.ts`: 20-session support/resistance (swing pivots, clustered by 0.5 × ATR), largest gap, gap size
+- [x] `lib/strategy-rules.ts`: `STRATEGY_RULES` thresholds plus the `selectFamilies` selector (trend/momentum bias × IV vs hv20 / IV rank × earnings inside the window × risk rating)
+- [x] `lib/strategy-catalog.ts`: 15 families, short strikes anchored to levels and kept outside the expected move into earnings:
+  - credit and debit verticals, iron condor (incl. unbalanced) and iron fly
+  - long and broken-wing butterflies, jade lizard, 1×2 put ratio, CSP
+  - calendar, diagonal, double diagonal
+- [x] `lib/strategy-economics.ts`:
+  - natural pricing; max gain and loss read off the payoff (tail slopes reject undefined risk); breakevens
+  - lognormal PoP and EV under realized and implied vol; net theta; gap test; sizing
+  - model valuation for multi-expiry structures
+- [x] `lib/strategy-engine.ts`: context, fetch plan, evaluation run, re-gating on save
+- [x] Schemas plus cross-checks in `lib/schemas.ts`: stale quotes, duplicate contracts, legs must be in the chain, `no_setup_reason` required when there are no ideas
+- [x] Migration `0009_strategy_sets.sql`: a separate append-only table rather than a `ticker_reports` column, so the strategist refreshes only its section. Verified in PGlite (re-runnable, RLS).
+- [x] MCP tools `get_strategy_context`, `evaluate_option_strategies`, `save_strategy_set` (14 tools). `get_ticker_report` includes the latest set.
+- [x] UI: `components/research/strategy-ideas-card.tsx`
+  - economics with glossary terms and a payoff mini-chart with a readout strip
+  - stale badge (age, or drift above 0.5 ATR vs live spot)
+  - "Log as trade" (`/trades/new?set=&idea=`, prefilled) and "Open in Sandbox" (`/sandbox?symbol=&spot=&legs=`)
+- [x] Skill `skills/options-strategist/SKILL.md`. ticker-research hands off to it.
+- [ ] Prod: apply `0009_strategy_sets.sql`, zip and upload `options-strategist` plus the updated `ticker-research`, then run it on a sweep pick
+
+## Phase 11b: Strategy Management 📋 NEXT
+
+- [ ] Partial-quantity closes (scale out half at 50% of max profit): split a leg row or add a partial-exit model
+- [ ] Roll links between trades (roll first, then cut at a 50% loss of the credit received)
+- [ ] Review tool for Claude: open positions with live marks, % of max profit captured, % of credit lost, days to expiry, and a suggested action. Uses `fetchQuotes` for held legs only (Marketdata billing).
+- [ ] Link logged trades back to the idea they came from (`strategy_sets.id` plus rank)
+- [ ] Define the longer-term horizon (> 21 DTE)
 
 ---
 

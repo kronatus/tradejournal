@@ -4,7 +4,7 @@ function normPdf(x: number): number {
   return Math.exp(-0.5 * x * x) / SQRT2PI;
 }
 
-function normCdf(x: number): number {
+export function normCdf(x: number): number {
   const sign = x < 0 ? -1 : 1;
   const z = Math.abs(x);
   const t = 1 / (1 + 0.2316419 * z);

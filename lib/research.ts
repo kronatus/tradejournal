@@ -169,6 +169,7 @@ export function formatCompact(v: number | null | undefined): string {
 /** Prompt text the UI offers for copying into Claude chat. */
 export const PROMPTS = {
   research: (symbol: string) => `Run ticker research on ${symbol}`,
+  strategies: (symbol: string) => `Run the options strategist on ${symbol}`,
   refreshAll: "Refresh my research list",
   sweep: "Run a market sweep",
 } as const;

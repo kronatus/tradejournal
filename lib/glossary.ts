@@ -6,6 +6,8 @@
  * Keep both to a sentence or two — the bubble is a reminder, not a lesson.
  */
 
+import { STRATEGY_RULES } from "./strategy-rules";
+
 export type GlossaryEntry = { term: string; what: string; why: string };
 
 const G = {
@@ -208,6 +210,52 @@ const ENTRIES: Record<string, GlossaryEntry> = {
     term: "Sector ETF",
     what: "The SPDR fund that tracks the sector.",
     why: "When the ETF and its members move differently, a few heavyweights are driving the ETF.",
+  },
+  // Options strategy ideas.
+  pop: {
+    term: "Probability of profit",
+    what: "Chance the position ends above zero at the front expiry, under a lognormal price model.",
+    why: "Shown under realized and implied volatility. The gap between the two is the premium seller's edge.",
+  },
+  ev: {
+    term: "Expected P&L",
+    what: "Average outcome at the front expiry under the price model, after natural fills and fees.",
+    why: "Gate B: must be positive under realized volatility, or the trade has no edge however likely a win looks.",
+  },
+  ev_on_risk: {
+    term: "Expected return on risk",
+    what: "Expected P&L divided by max loss.",
+    why: "How ideas are ranked: the edge per dollar put at risk.",
+  },
+  risk_reward: {
+    term: "Risk : reward",
+    what: "Max loss divided by max gain for one unit of the structure.",
+    why: `Gate A: at most ${STRATEGY_RULES.maxRiskToReward} : 1, so a loser never costs more than ${STRATEGY_RULES.maxRiskToReward} winners.`,
+  },
+  max_loss: {
+    term: "Max loss",
+    what: "The worst outcome at expiry, read off the payoff at every strike, net of fees.",
+    why: `Defined before entry. Gate C caps one unit at ${STRATEGY_RULES.maxAccountRiskFraction * 100}% of the account.`,
+  },
+  gap_test: {
+    term: "Gap test",
+    what: "P&L if the stock gaps by the larger of its biggest 20-session gap and one ATR, in the worse direction.",
+    why: "A structure must survive a normal-sized shock without hitting max loss.",
+  },
+  natural_price: {
+    term: "Natural price",
+    what: "Buying at the ask and selling at the bid.",
+    why: "The worst realistic fill. If a trade only works at mid, it does not show up.",
+  },
+  theta: {
+    term: "Theta",
+    what: "Change in the position's value per calendar day, other things equal.",
+    why: "Positive theta is paid by time passing, the one force that is certain.",
+  },
+  breakeven: {
+    term: "Breakeven",
+    what: "Underlying price at the front expiry where the position neither makes nor loses money.",
+    why: "Compare it with support and resistance: a breakeven beyond a level has a buffer.",
   },
   // Anomaly flags from the market scan.
   REL_VOL: {

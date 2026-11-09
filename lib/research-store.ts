@@ -5,12 +5,15 @@
  * apply to the service role. lib/research-store.test.ts enforces that.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { MarketSweepInput, TickerReportInput } from "./schemas";
+import type { MarketSweepInput, SaveStrategySetInput, TickerReportInput } from "./schemas";
 import type {
   MarketBar,
   MarketScanRow,
   MarketSweep,
   ResearchTicker,
+  StrategyIdea,
+  StrategySet,
+  StrategySetSummary,
   TickerReport,
 } from "./types";
 import { universeSymbols } from "./universe";
@@ -71,7 +74,21 @@ export interface ResearchStore {
   listSweeps(limit: number): Promise<MarketSweep[]>;
   postSweep(input: MarketSweepInput): Promise<{ id: string; created_at: string }>;
   listOpenPositions(): Promise<OpenPosition[]>;
+  getLatestStrategySet(symbol: string): Promise<StrategySet | null>;
+  saveStrategySet(input: StrategySetRow): Promise<{ id: string; created_at: string }>;
 }
+
+/** What save_strategy_set stores: the request plus the server's own numbers. */
+export type StrategySetRow = Pick<
+  SaveStrategySetInput,
+  "symbol" | "as_of" | "horizons" | "reference_price_cents" | "reference_at" | "account_value_cents"
+> & {
+  regime: Record<string, unknown>;
+  ideas: StrategyIdea[];
+  no_setup_reason: string | null;
+  rejected_summary: StrategySetSummary;
+  model_notes: string | null;
+};
 
 export function createResearchStore(db: SupabaseClient, userId: string): ResearchStore {
   return {
@@ -232,6 +249,42 @@ export function createResearchStore(db: SupabaseClient, userId: string): Researc
             picks: input.picks,
             trends: input.trends,
             news: input.news,
+          })
+          .select("id, created_at")
+          .single()
+      ) as { id: string; created_at: string };
+    },
+
+    async getLatestStrategySet(symbol) {
+      return check(
+        await db
+          .from("strategy_sets")
+          .select("*")
+          .eq("user_id", userId)
+          .eq("symbol", symbol)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle()
+      ) as StrategySet | null;
+    },
+
+    async saveStrategySet(input) {
+      return check(
+        await db
+          .from("strategy_sets")
+          .insert({
+            user_id: userId,
+            symbol: input.symbol,
+            as_of: input.as_of,
+            horizons: input.horizons,
+            reference_price_cents: input.reference_price_cents,
+            reference_at: input.reference_at,
+            account_value_cents: input.account_value_cents,
+            regime: input.regime,
+            ideas: input.ideas,
+            no_setup_reason: input.no_setup_reason,
+            rejected_summary: input.rejected_summary,
+            model_notes: input.model_notes,
           })
           .select("id, created_at")
           .single()

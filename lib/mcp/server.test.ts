@@ -1,19 +1,26 @@
 // @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
 import { handleMcpRequest, type McpDeps } from "./server";
-import type { MarketStore, ResearchStore } from "@/lib/research-store";
+import type { MarketStore, ResearchStore, StrategySetRow } from "@/lib/research-store";
 import type { MarketBar, MarketScanRow } from "@/lib/types";
 import type { ScanDigest } from "@/lib/market-scan";
 import fixture from "@/tests/fixtures/ticker-report-aapl.json";
+import { STRATEGY_RULES } from "@/lib/strategy-rules";
 
 const SECRET = "s".repeat(43);
 const USER = "user-1";
 
 function memoryDeps(opts: { scan?: MarketScanRow | null; bars?: MarketBar[]; refreshError?: string } = {}) {
-  const saved: { reports: unknown[]; sweeps: unknown[]; tickers: Record<string, unknown>[] } = {
+  const saved: {
+    reports: unknown[];
+    sweeps: unknown[];
+    tickers: Record<string, unknown>[];
+    strategySets: StrategySetRow[];
+  } = {
     reports: [],
     sweeps: [],
     tickers: [],
+    strategySets: [],
   };
   const research: ResearchStore = {
     listTickers: async () => [
@@ -36,6 +43,11 @@ function memoryDeps(opts: { scan?: MarketScanRow | null; bars?: MarketBar[]; ref
       return { id: "sw-1", created_at: "2026-11-08T00:00:00Z" };
     },
     listOpenPositions: async () => [],
+    getLatestStrategySet: async () => null,
+    saveStrategySet: async (row) => {
+      saved.strategySets.push(row);
+      return { id: "set-1", created_at: "2026-11-08T15:00:00Z" };
+    },
   };
   const market: MarketStore = {
     lastStoredDate: async () => null,
@@ -103,7 +115,9 @@ describe("MCP HTTP transport", () => {
     const tools = r.body.result.tools as { name: string; inputSchema: { properties?: Record<string, unknown> } }[];
     expect(tools.map((t) => t.name).sort()).toEqual([
       "add_research_ticker",
+      "evaluate_option_strategies",
       "get_market_scan",
+      "get_strategy_context",
       "get_symbol_detail",
       "get_ticker_report",
       "list_market_sweeps",
@@ -112,6 +126,7 @@ describe("MCP HTTP transport", () => {
       "post_market_sweep",
       "refresh_market_data",
       "remove_research_ticker",
+      "save_strategy_set",
       "save_ticker_report",
     ]);
     const save = tools.find((t) => t.name === "save_ticker_report")!;
@@ -285,5 +300,116 @@ describe("research list and sweeps", () => {
     });
     expect(toolJson(r)).toMatchObject({ id: "sw-1", view: "/pulse" });
     expect((saved.sweeps[0] as { picks: { symbol: string }[] }).picks[0].symbol).toBe("AMD");
+  });
+});
+
+describe("options strategy tools", () => {
+  const NOW = "2026-11-08T15:00:00Z";
+  const EXP = "2026-11-20"; // 12 DTE from Sunday 2026-11-08 → long horizon
+  const bars: MarketBar[] = Array.from({ length: 30 }, (_, i) => ({
+    date: `2026-10-${String(i + 1).padStart(2, "0")}`,
+    symbol: "AAPL",
+    open_cents: 30000 + i * 10,
+    high_cents: 30100 + i * 10,
+    low_cents: 29900 + i * 10,
+    close_cents: 30000 + i * 10,
+    vwap_cents: null,
+    volume: 1_000_000,
+  }));
+  const quote = (type: "call" | "put", strike: number, bid: number, ask: number) => ({
+    expiry: EXP,
+    strike_cents: strike,
+    type,
+    bid_cents: bid,
+    ask_cents: ask,
+    iv: 0.3,
+    open_interest: 200,
+    quoted_at: NOW,
+  });
+  const run = (chain: ReturnType<typeof quote>[]) => ({
+    symbol: "AAPL",
+    as_of: NOW,
+    horizons: ["long"],
+    reference_price_cents: 30290,
+    reference_at: NOW,
+    account_value_cents: 1_000_000,
+    chain,
+  });
+  const pcsLegs = [
+    { expiry: EXP, strike_cents: 29500, type: "put", side: "short" },
+    { expiry: EXP, strike_cents: 29000, type: "put", side: "long" },
+  ];
+  const idea = { family: "put_credit_spread", legs: pcsLegs, rationale: "Sell premium below support." };
+
+  it("refuses tickers outside the research list and recent sweep picks", async () => {
+    const { deps } = memoryDeps({ bars });
+    const r = await call(deps, "get_strategy_context", { symbol: "TSLA" });
+    expect(r.body.result.isError).toBe(true);
+    expect(r.body.result.content[0].text).toMatch(/add_research_ticker/);
+  });
+
+  it("returns the regime read, levels and a fetch plan", async () => {
+    const { deps } = memoryDeps({ bars });
+    const body = toolJson(await call(deps, "get_strategy_context", { symbol: "AAPL", horizons: ["short", "long"] }));
+    expect(body.context.reference_price_cents).toBe(30290);
+    expect(body.context.selections.long.bias).toBe("neutral");
+    expect(body.context.warnings.join(" ")).toMatch(/No ticker report/);
+    expect(body.fetch_plan.map((p: { horizon: string }) => p.horizon)).toEqual(["short", "long"]);
+    expect(body.gate).toMatch(/3.25/);
+  });
+
+  it("evaluates catalogue and custom structures and ranks what passes", async () => {
+    const { deps } = memoryDeps({ bars });
+    const chain = [quote("put", 29500, 300, 310), quote("put", 29000, 90, 100)];
+    const body = toolJson(
+      await call(deps, "evaluate_option_strategies", {
+        ...run(chain),
+        custom_structures: [{ name: "My PCS", legs: pcsLegs }],
+      })
+    );
+    expect(body.evaluated).toBeGreaterThan(0);
+    const mine = body.candidates.find((c: { label: string }) => c.label === "My PCS");
+    expect(mine.economics.max_loss_cents).toBe(30000 + 2 * STRATEGY_RULES.feePerContractCents);
+    expect(mine.sizing.qty).toBe(16);
+  });
+
+  it("rejects stale quotes before evaluating", async () => {
+    const { deps } = memoryDeps({ bars });
+    const stale = { ...quote("put", 29500, 300, 310), quoted_at: "2026-11-06T15:00:00Z" };
+    const r = await call(deps, "evaluate_option_strategies", run([stale]));
+    expect(r.body.result.isError).toBe(true);
+    expect(r.body.result.content[0].text).toMatch(/stale/);
+  });
+
+  it("re-gates ideas on save and stores the server's numbers", async () => {
+    const { deps, saved } = memoryDeps({ bars });
+    const chain = [quote("put", 29500, 300, 310), quote("put", 29000, 90, 100)];
+    const r = await call(deps, "save_strategy_set", { ...run(chain), ideas: [idea] });
+    expect(r.body.result.isError).toBeFalsy();
+    expect(toolJson(r)).toMatchObject({ id: "set-1", view: "/research?symbol=AAPL" });
+    const row = saved.strategySets[0];
+    expect(row.ideas[0]).toMatchObject({ rank: 1, horizon: "long", rationale: "Sell premium below support." });
+    expect(row.ideas[0].economics.max_loss_cents).toBe(30012);
+    expect(row.ideas[0].legs[0].occ_symbol).toBe("O:AAPL261120P00029500");
+    expect(row.rejected_summary.evaluated).toBeGreaterThan(0);
+  });
+
+  it("rejects an idea that fails the gate", async () => {
+    const { deps, saved } = memoryDeps({ bars });
+    // $1.00 credit on a $5 width: risks 4× the reward.
+    const chain = [quote("put", 29500, 200, 210), quote("put", 29000, 90, 100)];
+    const r = await call(deps, "save_strategy_set", { ...run(chain), ideas: [idea] });
+    expect(r.body.result.isError).toBe(true);
+    expect(r.body.result.content[0].text).toMatch(/fails the gate: max loss above 3.25/);
+    expect(saved.strategySets).toHaveLength(0);
+  });
+
+  it("requires a reason when saving no ideas", async () => {
+    const { deps, saved } = memoryDeps({ bars });
+    const chain = [quote("put", 29500, 200, 210)];
+    const r = await call(deps, "save_strategy_set", run(chain));
+    expect(r.body.result.content[0].text).toMatch(/no_setup_reason/);
+    await call(deps, "save_strategy_set", { ...run(chain), no_setup_reason: "Nothing clears 3.25:1 at these prices." });
+    expect(saved.strategySets[0]).toMatchObject({ ideas: [], no_setup_reason: "Nothing clears 3.25:1 at these prices." });
   });
 });

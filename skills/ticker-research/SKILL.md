@@ -46,6 +46,10 @@ review or cancel orders.
    older items.** Record the real publish time.
 5. **Write** the four technical dimensions, the fundamentals paragraph, and
    save with `save_ticker_report`. Then summarise in chat in 3–5 lines.
+6. **Strategies (optional)** — if the user asked for trade ideas or
+   strategies, continue with the **options-strategist** skill for this
+   ticker now. The fresh report is its regime read. Otherwise offer it in one
+   line.
 
 ## Technical rating rubric
 
@@ -87,8 +91,8 @@ facts that matter right now (from the news). No boilerplate company history.
 - `articles`: ≤ 5, each `{title, url, source, published_at, summary}`;
   `summary` one sentence on why it matters for the stock.
 - `next_earnings_date`: `YYYY-MM-DD` or null.
-- Options strategy ideas are **not** part of the report yet — don't include
-  them.
+- Options strategies are **not** part of this payload. They live in their own
+  section, written by the **options-strategist** skill (`save_strategy_set`).
 
 If the tool rejects the payload, read the message, fix it and retry once.
 This is research for the user's own decisions, not advice.

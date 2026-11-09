@@ -1,6 +1,6 @@
 # Claude chat skills for Research & Market Pulse
 
-Two skills teach Claude chat how to fill the journal's **Research** and
+Three skills teach Claude chat how to fill the journal's **Research** and
 **Pulse** tabs. Claude does the analysis with your Robinhood connector and web
 search, and writes results through the journal's own MCP connector.
 
@@ -8,6 +8,7 @@ search, and writes results through the journal's own MCP connector.
 |---|---|---|
 | `market-sweep` | "Run a market sweep", "what's the market doing" | Pulse tab |
 | `ticker-research` | "Run ticker research on NVDA", "Refresh my research list" | Research tab |
+| `options-strategist` | "Run the options strategist on NVDA", "options ideas for AMD" | Research tab → Options strategies |
 
 ## One-time setup
 
@@ -22,7 +23,8 @@ search, and writes results through the journal's own MCP connector.
    `0004`–`0006` from `supabase/migrations/` first, in order.
 2. Paste and run `supabase/migrations/0007_research.sql`, then
    `supabase/migrations/0008_sweep_news.sql` (adds news of the day to sweeps;
-   safe to re-run).
+   safe to re-run), then `supabase/migrations/0009_strategy_sets.sql`
+   (options strategy ideas; safe to re-run).
    (Alternative with the CLI: `npx supabase link --project-ref <ref>` then
    `npx supabase db push`.)
 
@@ -71,8 +73,10 @@ MASSIVE_API_KEY=<key> node scripts/refresh-universe.mjs --shares
 3. Zip each skill folder and upload it in claude.ai → **Settings →
    Capabilities → Skills**:
    ```bash
-   cd skills && zip -r market-sweep.zip market-sweep && zip -r ticker-research.zip ticker-research
+   cd skills && zip -r market-sweep.zip market-sweep && zip -r ticker-research.zip ticker-research && zip -r options-strategist.zip options-strategist
    ```
+   On Windows (no `zip`): `tar -a -c -f options-strategist.zip options-strategist`
+   (and the same for the other two).
 4. In a new chat: **"Run a market sweep"**.
 
 ## Notes
@@ -81,4 +85,7 @@ MASSIVE_API_KEY=<key> node scripts/refresh-universe.mjs --shares
   research. Revoke it from the Research tab if it leaks.
 - The app never calls Robinhood; only Claude chat does, under your own
   Robinhood consent.
-- Options strategy ideas are deliberately not part of reports yet.
+- Options strategy ideas are saved separately from reports (`strategy_sets`),
+  so the options-strategist can refresh them without rewriting the report.
+  Every risk number is computed by the journal from the quotes Claude passes;
+  the thresholds live in `STRATEGY_RULES` (`lib/strategy-rules.ts`).

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { lookupTerm } from "./glossary";
 import { SCAN_THRESHOLDS } from "./market-scan";
+import { STRATEGY_RULES } from "./strategy-rules";
 
 const term = (k: string) => lookupTerm(k)?.term ?? null;
 
@@ -57,8 +58,16 @@ describe("lookupTerm", () => {
     expect(lookupTerm("GAP")!.what).toContain(`${SCAN_THRESHOLDS.gapPct}%`);
   });
 
+  it("explains the options strategy gate with its real thresholds", () => {
+    expect(lookupTerm("risk_reward")!.why).toContain(`${STRATEGY_RULES.maxRiskToReward} : 1`);
+    expect(lookupTerm("max_loss")!.why).toContain(`${STRATEGY_RULES.maxAccountRiskFraction * 100}%`);
+    for (const k of ["pop", "ev", "ev_on_risk", "gap_test", "natural_price", "theta", "breakeven"]) {
+      expect(lookupTerm(k), k).not.toBeNull();
+    }
+  });
+
   it("keeps every entry short", () => {
-    const keys = ["pe", "pb", "beta", "iv", "macd", "atr", "breadth", "QUIET_ACCUMULATION", "sma50", "rsi14"];
+    const keys = ["pe", "pb", "beta", "iv", "macd", "atr", "breadth", "QUIET_ACCUMULATION", "sma50", "rsi14", "pop", "ev", "risk_reward", "max_loss", "gap_test", "natural_price", "theta", "breakeven", "ev_on_risk"];
     for (const k of keys) {
       const e = lookupTerm(k)!;
       expect(e.what.length + e.why.length, k).toBeLessThan(260);

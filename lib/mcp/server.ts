@@ -13,16 +13,33 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { z } from "zod";
 import {
+  EvaluateStrategiesInputSchema,
   MarketSweepInputSchema,
+  SaveStrategySetInputSchema,
+  StrategyHorizonSchema,
   TickerReportInputSchema,
   TickerSymbolSchema,
+  strategyRunProblems,
+  strategySetProblems,
   sweepProblems,
   tickerReportProblems,
 } from "@/lib/schemas";
+import {
+  buildStrategyContext,
+  evaluateStrategies,
+  fetchPlan,
+  gateIdeas,
+  ideaStructures,
+  runSummary,
+  summarizeEvaluation,
+} from "@/lib/strategy-engine";
+import { REJECT_REASON_TEXT, type RejectReason } from "@/lib/strategy-economics";
+import { STRATEGY_RULES } from "@/lib/strategy-rules";
 import { computeTechnicals } from "@/lib/technicals";
 import { addDays, exchangeDate, groupBars, type IngestResult } from "@/lib/market-ingest";
 import { reportFreshness } from "@/lib/research";
 import type { MarketStore, ResearchStore } from "@/lib/research-store";
+import type { StrategySet } from "@/lib/types";
 import { universeEntry } from "@/lib/universe";
 
 export type McpDeps = {
@@ -35,11 +52,12 @@ export type McpDeps = {
 
 export const SERVER_INSTRUCTIONS = `Trade Journal research server.
 
-Use it with the market-sweep and ticker-research skills.
+Use it with the market-sweep, ticker-research and options-strategist skills.
 - get_market_scan is the whole S&P 500 + Nasdaq-100 picture in ONE call (breadth, sector rotation, industries, index contributors, anomalies with reason codes). Never sweep the universe through Robinhood.
 - get_symbol_detail gives computed technicals from stored daily bars for up to 10 symbols — prefer it over fetching historicals elsewhere.
 - Conventions for everything you write: money in integer cents, percentages in percent units (1.25 = 1.25%), implied volatility as a decimal, timestamps ISO-8601 with offset, and null (not 0) for anything unknown.
 - Articles: only items published within ~2 days of the analysis, at most 5, never padded with older ones. Sweep news: headlines of the day only (≤ 36h old), at most 8.
+- Options strategies: get_strategy_context → fetch the chain slice it asks for from Robinhood → evaluate_option_strategies → save_strategy_set. The server computes every risk number (max gain/loss, R:R, PoP, expectancy, sizing) from the quotes you pass; never write them yourself.
 - This server cannot trade. Never place or review orders in any connected brokerage as part of research.`;
 
 const text = (value: unknown) => ({
@@ -61,6 +79,20 @@ async function guarded<T>(fn: () => Promise<T>) {
 
 function compactBars(bars: { date: string; open_cents: number; high_cents: number; low_cents: number; close_cents: number; volume: number }[]) {
   return bars.map((b) => [b.date, b.open_cents, b.high_cents, b.low_cents, b.close_cents, b.volume]);
+}
+
+/** A stored strategy set without the bulky payoff curves and regime blob. */
+function compactStrategySet(s: StrategySet) {
+  return {
+    id: s.id,
+    as_of: s.as_of,
+    horizons: s.horizons,
+    reference_price_cents: s.reference_price_cents,
+    reference_at: s.reference_at,
+    no_setup_reason: s.no_setup_reason,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    ideas: s.ideas.map(({ payoff, ...idea }) => idea),
+  };
 }
 
 export function createResearchMcpServer(deps: McpDeps): McpServer {
@@ -301,14 +333,19 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
     "get_ticker_report",
     {
       title: "Latest ticker report",
-      description: "The latest saved report for a ticker, to compare against before writing a new one.",
+      description:
+        "The latest saved report for a ticker, to compare against before writing a new one, plus its latest options strategy set (or null).",
       inputSchema: { symbol: TickerSymbolSchema },
       annotations: { readOnlyHint: true },
     },
     async ({ symbol }) =>
       guarded(async () => {
-        const r = await deps.research.getLatestReport(symbol);
-        return r ? text(r) : fail(`No report saved for ${symbol} yet.`);
+        const [r, strategies] = await Promise.all([
+          deps.research.getLatestReport(symbol),
+          deps.research.getLatestStrategySet(symbol),
+        ]);
+        if (!r) return fail(`No report saved for ${symbol} yet.`);
+        return text({ ...r, strategies: strategies ? compactStrategySet(strategies) : null });
       })
   );
 
@@ -317,7 +354,7 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
     {
       title: "Save a ticker report",
       description:
-        "Save the analysis shown on the Research tab: snapshot numbers, the four technical dimensions (trend/momentum/volatility/risk with ratings), a short fundamentals paragraph, and up to 5 articles from the last ~2 days. Adds the ticker to the research list if needed and updates its sector/industry/setup. Options strategy ideas are not accepted yet.",
+        "Save the analysis shown on the Research tab: snapshot numbers, the four technical dimensions (trend/momentum/volatility/risk with ratings), a short fundamentals paragraph, and up to 5 articles from the last ~2 days. Adds the ticker to the research list if needed and updates its sector/industry/setup. Options strategies are saved separately with save_strategy_set (options-strategist skill), which refreshes only that section.",
       inputSchema: TickerReportInputSchema.shape,
       annotations: { readOnlyHint: false },
     },
@@ -333,6 +370,156 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
           industry: report.industry ?? u?.sub_industry ?? null,
         });
         return text({ ...saved, view: `/research?symbol=${encodeURIComponent(report.symbol)}` });
+      })
+  );
+
+  // --- options strategies -------------------------------------------------
+
+  /** Universe: the research watchlist plus picks from the last 5 sweeps. */
+  async function universeProblem(symbol: string): Promise<string | null> {
+    const [tickers, sweeps] = await Promise.all([deps.research.listTickers(), deps.research.listSweeps(5)]);
+    if (tickers.some((t) => t.symbol === symbol)) return null;
+    if (sweeps.some((s) => s.picks.some((p) => p.symbol === symbol))) return null;
+    return `${symbol} is not on the research list or among the last 5 sweeps' picks. Add it with add_research_ticker first (ideally run ticker-research for a regime read).`;
+  }
+
+  async function strategyContext(symbol: string, asOf: string, horizons: ("short" | "long")[], ref?: number) {
+    const today = exchangeDate(deps.now());
+    const [bars, report] = await Promise.all([
+      deps.market.loadBars(addDays(today, -400), today, [symbol]),
+      deps.research.getLatestReport(symbol),
+    ]);
+    return buildStrategyContext({
+      symbol,
+      asOf,
+      horizons,
+      bars: groupBars(bars)[symbol] ?? [],
+      report,
+      referencePriceCents: ref,
+    });
+  }
+
+  const rejectedText = (r: Partial<Record<RejectReason, number>>) =>
+    Object.fromEntries(Object.entries(r).map(([k, n]) => [REJECT_REASON_TEXT[k as RejectReason] ?? k, n]));
+
+  const GATE_TEXT = `Gate (all required): max loss ≤ ${STRATEGY_RULES.maxRiskToReward}× max gain; expected P&L > 0 under realized volatility (hv20) at natural bid/ask; one unit's max loss ≤ ${STRATEGY_RULES.maxAccountRiskFraction * 100}% of the account; a recent-size gap (max of the largest 20-session gap and ATR14) toward the worse side must not reach max loss.`;
+
+  server.registerTool(
+    "get_strategy_context",
+    {
+      title: "Options strategy context",
+      description:
+        "Step 1 of the options-strategist workflow. The regime read for a ticker (latest report's trend/momentum/volatility/risk ratings, IV, IV rank vs 20-day realized volatility, days to earnings), support/resistance from the last 20 sessions, the gap size a structure must survive, the eligible strategy families per horizon (short = 0–3 DTE, long = 4–21 DTE), and a fetch plan: which expiries and strike band to pull from the Robinhood chain. The symbol must be on the research list or a recent sweep pick.",
+      inputSchema: {
+        symbol: TickerSymbolSchema,
+        horizons: z.array(StrategyHorizonSchema).min(1).max(2).default(["short", "long"]),
+        reference_price_cents: z.number().int().positive().optional().describe("Live underlying price if you have it"),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    async ({ symbol, horizons, reference_price_cents }) =>
+      guarded(async () => {
+        const problem = await universeProblem(symbol);
+        if (problem) return fail(problem);
+        const ctx = await strategyContext(symbol, deps.now().toISOString(), horizons, reference_price_cents);
+        return text({
+          context: ctx,
+          fetch_plan: fetchPlan(ctx),
+          gate: GATE_TEXT,
+          limits: {
+            max_chain_contracts: STRATEGY_RULES.maxChainContracts,
+            max_custom_structures: STRATEGY_RULES.maxCustomStructures,
+            staleness_minutes: STRATEGY_RULES.staleness,
+          },
+          next:
+            "Read the options account value (Robinhood get_accounts), quote the underlying, fetch the chain slice (bid/ask/IV/open interest for calls and puts at every listed strike in the band), then call evaluate_option_strategies.",
+        });
+      })
+  );
+
+  server.registerTool(
+    "evaluate_option_strategies",
+    {
+      title: "Evaluate options strategies",
+      description:
+        "Step 2. Builds every eligible structure from the catalogue (credit spreads, iron condors/butterflies incl. unbalanced wings, long and broken-wing butterflies, jade lizards, 1×2 put ratios, cash-secured puts, calendars, diagonals, double diagonals, and debit spreads when the setup demands direction) plus up to 5 custom structures you design, prices each at natural bid/ask from the chain you pass, and applies the gate. Returns up to 3 ranked, strategy-diverse candidates with full economics (max gain/loss, R:R, breakevens, PoP and expectancy under realized and implied vol, theta, gap test, sizing), the best near misses with their failure reasons, and rejection counts. Nothing is saved. If nothing passes, try other strikes/widths/expiries or a custom structure — or report no compliant setup.",
+      inputSchema: EvaluateStrategiesInputSchema.shape,
+      annotations: { readOnlyHint: true, idempotentHint: true },
+    },
+    async (input) =>
+      guarded(async () => {
+        const run = EvaluateStrategiesInputSchema.parse(input);
+        const problems = strategyRunProblems(run, deps.now());
+        if (problems.length) return fail(`Evaluation rejected: ${problems.join("; ")}`);
+        const problem = await universeProblem(run.symbol);
+        if (problem) return fail(problem);
+        const ctx = await strategyContext(run.symbol, run.as_of, run.horizons, run.reference_price_cents);
+        const result = evaluateStrategies(run, ctx);
+        return text({
+          symbol: run.symbol,
+          reference_price_cents: ctx.reference_price_cents,
+          gate: GATE_TEXT,
+          regime: ctx.selections,
+          warnings: ctx.warnings,
+          evaluated: result.evaluated,
+          passed: result.passed,
+          no_compliant_setup: result.top.length === 0,
+          candidates: result.top.map((e) => summarizeEvaluation(e, run.symbol)),
+          near_misses: result.near_misses.map((e) => summarizeEvaluation(e, run.symbol)),
+          rejected: rejectedText(result.rejected),
+          units:
+            "Strikes, bid/ask, net_cents: cents per share (net > 0 = credit). max_gain/max_loss/ev/theta: cents per unit (one set of legs ×100), net of fees. pop: percent.",
+        });
+      })
+  );
+
+  server.registerTool(
+    "save_strategy_set",
+    {
+      title: "Save options strategy ideas",
+      description:
+        "Step 3. Save up to 3 ideas (distinct families) for the ticker's Options strategies section on the Research tab, replacing what is shown there; the rest of the report is untouched. Pass the same chain, reference price and account value you evaluated with, and for each idea its legs plus your rationale, catalysts, risks and exit plan. The server re-prices and re-gates every idea and stores its own numbers; an idea that fails the gate rejects the save. With no compliant setup, save ideas: [] and no_setup_reason.",
+      inputSchema: SaveStrategySetInputSchema.shape,
+      annotations: { readOnlyHint: false },
+    },
+    async (input) =>
+      guarded(async () => {
+        const set = SaveStrategySetInputSchema.parse(input);
+        const problems = strategySetProblems(set, deps.now());
+        if (problems.length) return fail(`Strategy set rejected: ${problems.join("; ")}`);
+        const problem = await universeProblem(set.symbol);
+        if (problem) return fail(problem);
+        const ctx = await strategyContext(set.symbol, set.as_of, set.horizons, set.reference_price_cents);
+        const gated = gateIdeas(set, ctx);
+        if (gated.problems.length) return fail(`Strategy set rejected: ${gated.problems.join("; ")}`);
+        const run = evaluateStrategies(set, ctx, ideaStructures(set));
+        const saved = await deps.research.saveStrategySet({
+          symbol: set.symbol,
+          as_of: set.as_of,
+          horizons: set.horizons,
+          reference_price_cents: set.reference_price_cents,
+          reference_at: set.reference_at,
+          account_value_cents: set.account_value_cents,
+          regime: ctx as unknown as Record<string, unknown>,
+          ideas: gated.ideas,
+          no_setup_reason: gated.ideas.length ? null : (set.no_setup_reason ?? "No compliant setup."),
+          rejected_summary: runSummary(run),
+          model_notes: set.model_notes ?? null,
+        });
+        return text({
+          ...saved,
+          ideas: gated.ideas.map((i) => ({
+            rank: i.rank,
+            label: i.label,
+            horizon: i.horizon,
+            front_expiry: i.front_expiry,
+            max_gain_cents: i.economics.max_gain_cents,
+            max_loss_cents: i.economics.max_loss_cents,
+            ev_realized_cents: i.economics.ev_realized_cents,
+            qty: i.sizing?.qty ?? null,
+          })),
+          view: `/research?symbol=${encodeURIComponent(set.symbol)}`,
+        });
       })
   );
 

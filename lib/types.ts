@@ -8,6 +8,7 @@ import type {
   TickerSnapshot,
 } from "./schemas";
 import type { ScanDigest } from "./market-scan";
+import type { Economics, LegSide, OptionType, Sizing } from "./strategy-economics";
 
 export const STRATEGY_KINDS = [
   "long_call",
@@ -147,6 +148,70 @@ export type MarketSweep = {
   trends: SweepTrend[];
   /** Absent on sweeps saved before migration 0008. */
   news?: SweepNews[];
+};
+
+// --- Options strategies (migration 0009) ----------------------------------
+
+export type StrategyIdeaLeg = {
+  side: LegSide;
+  ratio: number;
+  type: OptionType;
+  strike_cents: number;
+  expiry: string;
+  /** Storage-format OCC symbol; null for tickers OCC storage cannot encode. */
+  occ_symbol: string | null;
+  bid_cents: number;
+  ask_cents: number;
+  fill_cents: number;
+  iv: number | null;
+  open_interest: number | null;
+  spread_pct: number | null;
+};
+
+export type StrategyIdea = {
+  rank: number;
+  family: string;
+  label: string;
+  name: string | null;
+  horizon: "short" | "long";
+  front_expiry: string;
+  dte: number;
+  legs: StrategyIdeaLeg[];
+  economics: Economics;
+  sizing: Sizing | null;
+  liquidity: { max_spread_pct: number | null; flags: string[] };
+  flags: string[];
+  score: number;
+  /** [price_cents, pnl_cents per unit] at the front expiry. */
+  payoff: [number, number][];
+  rationale: string;
+  catalysts: string[];
+  risks: string[];
+  exit_plan: string;
+};
+
+export type StrategySetSummary = {
+  evaluated: number;
+  passed: number;
+  rejected: Record<string, number>;
+};
+
+export type StrategySet = {
+  id: string;
+  user_id: string;
+  symbol: string;
+  as_of: string;
+  created_at: string;
+  horizons: string[];
+  reference_price_cents: number;
+  reference_at: string;
+  account_value_cents: number;
+  /** StrategyContext from lib/strategy-engine.ts at save time. */
+  regime: Record<string, unknown>;
+  ideas: StrategyIdea[];
+  no_setup_reason: string | null;
+  rejected_summary: StrategySetSummary;
+  model_notes: string | null;
 };
 
 export type McpToken = {
