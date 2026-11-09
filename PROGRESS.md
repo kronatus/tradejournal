@@ -168,7 +168,11 @@ structures, and writes the rationale. The model never writes risk numbers.
 - Sell premium by default (theta-positive). Debit spreads only when the setup
   demands direction (strong bias, or IV cheap vs realized).
 - Horizons: short 0–3 DTE and long 4–21 DTE. Longer is to be defined later.
-- Universe: research watchlist plus picks from the last 5 sweeps.
+- Research first: strategies require the ticker on the research list with a
+  ticker report ≤ 24 h old. The tools refuse otherwise, and the
+  options-strategist skill runs ticker-research first for sweep picks, new
+  names and stale reports. This replaced the original "watchlist or last-5
+  sweep picks" universe rule.
 - Gate: all must hold.
   - (A) max loss ≤ 3.25 × max gain. The original "$3.25 reward per $1 risked"
     is impossible for premium selling, so it was redefined.
@@ -200,6 +204,7 @@ structures, and writes the rationale. The model never writes risk numbers.
   - stale badge (age, or drift above 0.5 ATR vs live spot)
   - "Log as trade" (`/trades/new?set=&idea=`, prefilled) and "Open in Sandbox" (`/sandbox?symbol=&spot=&legs=`)
 - [x] Skill `skills/options-strategist/SKILL.md`. ticker-research hands off to it.
+- [x] Research-first gate (2026-11-09): no report, or a report older than 24 h, makes the tool refuse and point to ticker-research. The skills chain sweep → ticker-research → options-strategist.
 - [ ] Prod: apply `0009_strategy_sets.sql`, zip and upload `options-strategist` plus the updated `ticker-research`, then run it on a sweep pick
 
 ## Phase 11b: Strategy Management 📋 NEXT

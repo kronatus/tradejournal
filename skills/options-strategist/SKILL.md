@@ -1,6 +1,6 @@
 ---
 name: options-strategist
-description: Build options strategy ideas for a ticker in the Trade Journal's Research tab — read the regime, pull a bounded option chain slice from Robinhood, let the journal price and gate every candidate (risk ≤ 3.25× reward, positive expectancy under realized volatility, max loss ≤ 50% of the account, survives a gap), and save up to 3 ranked, strategy-diverse ideas. Use when the user asks for options strategies, trade ideas, "run the options strategist on X", or to refresh the strategies section of a ticker report; also as the last step of ticker research when the user wants strategies.
+description: Build options strategy ideas for a ticker in the Trade Journal's Research tab — read the regime, pull a bounded option chain slice from Robinhood, let the journal price and gate every candidate (risk ≤ 3.25× reward, positive expectancy under realized volatility, max loss ≤ 50% of the account, survives a gap), and save up to 3 ranked, strategy-diverse ideas. Runs the ticker-research skill first when the ticker has no report (a sweep pick or new name) or its report is older than 24 h, so the whole Research page is populated. Use when the user asks for options strategies, trade ideas, "run the options strategist on X", or to refresh the strategies section of a ticker report; also as the last step of ticker research when the user wants strategies.
 ---
 
 # Options strategist
@@ -70,12 +70,25 @@ assignment). It is small and run aggressively on purpose.
 
 ## Procedure
 
-1. **Universe.** The ticker must be on the research list or a pick from a
-   recent sweep. If it isn't, ask the user, then call `add_research_ticker`.
-   A fresh ticker report (ticker-research skill) gives the selector a real
-   regime read. Without one the read is neutral, so mention that.
+1. **Research first.** Strategies stand on a fresh ticker report: it is the
+   regime read the selector uses, and it fills the rest of the Research page.
+   Call `get_ticker_report(symbol)`:
+   - **No report** (a sweep pick, or a ticker named for the first time): run
+     the **ticker-research** skill on it now, in full, through
+     `save_ticker_report`. That also adds it to the research list. Then
+     continue here.
+   - **Report older than 24 h** (check its `as_of`): refresh it with the
+     **ticker-research** skill first, then continue.
+   - **Report ≤ 24 h old**: go straight on.
+
+   Don't ask the user before doing this; it is part of the job. Tell them in
+   one line that you researched or refreshed the ticker first. The journal
+   enforces the rule: the strategy tools refuse a ticker without a ≤ 24 h
+   report and say which step is missing. If one refuses, do what it says and
+   retry.
 2. **Context.** Call `get_strategy_context(symbol, horizons)`. Use both
-   horizons unless the user asked for one. Read:
+   horizons unless the user asked for one. Its `research` field shows which
+   report it used. Read:
    - `context.selections[h]`: bias, IV regime, earnings mode, eligible families
    - `context.supports_cents` / `context.resistances_cents`, `gap_cents`
    - `warnings`

@@ -1,6 +1,6 @@
 ---
 name: ticker-research
-description: Research a stock or ETF for the Trade Journal's Research tab — current price and key numbers from Robinhood, technical analysis of trend, momentum, volatility and risk, a short fundamentals paragraph, and up to 5 articles from the last 2 days — then save it to the journal. Use when the user asks to research, analyze or refresh a ticker, or to "refresh my research list".
+description: Research a stock or ETF for the Trade Journal's Research tab — current price and key numbers from Robinhood, technical analysis of trend, momentum, volatility and risk, a short fundamentals paragraph, and up to 5 articles from the last 2 days — then save it to the journal. Use when the user asks to research, analyze or refresh a ticker, or to "refresh my research list"; also run it first whenever options strategies are wanted for a ticker with no report or one older than 24 h.
 ---
 
 # Ticker research
@@ -46,10 +46,11 @@ review or cancel orders.
    older items.** Record the real publish time.
 5. **Write** the four technical dimensions, the fundamentals paragraph, and
    save with `save_ticker_report`. Then summarise in chat in 3–5 lines.
-6. **Strategies (optional)** — if the user asked for trade ideas or
-   strategies, continue with the **options-strategist** skill for this
-   ticker now. The fresh report is its regime read. Otherwise offer it in one
-   line.
+6. **Strategies** — this skill is also the first step of the
+   **options-strategist**, which requires a report ≤ 24 h old. If you were
+   running it for the strategist, or the user asked for trade ideas or
+   strategies, continue with **options-strategist** for this ticker now. The
+   fresh report is its regime read. Otherwise offer it in one line.
 
 ## Technical rating rubric
 

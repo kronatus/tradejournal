@@ -2,7 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { handleMcpRequest, type McpDeps } from "./server";
 import type { MarketStore, ResearchStore, StrategySetRow } from "@/lib/research-store";
-import type { MarketBar, MarketScanRow } from "@/lib/types";
+import type { MarketBar, MarketScanRow, TickerReport } from "@/lib/types";
 import type { ScanDigest } from "@/lib/market-scan";
 import fixture from "@/tests/fixtures/ticker-report-aapl.json";
 import { STRATEGY_RULES } from "@/lib/strategy-rules";
@@ -10,7 +10,9 @@ import { STRATEGY_RULES } from "@/lib/strategy-rules";
 const SECRET = "s".repeat(43);
 const USER = "user-1";
 
-function memoryDeps(opts: { scan?: MarketScanRow | null; bars?: MarketBar[]; refreshError?: string } = {}) {
+function memoryDeps(
+  opts: { scan?: MarketScanRow | null; bars?: MarketBar[]; refreshError?: string; report?: TickerReport | null } = {}
+) {
   const saved: {
     reports: unknown[];
     sweeps: unknown[];
@@ -32,7 +34,7 @@ function memoryDeps(opts: { scan?: MarketScanRow | null; bars?: MarketBar[]; ref
       return t;
     },
     removeTicker: async () => true,
-    getLatestReport: async () => null,
+    getLatestReport: async (symbol) => (opts.report?.symbol === symbol ? opts.report : null),
     saveReport: async (r) => {
       saved.reports.push(r);
       return { id: "rep-1", created_at: "2026-11-08T00:00:00Z" };
@@ -340,26 +342,54 @@ describe("options strategy tools", () => {
     { expiry: EXP, strike_cents: 29000, type: "put", side: "long" },
   ];
   const idea = { family: "put_credit_spread", legs: pcsLegs, rationale: "Sell premium below support." };
+  const reportAt = (as_of: string, symbol = "AAPL") =>
+    ({ ...(fixture as unknown as TickerReport), id: "rep", user_id: USER, created_at: as_of, symbol, as_of }) as TickerReport;
+  const fresh = reportAt("2026-11-08T13:00:00Z"); // 2 h before NOW
+  const withResearch = (over: Parameters<typeof memoryDeps>[0] = {}) => memoryDeps({ bars, report: fresh, ...over });
 
-  it("refuses tickers outside the research list and recent sweep picks", async () => {
-    const { deps } = memoryDeps({ bars });
-    const r = await call(deps, "get_strategy_context", { symbol: "TSLA" });
-    expect(r.body.result.isError).toBe(true);
-    expect(r.body.result.content[0].text).toMatch(/add_research_ticker/);
+  describe("research first", () => {
+    const calls: [string, unknown][] = [
+      ["get_strategy_context", { symbol: "AAPL" }],
+      ["evaluate_option_strategies", run([quote("put", 29500, 300, 310)])],
+      ["save_strategy_set", { ...run([quote("put", 29500, 300, 310)]), no_setup_reason: "x" }],
+    ];
+
+    it.each(calls)("%s refuses a ticker with no report and points to ticker-research", async (tool, args) => {
+      const { deps, saved } = memoryDeps({ bars, report: null });
+      const r = await call(deps, tool, args);
+      expect(r.body.result.isError).toBe(true);
+      expect(r.body.result.content[0].text).toMatch(/No research for AAPL yet\. Run the ticker-research skill/);
+      expect(saved.strategySets).toHaveLength(0);
+    });
+
+    it.each(calls)("%s asks for a refresh when the report is over 24 h old", async (tool, args) => {
+      const { deps } = memoryDeps({ bars, report: reportAt("2026-11-07T09:00:00Z") });
+      const r = await call(deps, tool, args);
+      expect(r.body.result.isError).toBe(true);
+      expect(r.body.result.content[0].text).toMatch(/30 h old.*Refresh it with the ticker-research skill/);
+    });
+
+    it("refuses a ticker that is not on the research list, even a sweep pick", async () => {
+      const { deps } = memoryDeps({ bars, report: reportAt("2026-11-08T13:00:00Z", "TSLA") });
+      const r = await call(deps, "get_strategy_context", { symbol: "TSLA" });
+      expect(r.body.result.content[0].text).toMatch(/No research for TSLA yet/);
+    });
   });
 
-  it("returns the regime read, levels and a fetch plan", async () => {
-    const { deps } = memoryDeps({ bars });
+  it("returns the research used, the regime read, levels and a fetch plan", async () => {
+    const { deps } = withResearch();
     const body = toolJson(await call(deps, "get_strategy_context", { symbol: "AAPL", horizons: ["short", "long"] }));
-    expect(body.context.reference_price_cents).toBe(30290);
-    expect(body.context.selections.long.bias).toBe("neutral");
-    expect(body.context.warnings.join(" ")).toMatch(/No ticker report/);
+    expect(body.research).toEqual({ report_as_of: "2026-11-08T13:00:00Z", age_hours: 2 });
+    // No live price passed: the report's price is the reference.
+    expect(body.context).toMatchObject({ reference_price_cents: 34265, reference_source: "report", last_close_cents: 30290 });
+    expect(body.context.selections.long.bias).toBe("bullish"); // fixture: trend up, momentum positive
+    expect(body.context.report.ratings.trend).toBe("up");
     expect(body.fetch_plan.map((p: { horizon: string }) => p.horizon)).toEqual(["short", "long"]);
     expect(body.gate).toMatch(/3.25/);
   });
 
   it("evaluates catalogue and custom structures and ranks what passes", async () => {
-    const { deps } = memoryDeps({ bars });
+    const { deps } = withResearch();
     const chain = [quote("put", 29500, 300, 310), quote("put", 29000, 90, 100)];
     const body = toolJson(
       await call(deps, "evaluate_option_strategies", {
@@ -374,7 +404,7 @@ describe("options strategy tools", () => {
   });
 
   it("rejects stale quotes before evaluating", async () => {
-    const { deps } = memoryDeps({ bars });
+    const { deps } = withResearch();
     const stale = { ...quote("put", 29500, 300, 310), quoted_at: "2026-11-06T15:00:00Z" };
     const r = await call(deps, "evaluate_option_strategies", run([stale]));
     expect(r.body.result.isError).toBe(true);
@@ -382,7 +412,7 @@ describe("options strategy tools", () => {
   });
 
   it("re-gates ideas on save and stores the server's numbers", async () => {
-    const { deps, saved } = memoryDeps({ bars });
+    const { deps, saved } = withResearch();
     const chain = [quote("put", 29500, 300, 310), quote("put", 29000, 90, 100)];
     const r = await call(deps, "save_strategy_set", { ...run(chain), ideas: [idea] });
     expect(r.body.result.isError).toBeFalsy();
@@ -395,7 +425,7 @@ describe("options strategy tools", () => {
   });
 
   it("rejects an idea that fails the gate", async () => {
-    const { deps, saved } = memoryDeps({ bars });
+    const { deps, saved } = withResearch();
     // $1.00 credit on a $5 width: risks 4× the reward.
     const chain = [quote("put", 29500, 200, 210), quote("put", 29000, 90, 100)];
     const r = await call(deps, "save_strategy_set", { ...run(chain), ideas: [idea] });
@@ -405,7 +435,7 @@ describe("options strategy tools", () => {
   });
 
   it("requires a reason when saving no ideas", async () => {
-    const { deps, saved } = memoryDeps({ bars });
+    const { deps, saved } = withResearch();
     const chain = [quote("put", 29500, 200, 210)];
     const r = await call(deps, "save_strategy_set", run(chain));
     expect(r.body.result.content[0].text).toMatch(/no_setup_reason/);

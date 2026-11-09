@@ -85,6 +85,10 @@ MASSIVE_API_KEY=<key> node scripts/refresh-universe.mjs --shares
   research. Revoke it from the Research tab if it leaks.
 - The app never calls Robinhood; only Claude chat does, under your own
   Robinhood consent.
+- The options-strategist needs fresh research: the strategy tools refuse a
+  ticker without a ticker report ≤ 24 h old. The skill runs ticker-research
+  first for sweep picks, new names and stale reports. After changing any
+  skill, re-zip and re-upload all three.
 - Options strategy ideas are saved separately from reports (`strategy_sets`),
   so the options-strategist can refresh them without rewriting the report.
   Every risk number is computed by the journal from the quotes Claude passes;

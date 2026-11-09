@@ -67,7 +67,10 @@ designed so you never need to look at the whole market yourself.
 8. **Exposure** — `list_open_positions()`; flag picks or sectors that overlap
    the user's open strategies.
 9. **Publish** — `post_market_sweep` (fields below), then give the user a short
-   chat summary and offer to run **ticker-research** on any pick.
+   chat summary and offer to run **ticker-research** on any pick. For options
+   ideas on a pick, run **ticker-research** on it first and then
+   **options-strategist**. The strategist needs a report ≤ 24 h old and the
+   journal enforces that.
 
 ## What to write (`post_market_sweep`)
 

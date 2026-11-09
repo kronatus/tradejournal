@@ -37,9 +37,9 @@ import { REJECT_REASON_TEXT, type RejectReason } from "@/lib/strategy-economics"
 import { STRATEGY_RULES } from "@/lib/strategy-rules";
 import { computeTechnicals } from "@/lib/technicals";
 import { addDays, exchangeDate, groupBars, type IngestResult } from "@/lib/market-ingest";
-import { reportFreshness } from "@/lib/research";
+import { FRESHNESS_HOURS, reportFreshness } from "@/lib/research";
 import type { MarketStore, ResearchStore } from "@/lib/research-store";
-import type { StrategySet } from "@/lib/types";
+import type { StrategySet, TickerReport } from "@/lib/types";
 import { universeEntry } from "@/lib/universe";
 
 export type McpDeps = {
@@ -57,7 +57,7 @@ Use it with the market-sweep, ticker-research and options-strategist skills.
 - get_symbol_detail gives computed technicals from stored daily bars for up to 10 symbols — prefer it over fetching historicals elsewhere.
 - Conventions for everything you write: money in integer cents, percentages in percent units (1.25 = 1.25%), implied volatility as a decimal, timestamps ISO-8601 with offset, and null (not 0) for anything unknown.
 - Articles: only items published within ~2 days of the analysis, at most 5, never padded with older ones. Sweep news: headlines of the day only (≤ 36h old), at most 8.
-- Options strategies: get_strategy_context → fetch the chain slice it asks for from Robinhood → evaluate_option_strategies → save_strategy_set. The server computes every risk number (max gain/loss, R:R, PoP, expectancy, sizing) from the quotes you pass; never write them yourself.
+- Options strategies need fresh research: the ticker must have a ticker report ≤ 24 h old (run ticker-research first for new names, sweep picks and stale reports). Then get_strategy_context → fetch the chain slice it asks for from Robinhood → evaluate_option_strategies → save_strategy_set. The server computes every risk number (max gain/loss, R:R, PoP, expectancy, sizing) from the quotes you pass; never write them yourself.
 - This server cannot trade. Never place or review orders in any connected brokerage as part of research.`;
 
 const text = (value: unknown) => ({
@@ -375,20 +375,43 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
 
   // --- options strategies -------------------------------------------------
 
-  /** Universe: the research watchlist plus picks from the last 5 sweeps. */
-  async function universeProblem(symbol: string): Promise<string | null> {
-    const [tickers, sweeps] = await Promise.all([deps.research.listTickers(), deps.research.listSweeps(5)]);
-    if (tickers.some((t) => t.symbol === symbol)) return null;
-    if (sweeps.some((s) => s.picks.some((p) => p.symbol === symbol))) return null;
-    return `${symbol} is not on the research list or among the last 5 sweeps' picks. Add it with add_research_ticker first (ideally run ticker-research for a regime read).`;
+  /**
+   * Strategies need research behind them: the ticker must be on the research
+   * list with a ticker report no older than FRESHNESS_HOURS.fresh. New names
+   * and sweep picks get there by running ticker-research first (saving a
+   * report adds the ticker to the list).
+   */
+  async function researchGate(
+    symbol: string
+  ): Promise<{ problem: string; report: null } | { problem: null; report: TickerReport }> {
+    const [tickers, report] = await Promise.all([deps.research.listTickers(), deps.research.getLatestReport(symbol)]);
+    const listed = tickers.some((t) => t.symbol === symbol);
+    if (!listed || !report) {
+      return {
+        problem: `No research for ${symbol} yet. Run the ticker-research skill on ${symbol} first (it saves the report and adds ${symbol} to the research list), then run the options strategist.`,
+        report: null,
+      };
+    }
+    const now = deps.now().getTime();
+    if (reportFreshness(report.as_of, now) !== "fresh") {
+      const hours = Math.round((now - Date.parse(report.as_of)) / 3_600_000);
+      return {
+        problem: `${symbol}'s research is from ${report.as_of} (${hours} h old; strategies need it ≤ ${FRESHNESS_HOURS.fresh} h). Refresh it with the ticker-research skill, then continue with the options strategist.`,
+        report: null,
+      };
+    }
+    return { problem: null, report };
   }
 
-  async function strategyContext(symbol: string, asOf: string, horizons: ("short" | "long")[], ref?: number) {
+  async function strategyContext(
+    symbol: string,
+    report: TickerReport,
+    asOf: string,
+    horizons: ("short" | "long")[],
+    ref?: number
+  ) {
     const today = exchangeDate(deps.now());
-    const [bars, report] = await Promise.all([
-      deps.market.loadBars(addDays(today, -400), today, [symbol]),
-      deps.research.getLatestReport(symbol),
-    ]);
+    const bars = await deps.market.loadBars(addDays(today, -400), today, [symbol]);
     return buildStrategyContext({
       symbol,
       asOf,
@@ -409,7 +432,7 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
     {
       title: "Options strategy context",
       description:
-        "Step 1 of the options-strategist workflow. The regime read for a ticker (latest report's trend/momentum/volatility/risk ratings, IV, IV rank vs 20-day realized volatility, days to earnings), support/resistance from the last 20 sessions, the gap size a structure must survive, the eligible strategy families per horizon (short = 0–3 DTE, long = 4–21 DTE), and a fetch plan: which expiries and strike band to pull from the Robinhood chain. The symbol must be on the research list or a recent sweep pick.",
+        "Step 1 of the options-strategist workflow. The regime read for a ticker (latest report's trend/momentum/volatility/risk ratings, IV, IV rank vs 20-day realized volatility, days to earnings), support/resistance from the last 20 sessions, the gap size a structure must survive, the eligible strategy families per horizon (short = 0–3 DTE, long = 4–21 DTE), and a fetch plan: which expiries and strike band to pull from the Robinhood chain. Requires research first: the ticker must be on the research list with a ticker report ≤ 24 h old — if not, the error says so; run the ticker-research skill on it, then call this again.",
       inputSchema: {
         symbol: TickerSymbolSchema,
         horizons: z.array(StrategyHorizonSchema).min(1).max(2).default(["short", "long"]),
@@ -419,10 +442,14 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
     },
     async ({ symbol, horizons, reference_price_cents }) =>
       guarded(async () => {
-        const problem = await universeProblem(symbol);
-        if (problem) return fail(problem);
-        const ctx = await strategyContext(symbol, deps.now().toISOString(), horizons, reference_price_cents);
+        const gate = await researchGate(symbol);
+        if (gate.problem !== null) return fail(gate.problem);
+        const ctx = await strategyContext(symbol, gate.report, deps.now().toISOString(), horizons, reference_price_cents);
         return text({
+          research: {
+            report_as_of: gate.report.as_of,
+            age_hours: Math.round(((deps.now().getTime() - Date.parse(gate.report.as_of)) / 3_600_000) * 10) / 10,
+          },
           context: ctx,
           fetch_plan: fetchPlan(ctx),
           gate: GATE_TEXT,
@@ -442,7 +469,7 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
     {
       title: "Evaluate options strategies",
       description:
-        "Step 2. Builds every eligible structure from the catalogue (credit spreads, iron condors/butterflies incl. unbalanced wings, long and broken-wing butterflies, jade lizards, 1×2 put ratios, cash-secured puts, calendars, diagonals, double diagonals, and debit spreads when the setup demands direction) plus up to 5 custom structures you design, prices each at natural bid/ask from the chain you pass, and applies the gate. Returns up to 3 ranked, strategy-diverse candidates with full economics (max gain/loss, R:R, breakevens, PoP and expectancy under realized and implied vol, theta, gap test, sizing), the best near misses with their failure reasons, and rejection counts. Nothing is saved. If nothing passes, try other strikes/widths/expiries or a custom structure — or report no compliant setup.",
+        "Step 2. Builds every eligible structure from the catalogue (credit spreads, iron condors/butterflies incl. unbalanced wings, long and broken-wing butterflies, jade lizards, 1×2 put ratios, cash-secured puts, calendars, diagonals, double diagonals, and debit spreads when the setup demands direction) plus up to 5 custom structures you design, prices each at natural bid/ask from the chain you pass, and applies the gate. Returns up to 3 ranked, strategy-diverse candidates with full economics (max gain/loss, R:R, breakevens, PoP and expectancy under realized and implied vol, theta, gap test, sizing), the best near misses with their failure reasons, and rejection counts. Nothing is saved. Requires a ticker report ≤ 24 h old. If nothing passes, try other strikes/widths/expiries or a custom structure — or report no compliant setup.",
       inputSchema: EvaluateStrategiesInputSchema.shape,
       annotations: { readOnlyHint: true, idempotentHint: true },
     },
@@ -451,9 +478,9 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
         const run = EvaluateStrategiesInputSchema.parse(input);
         const problems = strategyRunProblems(run, deps.now());
         if (problems.length) return fail(`Evaluation rejected: ${problems.join("; ")}`);
-        const problem = await universeProblem(run.symbol);
-        if (problem) return fail(problem);
-        const ctx = await strategyContext(run.symbol, run.as_of, run.horizons, run.reference_price_cents);
+        const gate = await researchGate(run.symbol);
+        if (gate.problem !== null) return fail(gate.problem);
+        const ctx = await strategyContext(run.symbol, gate.report, run.as_of, run.horizons, run.reference_price_cents);
         const result = evaluateStrategies(run, ctx);
         return text({
           symbol: run.symbol,
@@ -478,7 +505,7 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
     {
       title: "Save options strategy ideas",
       description:
-        "Step 3. Save up to 3 ideas (distinct families) for the ticker's Options strategies section on the Research tab, replacing what is shown there; the rest of the report is untouched. Pass the same chain, reference price and account value you evaluated with, and for each idea its legs plus your rationale, catalysts, risks and exit plan. The server re-prices and re-gates every idea and stores its own numbers; an idea that fails the gate rejects the save. With no compliant setup, save ideas: [] and no_setup_reason.",
+        "Step 3. Save up to 3 ideas (distinct families) for the ticker's Options strategies section on the Research tab, replacing what is shown there; the rest of the report is untouched. Pass the same chain, reference price and account value you evaluated with, and for each idea its legs plus your rationale, catalysts, risks and exit plan. The server re-prices and re-gates every idea and stores its own numbers; an idea that fails the gate rejects the save. With no compliant setup, save ideas: [] and no_setup_reason. Requires a ticker report ≤ 24 h old.",
       inputSchema: SaveStrategySetInputSchema.shape,
       annotations: { readOnlyHint: false },
     },
@@ -487,9 +514,9 @@ export function createResearchMcpServer(deps: McpDeps): McpServer {
         const set = SaveStrategySetInputSchema.parse(input);
         const problems = strategySetProblems(set, deps.now());
         if (problems.length) return fail(`Strategy set rejected: ${problems.join("; ")}`);
-        const problem = await universeProblem(set.symbol);
-        if (problem) return fail(problem);
-        const ctx = await strategyContext(set.symbol, set.as_of, set.horizons, set.reference_price_cents);
+        const gate = await researchGate(set.symbol);
+        if (gate.problem !== null) return fail(gate.problem);
+        const ctx = await strategyContext(set.symbol, gate.report, set.as_of, set.horizons, set.reference_price_cents);
         const gated = gateIdeas(set, ctx);
         if (gated.problems.length) return fail(`Strategy set rejected: ${gated.problems.join("; ")}`);
         const run = evaluateStrategies(set, ctx, ideaStructures(set));
