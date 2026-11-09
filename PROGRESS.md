@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Last updated: 2026-11-08 (Phase 10 Research & Market Pulse)
+Last updated: 2026-11-09 (Phase 10 Research & Market Pulse — live)
 
 ## Phase 1: Core Trade Journal (MVP) ✅ COMPLETE
 - [x] Supabase schema (strategies, legs, import_batches tables) — migration 0001
@@ -130,7 +130,7 @@ Last updated: 2026-11-08 (Phase 10 Research & Market Pulse)
 
 ---
 
-## Phase 10: Research & Market Pulse 🚧 CODE COMPLETE (pending prod setup)
+## Phase 10: Research & Market Pulse ✅ LIVE (2026-11-09)
 
 Claude chat does the analysis (Robinhood MCP + web search) and writes it to
 the app through an app-hosted MCP server; the app computes the market-wide
@@ -147,8 +147,8 @@ scan itself so Claude never sweeps 500+ tickers.
 - [x] Ticker charts: price + SMA 20/50/200, volume vs 20-day avg, RSI 14, MACD — synced crosshair with a readout strip (no floating tooltip over the data), 1M–All ranges, from stored `market_bars`
 - [x] Glossary bubbles on technical terms (`lib/glossary.ts`, `components/ui/term.tsx`) — placed outside the label+value row so values stay visible; hover, focus or tap
 - [x] News of the day on Pulse (migration `0008_sweep_news.sql`, ≤ 8 headlines ≤ 36h old, impact + symbol tags)
-- [ ] Prod: apply 0007 + 0008, set `MASSIVE_API_KEY` + `CRON_SECRET`, backfill `--days 300`, connect Claude (see `skills/README.md`)
-- [ ] Verify Massive free plan serves Grouped Daily (unverifiable from the build sandbox)
+- [x] Prod: 0007 + 0008 applied, `MASSIVE_API_KEY` + `CRON_SECRET` set, 300-session backfill done, connector + skills live in claude.ai and feeding both tabs
+- [x] Massive free plan serves Grouped Daily (verified in production)
 - [ ] Options strategy framework (deferred by design; reports have no strategies column yet)
 - [ ] Optional: fill `shares_outstanding` for cap weighting (`refresh-universe.mjs --shares`)
 
