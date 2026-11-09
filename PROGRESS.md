@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Last updated: 2026-11-09 (Phase 10 Research & Market Pulse — live)
+Last updated: 2026-11-09 (Phase 11a options strategies live; 11b management next)
 
 ## Phase 1: Core Trade Journal (MVP) ✅ COMPLETE
 - [x] Supabase schema (strategies, legs, import_batches tables) — migration 0001
@@ -154,7 +154,7 @@ scan itself so Claude never sweeps 500+ tickers.
 
 ---
 
-## Phase 11: Options Strategy Framework ✅ BUILT (deploy pending)
+## Phase 11a: Options Strategy Framework ✅ LIVE (2026-11-09)
 
 Fills the "Options strategies" section of the ticker report on `/research`.
 Code reads the regime, picks families, builds and prices structures and gates
@@ -205,15 +205,53 @@ structures, and writes the rationale. The model never writes risk numbers.
   - "Log as trade" (`/trades/new?set=&idea=`, prefilled) and "Open in Sandbox" (`/sandbox?symbol=&spot=&legs=`)
 - [x] Skill `skills/options-strategist/SKILL.md`. ticker-research hands off to it.
 - [x] Research-first gate (2026-11-09): no report, or a report older than 24 h, makes the tool refuse and point to ticker-research. The skills chain sweep → ticker-research → options-strategist.
-- [ ] Prod: apply `0009_strategy_sets.sql`, zip and upload `options-strategist` plus the updated `ticker-research`, then run it on a sweep pick
+- [x] Prod: `0009_strategy_sets.sql` applied, `options-strategist` and `ticker-research` uploaded. Live runs calculate, gate and save ideas to the Research page.
+- [x] Merged to main: `97b94b3` (framework), `bc35dfe` (research-first gate)
+- [ ] Confirm the research-first chain in chat once all three skills are re-uploaded (testing in progress):
+  - sweep pick → research → strategies
+  - stale watchlist report → refresh → strategies
+
+**Notes to revisit against live results:**
+- Gate A (risk ≤ 3.25× reward) means cash-secured puts, 1×2 put ratios and jade lizards almost never pass. Check the `rejected` counts in live runs.
+- Sizing fills the whole 50%-of-account cap (`floor(cap / max loss)`). Revisit once 2–3 positions are open at the same time.
+- Fees are an estimate ($0.06 per contract round trip) in `STRATEGY_RULES.feePerContractCents`.
+- The gap test is "doesn't reach max loss", not "short strike not breached", because the latter fails iron flies by construction.
 
 ## Phase 11b: Strategy Management 📋 NEXT
 
-- [ ] Partial-quantity closes (scale out half at 50% of max profit): split a leg row or add a partial-exit model
-- [ ] Roll links between trades (roll first, then cut at a 50% loss of the credit received)
-- [ ] Review tool for Claude: open positions with live marks, % of max profit captured, % of credit lost, days to expiry, and a suggested action. Uses `fetchQuotes` for held legs only (Marketdata billing).
-- [ ] Link logged trades back to the idea they came from (`strategy_sets.id` plus rank)
-- [ ] Define the longer-term horizon (> 21 DTE)
+Manage what 11a opens: scale out winners, roll then cut losers, and let Claude
+review open positions. Claude never places orders; the user trades manually
+and logs the trades in the journal.
+
+**Open questions (ask at the start of the session):**
+- Partial-exit model: `leg_exits` rows (qty, price, at) or splitting a leg row?
+- What counts as a roll: same structure at a later expiry, and/or new strikes?
+- Review cadence: on demand only, or a scheduled check?
+
+**Plan, in order:**
+1. [ ] Data model, migration `0010`:
+   - link a journal strategy to its source idea: `strategies.source_set_id` + `source_idea_rank`, filled by "Log as trade"
+   - `strategies.rolled_from_id` for roll chains
+   - the partial-exit model chosen above
+2. [ ] Calculations in `lib/calculations.ts`, tested:
+   - % of max profit captured
+   - % of the entry credit (or debit) lost
+   - realized P&L across partial exits and rolls
+   - DTE left
+3. [ ] Rules engine `lib/strategy-management.ts`, tested. It proposes one action per position:
+   - take half at 50% of max profit
+   - roll first, then cut at a 50% loss of the credit (or debit)
+   - be flat before expiry for 0–3 DTE
+   - otherwise hold
+4. [ ] MCP `review_open_positions`:
+   - live marks for held legs only, via `fetchQuotes` (Marketdata credits; never whole chains)
+   - the metrics and the proposed action
+   - the source idea's exit plan and levels
+5. [ ] Skill: `skills/position-review/SKILL.md`, or a review section in options-strategist. Claude explains each action against news and levels.
+6. [ ] UI:
+   - trade detail shows rule status (profit captured, loss vs credit, next action) and the source idea
+   - "Scale out" / "Roll" flows on the legs table
+7. [ ] Define the longer horizon (more than 21 DTE)
 
 ---
 
