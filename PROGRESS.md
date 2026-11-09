@@ -207,7 +207,7 @@ structures, and writes the rationale. The model never writes risk numbers.
 - [x] Research-first gate (2026-11-09): no report, or a report older than 24 h, makes the tool refuse and point to ticker-research. The skills chain sweep → ticker-research → options-strategist.
 - [x] Prod: `0009_strategy_sets.sql` applied, `options-strategist` and `ticker-research` uploaded. Live runs calculate, gate and save ideas to the Research page.
 - [x] Merged to main: `97b94b3` (framework), `bc35dfe` (research-first gate)
-- [ ] Confirm the research-first chain in chat once all three skills are re-uploaded (testing in progress):
+- [x] Research-first chain confirmed in chat (2026-11-09):
   - sweep pick → research → strategies
   - stale watchlist report → refresh → strategies
 
