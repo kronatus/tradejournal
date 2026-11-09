@@ -149,8 +149,40 @@ scan itself so Claude never sweeps 500+ tickers.
 - [x] News of the day on Pulse (migration `0008_sweep_news.sql`, ≤ 8 headlines ≤ 36h old, impact + symbol tags)
 - [x] Prod: 0007 + 0008 applied, `MASSIVE_API_KEY` + `CRON_SECRET` set, 300-session backfill done, connector + skills live in claude.ai and feeding both tabs
 - [x] Massive free plan serves Grouped Daily (verified in production)
-- [ ] Options strategy framework (deferred by design; reports have no strategies column yet)
+- [ ] Options strategy framework → moved to Phase 11
 - [ ] Optional: fill `shares_outstanding` for cap weighting (`refresh-universe.mjs --shares`)
+
+---
+
+## Phase 11: Options Strategy Framework 📋 NEXT
+
+Fills the "Options strategies" placeholder card on `/research`. Code picks
+the strategy type, Claude picks real strikes and expiries from the Robinhood
+chain, and the app computes the risk numbers. The model never writes them.
+
+- [ ] Define the framework (open questions): defined-risk only or also short puts / covered calls; typical DTE range; max loss per trade or account size; which strategies are in scope
+- [ ] Rules-based selector in `lib/` (trend/momentum ratings × IV regime × days to earnings → candidate strategy types), with Vitest tests
+- [ ] `OptionStrategyIdeaSchema` in `lib/schemas.ts` (legs, expiry, DTE, rationale, catalysts, risks) plus cross-checks (expiry vs earnings, leg consistency); OCC handling only via `lib/occ.ts`
+- [ ] Server-side risk math reusing `lib/payoff.ts`, `lib/pricing.ts`, `lib/greeks.ts`: max profit/loss, breakevens, probability of profit
+- [ ] Migration `0009`: `ticker_reports.strategies jsonb` (≤ 3 ideas), verified in PGlite
+- [ ] MCP `save_ticker_report` accepts strategies; update `skills/ticker-research/SKILL.md`, then re-zip and re-upload it
+- [ ] UI card: up to 3 ideas with a mini payoff chart, plus "Open in Sandbox" / "Log as trade"
+- [ ] Never pull whole chains through Marketdata (billing); chain data comes from Claude's RH calls
+
+---
+
+## Phase 12: Fundamental Analyst Reports 📋 PLANNED
+
+Morningstar-style equity reports, built on our own framework and terminology
+(not Morningstar's ratings or names).
+
+- [ ] Define scope (open questions): length (one-page vs multi-page), coverage (research list only?), refresh cadence (after each earnings release?)
+- [ ] Framework: fair value estimate (DCF with bear/base/bull scenarios), moat, uncertainty, capital allocation, bull/bear case, key risks, price vs fair value
+- [ ] Valuation math in tested code (`lib/valuation.ts`): fair value is computed from inputs Claude cites, never a free-typed number
+- [ ] Data sources: RH financials, SEC filing facts, analyst ratings
+- [ ] Migration + schema + MCP tool(s) for fundamental reports (own-row RLS, append-only, latest wins)
+- [ ] New `skills/fundamental-analyst/SKILL.md` (zip and upload to claude.ai)
+- [ ] Full report page per ticker, linked from `/research`
 
 ---
 
